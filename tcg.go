@@ -12,7 +12,7 @@ const (
 
 const hPixelRatio = 2
 
-var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorWhite)
+var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 
 // Tcg - tcell graphics object
 type Tcg struct {
