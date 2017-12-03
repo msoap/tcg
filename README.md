@@ -13,9 +13,10 @@ import (
 )
 
 main () {
-    gr := tcg.New()
-    gr.PutPixel(10, 10, tcg.Black)
-    gr.tcell.Show()
+    tg := tcg.New()
+    tg.PutPixel(10, 10, tcg.Black)
+    tg.Show()
+    tg.Finish()
 }
 ```
 
