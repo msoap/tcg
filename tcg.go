@@ -55,6 +55,11 @@ func (tg *Tcg) PutPixel(x, y int, color int) {
 	// TODO put to tcell screen
 }
 
+// GetPixel - get pixel from the screen
+func (tg *Tcg) GetPixel(x, y int) int {
+	return tg.buffer.GetPixel(x, y)
+}
+
 // PrintStr - print string on screen, with white on black style
 // string don't save in buffer!
 func (tg *Tcg) PrintStr(x, y int, str string) {
