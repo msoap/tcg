@@ -58,14 +58,12 @@ func (tg *Tcg) PutPixel(x, y int, color int) {
 	//        x
 	// y: 0: [0][1][2][3] [4][5][6][7]
 	// y: 1: [0][1][2][3] [4][5][6][7]
-	scrY, remY, pairedY, index := y/hPixelRatio, y%hPixelRatio, y, 0
+	scrY, remY, index := y/hPixelRatio, y%hPixelRatio, 0
 	if remY == 0 {
-		pairedY++
-		pairedPx := tg.GetPixel(x, pairedY)
+		pairedPx := tg.GetPixel(x, y+1)
 		index = color<<1 | pairedPx
 	} else {
-		pairedY--
-		pairedPx := tg.GetPixel(x, pairedY)
+		pairedPx := tg.GetPixel(x, y-1)
 		index = pairedPx<<1 | color
 	}
 
