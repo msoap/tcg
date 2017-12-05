@@ -49,7 +49,7 @@ func (tg Tcg) Finish() {
 	tg.TCellScreen.Fini()
 }
 
-var variants = [...]rune{' ', '▄', '▀', '█'}
+var pixelChars = [...]rune{' ', '▄', '▀', '█'}
 
 // PutPixel - put pixel on the screen
 func (tg *Tcg) PutPixel(x, y int, color int) {
@@ -67,7 +67,7 @@ func (tg *Tcg) PutPixel(x, y int, color int) {
 		index = pairedPx<<1 | color
 	}
 
-	tg.TCellScreen.SetContent(x, scrY, variants[index], nil, defaultStyle)
+	tg.TCellScreen.SetContent(x, scrY, pixelChars[index], nil, defaultStyle)
 }
 
 // GetPixel - get pixel from the screen
