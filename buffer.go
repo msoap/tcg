@@ -2,12 +2,14 @@ package tcg
 
 import "math"
 
+// Buffer - implement base screen pixel buffer
 type Buffer struct {
 	Width  int
 	Height int
 	buffer [][]byte
 }
 
+// NewBuffer - get new buffer object
 func NewBuffer(width, height int) Buffer {
 	return Buffer{
 		Width:  width,
