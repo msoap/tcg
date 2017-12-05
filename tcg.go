@@ -1,3 +1,5 @@
+//go:generate minimock -i github.com/gdamore/tcell.Screen -o .
+
 package tcg
 
 import (
