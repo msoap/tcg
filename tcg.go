@@ -60,7 +60,8 @@ func (tg *Tcg) PutPixel(x, y int, color int) {
 	//        x
 	// y: 0: [0][1][2][3] [4][5][6][7]
 	// y: 1: [0][1][2][3] [4][5][6][7]
-	scrY, remY, index := y/hPixelRatio, y%hPixelRatio, 0
+	var index int
+	scrY, remY := y/hPixelRatio, y%hPixelRatio
 	if remY == 0 {
 		pairedPx := tg.GetPixel(x, y+1)
 		index = color<<1 | pairedPx
@@ -80,7 +81,7 @@ func (tg *Tcg) GetPixel(x, y int) int {
 // PrintStr - print string on screen, with white on black style
 // string don't save in buffer!
 func (tg *Tcg) PrintStr(x, y int, str string) {
-	scrY := int(y / hPixelRatio)
+	scrY := y / hPixelRatio
 	for i, ch := range []rune(str) {
 		tg.TCellScreen.SetContent(x+i, scrY, ch, nil, defaultStyle)
 	}
