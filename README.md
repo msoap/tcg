@@ -1,4 +1,13 @@
-# TCG - tcell graphics library
+# TCG - terminal graphics library
+
+Used unicode block symbols for drawing.
+
+See:
+
+  * [Block Elements - wikipedia](https://en.wikipedia.org/wiki/Block_Elements)
+  * [Block Elements - unicode.org](https://www.unicode.org/charts/PDF/U2580.pdf)
+  * [Symbols for Legacy Computing - wikipedia](https://en.wikipedia.org/wiki/Symbols_for_Legacy_Computing)
+  * [Symbols for Legacy Computing - unicode.org](http://unicode.org/charts/PDF/U1FB00.pdf)
 
 ## Install
 
@@ -9,7 +18,6 @@
 ```go
 import (
     "github.com/msoap/tcg"
-    "github.com/gdamore/tcell"
 )
 
 main () {
@@ -24,4 +32,4 @@ main () {
 
 ## See also
 
-  * [github.com/gdamore/tcell](https://github.com/gdamore/tcell/)
+  * [Go library for terminal - github.com/gdamore/tcell](https://github.com/gdamore/tcell/)
