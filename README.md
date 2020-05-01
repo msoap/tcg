@@ -33,3 +33,5 @@ main () {
 ## See also
 
   * [Go library for terminal - github.com/gdamore/tcell](https://github.com/gdamore/tcell/)
+  * [Iosevka font](https://github.com/be5invis/Iosevka)
+  * [JetBrains Mono font](https://github.com/JetBrains/JetBrainsMono)
