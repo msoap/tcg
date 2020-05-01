@@ -6,10 +6,17 @@ import (
 	"github.com/gdamore/tcell"
 )
 
+type PixelsInChar int
+
 // pixel colors
 const (
 	White = 0
 	Black = 1
+
+	Mode1x1 PixelsInChar = 1
+	Mode1x2 PixelsInChar = 1 * 2
+	Mode2x2 PixelsInChar = 2 * 2
+	Mode2x3 PixelsInChar = 2 * 3
 )
 
 const hPixelRatio = 2
@@ -23,7 +30,7 @@ type Tcg struct {
 }
 
 // New - get new object with tcell inside
-func New() (Tcg, error) {
+func New(mode PixelsInChar) (Tcg, error) {
 	screen, err := tcell.NewScreen()
 	if err != nil {
 		return Tcg{}, err

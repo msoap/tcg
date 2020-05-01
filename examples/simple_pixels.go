@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	tg, err := tcg.New()
+	tg, err := tcg.New(tcg.Mode1x2)
 	if err != nil {
 		panic(err)
 	}
