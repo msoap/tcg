@@ -51,7 +51,27 @@ func (tg Tcg) Finish() {
 	tg.TCellScreen.Fini()
 }
 
-var pixelChars = [...]rune{' ', '▄', '▀', '█'}
+var pixelChars1x1 = [...]rune{' ', '█'}
+var pixelChars1x2 = [...]rune{' ', '▄', '▀', '█'}
+var pixelChars2x2 = [...]rune{' ', '▘', '▖', '▗', '▝', '▙', '▛', '▜', '▟', '▚', '▞', '▐', '▌', '▄', '▀', '█'}
+var pixelChars2x3 = [...]rune{
+	' ', '🬀', '🬁', '🬂',
+	'🬃', '🬄', '🬅', '🬆',
+	'🬇', '🬈', '🬉', '🬊',
+	'🬋', '🬌', '🬍', '🬎',
+	'🬏', '🬐', '🬑', '🬒',
+	'🬓', '🬔', '🬕', '🬖',
+	'🬗', '🬘', '🬙', '🬚',
+	'🬛', '🬜', '🬝', '🬞',
+	'🬟', '🬠', '🬡', '🬢',
+	'🬣', '🬤', '🬥', '🬦',
+	'🬧', '🬨', '🬩', '🬪',
+	'🬫', '🬬', '🬭', '🬮',
+	'🬯', '🬰', '🬱', '🬲',
+	'🬳', '🬴', '🬵', '🬶',
+	'🬷', '🬸', '🬹', '🬺',
+	'🬻', '█',
+}
 
 // PutPixel - put pixel on the screen
 func (tg *Tcg) PutPixel(x, y int, color int) {
@@ -70,7 +90,7 @@ func (tg *Tcg) PutPixel(x, y int, color int) {
 		index = pairedPx<<1 | color
 	}
 
-	tg.TCellScreen.SetContent(x, scrY, pixelChars[index], nil, defaultStyle)
+	tg.TCellScreen.SetContent(x, scrY, pixelChars1x2[index], nil, defaultStyle)
 }
 
 // GetPixel - get pixel from the screen
