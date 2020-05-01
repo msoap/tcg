@@ -1,6 +1,6 @@
 # TCG - terminal graphics library
 
-Used unicode block symbols for drawing.
+Used unicode block symbols for drawing. 2x3 mode is supported by the latest versions of the Iosevka and JetBrains Mono fonts.
 
 See:
 
@@ -21,7 +21,7 @@ import (
 )
 
 main () {
-    tg := tcg.New()
+    tg := tcg.New(tcg.Mode2x3)
     tg.PutPixel(10, 10, tcg.Black)
     pix := tg.GetPixel(10, 10) // tcg.Black
     tg.PrintStr(20, 20, "Hello world!")
