@@ -29,6 +29,30 @@ type Tcg struct {
 	buffer      Buffer
 }
 
+func (pic PixelsInChar) Width() int {
+	switch pic {
+	case Mode1x1, Mode1x2:
+		return 1
+	case Mode2x2, Mode2x3:
+		return 2
+	default:
+		return 0
+	}
+}
+
+func (pic PixelsInChar) Height() int {
+	switch pic {
+	case Mode1x1:
+		return 1
+	case Mode1x2, Mode2x2:
+		return 2
+	case Mode2x3:
+		return 3
+	default:
+		return 0
+	}
+}
+
 // New - get new object with tcell inside
 func New(mode PixelsInChar) (Tcg, error) {
 	screen, err := tcell.NewScreen()
