@@ -19,12 +19,11 @@ const (
 	Mode2x3 PixelsInChar = 2 * 3
 )
 
-const hPixelRatio = 2
-
 var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 
 // Tcg - tcell graphics object
 type Tcg struct {
+	mode        PixelsInChar
 	TCellScreen tcell.Screen
 	buffer      Buffer
 }
@@ -64,9 +63,10 @@ func New(mode PixelsInChar) (Tcg, error) {
 		return Tcg{}, err
 	}
 	w, h := screen.Size()
-	h *= hPixelRatio // each character cell contains two pixels
+	h *= mode.Height()
 
 	return Tcg{
+		mode:        mode,
 		TCellScreen: screen,
 		buffer:      NewBuffer(w, h),
 	}, nil
@@ -90,7 +90,7 @@ func (tg *Tcg) PutPixel(x, y int, color int) {
 	// y: 0: [0][1][2][3] [4][5][6][7]
 	// y: 1: [0][1][2][3] [4][5][6][7]
 	var index int
-	scrY, remY := y/hPixelRatio, y%hPixelRatio
+	scrY, remY := y/tg.mode.Height(), y%tg.mode.Height()
 	if remY == 0 {
 		pairedPx := tg.GetPixel(x, y+1)
 		index = color<<1 | pairedPx
@@ -110,7 +110,7 @@ func (tg *Tcg) GetPixel(x, y int) int {
 // PrintStr - print string on screen, with white on black style
 // string don't save in buffer!
 func (tg *Tcg) PrintStr(x, y int, str string) {
-	scrY := y / hPixelRatio
+	scrY := y / tg.mode.Height()
 	for i, ch := range []rune(str) {
 		tg.TCellScreen.SetContent(x+i, scrY, ch, nil, defaultStyle)
 	}
