@@ -16,7 +16,7 @@ import (
 main () {
     tg := tcg.New(tcg.Mode2x3)
     tg.PutPixel(10, 10, tcg.Black)
-    pix := tg.GetPixel(10, 10) // tcg.Black
+    pix := tg.GetPixel(10, 10)
     tg.PrintStr(20, 20, "Hello world!")
     tg.Show()
     tg.Finish()
