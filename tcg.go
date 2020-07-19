@@ -108,7 +108,7 @@ func (tg *Tcg) GetPixel(x, y int) int {
 }
 
 // PrintStr - print string on screen, with white on black style
-// string don't save in buffer!
+// string don't save in the buffer of pixels!
 func (tg *Tcg) PrintStr(x, y int, str string) {
 	scrY := y / tg.mode.Height()
 	for i, ch := range []rune(str) {
