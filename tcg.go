@@ -12,11 +12,13 @@ type PixelsInChar int
 const (
 	White = 0
 	Black = 1
+)
 
-	Mode1x1 PixelsInChar = 1
-	Mode1x2 PixelsInChar = 1 * 2
-	Mode2x2 PixelsInChar = 2 * 2
-	Mode2x3 PixelsInChar = 2 * 3
+const (
+	Mode1x1 PixelsInChar = iota
+	Mode1x2
+	Mode2x2
+	Mode2x3
 )
 
 var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
