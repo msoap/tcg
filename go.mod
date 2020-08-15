@@ -1,6 +1,6 @@
 module github.com/msoap/tcg
 
-go 1.14
+go 1.15
 
 require (
 	github.com/gdamore/tcell v1.3.0
