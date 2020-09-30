@@ -6,6 +6,7 @@ import (
 	"github.com/gdamore/tcell"
 )
 
+// PixelsInChar - a type representing the graphics mode
 type PixelsInChar int
 
 // pixel colors
@@ -14,6 +15,7 @@ const (
 	Black = 1
 )
 
+// graphics modes
 const (
 	Mode1x1 PixelsInChar = iota
 	Mode1x2
@@ -30,6 +32,7 @@ type Tcg struct {
 	buffer      Buffer
 }
 
+// Width - returns the width in pixels of one character in the text console
 func (pic PixelsInChar) Width() int {
 	switch pic {
 	case Mode1x1, Mode1x2:
@@ -41,6 +44,7 @@ func (pic PixelsInChar) Width() int {
 	}
 }
 
+// Height - returns the height in pixels of one character in the text console
 func (pic PixelsInChar) Height() int {
 	switch pic {
 	case Mode1x1:
