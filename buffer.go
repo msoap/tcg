@@ -20,8 +20,9 @@ func NewBuffer(width, height int) Buffer {
 
 func allocateBuffer(w, h int) [][]byte {
 	buffer := make([][]byte, h)
+	bytesLen := int(math.Ceil(float64(w) / 8))
 	for i := range buffer {
-		buffer[i] = make([]byte, int(math.Ceil(float64(w)/8)))
+		buffer[i] = make([]byte, bytesLen)
 	}
 
 	return buffer
