@@ -1,9 +1,9 @@
-//go:generate minimock -i github.com/gdamore/tcell.Screen -o .
+//go:generate minimock -i github.com/gdamore/tcell/v2.Screen -o .
 
 package tcg
 
 import (
-	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/v2"
 )
 
 // PixelsInChar - a type representing the graphics mode
