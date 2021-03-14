@@ -57,8 +57,6 @@ func nextStep(tg tcg.Tcg) {
 				newGeneration.PutPixel(x, y, tcg.Black)
 			case oldCell == tcg.Black && (neighbors == 2 || neighbors == 3):
 				newGeneration.PutPixel(x, y, tcg.Black)
-			case oldCell == tcg.Black && (neighbors < 2 || neighbors > 3):
-				newGeneration.PutPixel(x, y, tcg.White)
 			default:
 				newGeneration.PutPixel(x, y, tcg.White)
 			}
