@@ -27,10 +27,11 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 
 // Tcg - tcell graphics object
 type Tcg struct {
-	mode        PixelsInChar
-	scrW, scrH  int // screen width/height in characters
-	TCellScreen tcell.Screen
-	buffer      Buffer
+	mode          PixelsInChar
+	scrW, scrH    int // screen width/height in characters
+	Width, Height int // screen width/height in pixels
+	TCellScreen   tcell.Screen
+	buffer        Buffer
 }
 
 // Width - returns the width in pixels of one character in the text console
@@ -75,6 +76,8 @@ func New(mode PixelsInChar) (Tcg, error) {
 		mode:        mode,
 		scrW:        w,
 		scrH:        h,
+		Width:       w * mode.Width(),
+		Height:      h * mode.Height(),
 		TCellScreen: screen,
 		buffer:      NewBuffer(w*mode.Width(), h*mode.Height()),
 	}, nil
