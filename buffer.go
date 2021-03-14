@@ -59,3 +59,17 @@ func (b Buffer) GetPixel(x, y int) int {
 
 	return White
 }
+
+// getPixelsBlock - get rectangular block of pixels as linear bits
+func (b Buffer) getPixelsBlock(x, y, width, height int) int {
+	result, num := 0, width*height-1
+
+	for h := 0; h < height; h++ {
+		for w := 0; w < width; w++ {
+			result |= b.GetPixel(x+w, y+h) << num
+			num--
+		}
+	}
+
+	return result
+}

@@ -1,19 +1,19 @@
 package tcg
 
 var (
-	pixelChars1x1 = [...]rune{
+	pixelChars1x1 = []rune{
 		' ', // 0
 		'█', // 1
 	}
 
-	pixelChars1x2 = [...]rune{
+	pixelChars1x2 = []rune{
 		' ', // 00
 		'▄', // 01
 		'▀', // 10
 		'█', // 11
 	}
 
-	pixelChars2x2 = [...]rune{
+	pixelChars2x2 = []rune{
 		' ', // 0000
 		'▗', // 0001
 		'▖', // 0010
@@ -32,7 +32,7 @@ var (
 		'█', // 1111
 	}
 
-	pixelChars2x3 = [...]rune{
+	pixelChars2x3 = []rune{
 		' ', // 000000
 		'🬞', // 000001
 		'🬏', // 000010
@@ -105,4 +105,6 @@ var (
 		'🬝', // 111110
 		'█', // 111111
 	}
+
+	pixelChars = [][]rune{pixelChars1x1, pixelChars1x2, pixelChars2x2, pixelChars2x3}
 )

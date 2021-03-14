@@ -7,16 +7,19 @@ import (
 )
 
 func main() {
-	tg, err := tcg.New(tcg.Mode1x2)
+	tg, err := tcg.New(tcg.Mode2x3)
 	if err != nil {
 		panic(err)
 	}
 
-	tg.PrintStr(3, 4, "Hello world!")
+	tg.HLine(0, 4, 5, tcg.Black)
+	tg.HLine(5, 5, 5, tcg.Black)
+	tg.HLine(10, 6, 5, tcg.Black)
 
-	tg.HLine(3, 6, 12, tcg.Black)
-
-	tg.PutPixel(4, 8, tcg.Black)
+	tg.PutPixel(0, 0, tcg.Black)
+	tg.PutPixel(2, 0, tcg.Black)
+	tg.PutPixel(1, 1, tcg.Black)
+	tg.PutPixel(3, 1, tcg.Black)
 	tg.PutPixel(6, 8, tcg.Black)
 	tg.PutPixel(8, 8, tcg.Black)
 	tg.PutPixel(10, 8, tcg.Black)

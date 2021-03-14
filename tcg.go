@@ -28,6 +28,7 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 // Tcg - tcell graphics object
 type Tcg struct {
 	mode        PixelsInChar
+	scrW, scrH  int // screen width/height in characters
 	TCellScreen tcell.Screen
 	buffer      Buffer
 }
@@ -69,18 +70,32 @@ func New(mode PixelsInChar) (Tcg, error) {
 		return Tcg{}, err
 	}
 	w, h := screen.Size()
-	h *= mode.Height()
 
 	return Tcg{
 		mode:        mode,
+		scrW:        w,
+		scrH:        h,
 		TCellScreen: screen,
-		buffer:      NewBuffer(w, h),
+		buffer:      NewBuffer(w*mode.Width(), h*mode.Height()),
 	}, nil
 }
 
 // Show - update screen
 func (tg Tcg) Show() {
+	tg.updateScreen()
 	tg.TCellScreen.Show()
+}
+
+func (tg Tcg) updateScreen() {
+	chatMapping := pixelChars[tg.mode]
+	blockW, blockH := tg.mode.Width(), tg.mode.Height()
+
+	for x := 0; x < tg.scrW; x++ {
+		for y := 0; y < tg.scrH; y++ {
+			charIndex := tg.buffer.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
+			tg.TCellScreen.SetContent(x, y, chatMapping[charIndex], nil, defaultStyle)
+		}
+	}
 }
 
 // Finish application
@@ -91,21 +106,6 @@ func (tg Tcg) Finish() {
 // PutPixel - put pixel on the screen
 func (tg *Tcg) PutPixel(x, y int, color int) {
 	tg.buffer.PutPixel(x, y, color)
-
-	//        x
-	// y: 0: [0][1][2][3] [4][5][6][7]
-	// y: 1: [0][1][2][3] [4][5][6][7]
-	var index int
-	scrY, remY := y/tg.mode.Height(), y%tg.mode.Height()
-	if remY == 0 {
-		pairedPx := tg.GetPixel(x, y+1)
-		index = color<<1 | pairedPx
-	} else {
-		pairedPx := tg.GetPixel(x, y-1)
-		index = pairedPx<<1 | color
-	}
-
-	tg.TCellScreen.SetContent(x, scrY, pixelChars1x2[index], nil, defaultStyle)
 }
 
 // GetPixel - get pixel from the screen
