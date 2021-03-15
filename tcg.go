@@ -31,7 +31,7 @@ type Tcg struct {
 	scrW, scrH    int // screen width/height in characters
 	Width, Height int // screen width/height in pixels
 	TCellScreen   tcell.Screen
-	buffer        Buffer
+	Buffer        Buffer
 }
 
 // Width - returns the width in pixels of one character in the text console
@@ -79,7 +79,7 @@ func New(mode PixelsInChar) (Tcg, error) {
 		Width:       w * mode.Width(),
 		Height:      h * mode.Height(),
 		TCellScreen: screen,
-		buffer:      NewBuffer(w*mode.Width(), h*mode.Height()),
+		Buffer:      NewBuffer(w*mode.Width(), h*mode.Height()),
 	}, nil
 }
 
@@ -95,7 +95,7 @@ func (tg Tcg) updateScreen() {
 
 	for x := 0; x < tg.scrW; x++ {
 		for y := 0; y < tg.scrH; y++ {
-			charIndex := tg.buffer.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
+			charIndex := tg.Buffer.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
 			tg.TCellScreen.SetContent(x, y, chatMapping[charIndex], nil, defaultStyle)
 		}
 	}
@@ -108,12 +108,12 @@ func (tg Tcg) Finish() {
 
 // PutPixel - put pixel on the screen
 func (tg *Tcg) PutPixel(x, y int, color int) {
-	tg.buffer.PutPixel(x, y, color)
+	tg.Buffer.PutPixel(x, y, color)
 }
 
 // GetPixel - get pixel from the screen
 func (tg *Tcg) GetPixel(x, y int) int {
-	return tg.buffer.GetPixel(x, y)
+	return tg.Buffer.GetPixel(x, y)
 }
 
 // PrintStr - print string on screen, with white on black style

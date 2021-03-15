@@ -65,12 +65,7 @@ func nextStep(tg tcg.Tcg) {
 	}
 
 	// copy to screen
-	// TODO: implement bit blt from buffer to buffer
-	for y := 0; y < tg.Height; y++ {
-		for x := 0; x < tg.Width; x++ {
-			tg.PutPixel(x, y, newGeneration.GetPixel(x, y))
-		}
-	}
+	tg.Buffer.BitBlt(0, 0, newGeneration)
 
 	tg.Show()
 }

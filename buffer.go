@@ -77,3 +77,24 @@ func (b Buffer) getPixelsBlock(x, y, width, height int) int {
 
 	return result
 }
+
+// BitBlt - copy one buffer into this buffer
+func (b *Buffer) BitBlt(x, y int, from Buffer) {
+	if x == 0 && y == 0 {
+		b.bitBltToZero(from)
+		return
+	}
+
+	for i := 0; i < from.Height && i+y < b.Height; i++ {
+		for j := 0; j < from.Width; j++ {
+			// TODO
+		}
+	}
+}
+
+// bitBltToZero - copy one buffer into this buffer in 0,0 coordinates
+func (b *Buffer) bitBltToZero(from Buffer) {
+	for i := 0; i < from.Height && i < b.Height; i++ {
+		copy(b.buffer[i], from.buffer[i])
+	}
+}

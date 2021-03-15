@@ -39,11 +39,7 @@ func main() {
 		log.Fatalf("failed to create tcg: %s", err)
 	}
 
-	for y := 0; y < buf.Height && y < tg.Height; y++ {
-		for x := 0; x < buf.Width && x < tg.Width; x++ {
-			tg.PutPixel(x, y, buf.GetPixel(x, y)) // TODO: implement BitBlt
-		}
-	}
+	tg.Buffer.BitBlt(0, 0, buf)
 
 	tg.Show()
 	<-getEscape(tg)
