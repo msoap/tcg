@@ -8,6 +8,8 @@ import (
 	"github.com/msoap/tcg"
 )
 
+const delay = time.Millisecond * 100
+
 func main() {
 	tg, err := tcg.New(tcg.Mode2x3)
 	if err != nil {
@@ -16,13 +18,13 @@ func main() {
 
 	initRandom(tg)
 
-	ticker := time.NewTicker(time.Millisecond * 100)
+	ticker := time.Tick(delay)
 	escape := getEscape(tg)
 
 LOOP:
 	for {
 		select {
-		case <-ticker.C:
+		case <-ticker:
 			nextStep(tg)
 		case <-escape:
 			break LOOP
