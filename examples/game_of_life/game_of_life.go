@@ -91,8 +91,7 @@ func getEscape(tg tcg.Tcg) chan struct{} {
 			ev := tg.TCellScreen.PollEvent()
 			switch ev := ev.(type) {
 			case *tcell.EventKey:
-				switch ev.Key() {
-				case tcell.KeyEscape:
+				if ev.Rune() == 'q' || ev.Key() == tcell.KeyEscape {
 					resultCh <- struct{}{}
 				}
 			}

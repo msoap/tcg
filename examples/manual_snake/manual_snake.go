@@ -25,6 +25,9 @@ LOOP:
 		ev := tg.TCellScreen.PollEvent()
 		switch ev := ev.(type) {
 		case *tcell.EventKey:
+			if ev.Rune() == 'q' {
+				break LOOP
+			}
 			switch ev.Key() {
 			case tcell.KeyDown:
 				y++
