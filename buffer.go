@@ -81,7 +81,7 @@ func (b Buffer) getPixelsBlock(x, y, width, height int) int {
 // BitBlt - copy one buffer into this buffer
 func (b *Buffer) BitBlt(x, y int, from Buffer) {
 	if x == 0 && y == 0 {
-		b.bitBltToZero(from)
+		b.bitBltToZeroPoint(from)
 		return
 	}
 
@@ -92,8 +92,8 @@ func (b *Buffer) BitBlt(x, y int, from Buffer) {
 	}
 }
 
-// bitBltToZero - copy one buffer into this buffer in 0,0 coordinates
-func (b *Buffer) bitBltToZero(from Buffer) {
+// bitBltToZeroPoint - copy one buffer into this buffer in 0,0 coordinates
+func (b *Buffer) bitBltToZeroPoint(from Buffer) {
 	for i := 0; i < from.Height && i < b.Height; i++ {
 		copy(b.buffer[i], from.buffer[i])
 	}
