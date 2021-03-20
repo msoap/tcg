@@ -10,6 +10,14 @@ import (
 
 const delay = time.Millisecond * 100
 
+type cmds int
+
+const (
+	cmdExit cmds = iota
+	cmdPause
+	cmdNext
+)
+
 func main() {
 	tg, err := tcg.New(tcg.Mode2x3)
 	if err != nil {
@@ -19,15 +27,25 @@ func main() {
 	initRandom(tg)
 
 	ticker := time.Tick(delay)
-	escape := getEscape(tg)
+	command := getCommand(tg)
+	paused := false
 
 LOOP:
 	for {
 		select {
 		case <-ticker:
-			nextStep(tg)
-		case <-escape:
-			break LOOP
+			if !paused {
+				nextStep(tg)
+			}
+		case cmd := <-command:
+			switch cmd {
+			case cmdExit:
+				break LOOP
+			case cmdPause:
+				paused = !paused
+			case cmdNext:
+				nextStep(tg)
+			}
 		}
 	}
 
@@ -83,16 +101,21 @@ func getNeighbors(tg tcg.Tcg, x, y int) int {
 		tg.GetPixel(x+1, y+1)
 }
 
-func getEscape(tg tcg.Tcg) chan struct{} {
-	resultCh := make(chan struct{})
+func getCommand(tg tcg.Tcg) chan cmds {
+	resultCh := make(chan cmds)
 
 	go func() {
 		for {
 			ev := tg.TCellScreen.PollEvent()
 			switch ev := ev.(type) {
 			case *tcell.EventKey:
-				if ev.Rune() == 'q' || ev.Key() == tcell.KeyEscape {
-					resultCh <- struct{}{}
+				switch {
+				case ev.Rune() == 'q' || ev.Key() == tcell.KeyEscape:
+					resultCh <- cmdExit
+				case ev.Rune() == 'p' || ev.Rune() == ' ':
+					resultCh <- cmdPause
+				case ev.Key() == tcell.KeyRight:
+					resultCh <- cmdNext
 				}
 			}
 		}
