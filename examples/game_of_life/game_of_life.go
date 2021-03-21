@@ -8,7 +8,7 @@ import (
 	"github.com/msoap/tcg"
 )
 
-const delay = time.Millisecond * 100
+const delay = time.Millisecond * 50
 
 type cmds int
 
