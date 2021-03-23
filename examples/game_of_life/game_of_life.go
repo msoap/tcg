@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"math/rand"
 	"time"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/msoap/tcg"
 )
 
-const delay = time.Millisecond * 50
+const defaultDelay = time.Millisecond * 100
 
 type cmds int
 
@@ -19,6 +20,9 @@ const (
 )
 
 func main() {
+	delay := flag.Duration("delay", defaultDelay, "delay between steps")
+	flag.Parse()
+
 	tg, err := tcg.New(tcg.Mode2x3)
 	if err != nil {
 		panic(err)
@@ -26,7 +30,7 @@ func main() {
 
 	initRandom(tg)
 
-	ticker := time.Tick(delay)
+	ticker := time.Tick(*delay)
 	command := getCommand(tg)
 	paused := false
 
