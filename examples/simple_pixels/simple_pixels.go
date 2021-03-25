@@ -30,6 +30,7 @@ func main() {
 	tg.Show()
 	time.Sleep(1 * time.Second)
 
+	// first moving
 	buf := tcg.NewBuffer(10, 10)
 	buf.PutPixel(0, 0, tcg.Black)
 	buf.PutPixel(1, 0, tcg.Black)
@@ -47,6 +48,18 @@ func main() {
 	time.Sleep(1 * time.Second)
 
 	tg.Buffer.BitBltAllSrc(70, 20, buf)
+	tg.Show()
+	time.Sleep(1 * time.Second)
+
+	// second moving
+	buf.BitBlt(0, 0, 10, 10, tg.Buffer, 5, 5)
+	tg.Buffer.BitBlt(40, 40, 10, 10, buf, 0, 0)
+	tg.Show()
+	time.Sleep(1 * time.Second)
+	tg.Buffer.BitBlt(55, 40, 10, 10, buf, 0, 0)
+	tg.Show()
+	time.Sleep(1 * time.Second)
+	tg.Buffer.BitBlt(70, 40, 10, 10, buf, 0, 0)
 	tg.Show()
 
 	time.Sleep(5 * time.Second)

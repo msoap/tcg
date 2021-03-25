@@ -81,7 +81,9 @@ func (b Buffer) getPixelsBlock(x, y, width, height int) int {
 // BitBltAllSrc - copy whole buffer into this buffer
 func (b *Buffer) BitBltAllSrc(x, y int, from Buffer) {
 	if x == 0 && y == 0 {
-		b.bitBltToZeroPoint(from)
+		for i := 0; i < from.Height && i < b.Height; i++ {
+			copy(b.buffer[i], from.buffer[i])
+		}
 		return
 	}
 
@@ -92,9 +94,11 @@ func (b *Buffer) BitBltAllSrc(x, y int, from Buffer) {
 	}
 }
 
-// bitBltToZeroPoint - copy one buffer into this buffer in 0,0 coordinates
-func (b *Buffer) bitBltToZeroPoint(from Buffer) {
-	for i := 0; i < from.Height && i < b.Height; i++ {
-		copy(b.buffer[i], from.buffer[i])
+// BitBlt - copy part of buffer into this buffer
+func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int) {
+	for i := 0; i+ys < from.Height && i < height && i+yd < b.Height; i++ {
+		for j := 0; j+xs < from.Width && j < width && j+xd < b.Width; j++ {
+			b.PutPixel(j+xd, i+yd, from.GetPixel(j+xs, i+ys))
+		}
 	}
 }
