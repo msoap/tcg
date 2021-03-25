@@ -89,7 +89,7 @@ func nextStep(tg tcg.Tcg) {
 	}
 
 	// copy to screen
-	tg.Buffer.BitBlt(0, 0, newGeneration)
+	tg.Buffer.BitBltAllSrc(0, 0, newGeneration)
 
 	tg.Show()
 }

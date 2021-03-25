@@ -28,6 +28,27 @@ func main() {
 	tg.Box(3, 10, 20, 5, tcg.Black)
 
 	tg.Show()
+	time.Sleep(1 * time.Second)
+
+	buf := tcg.NewBuffer(10, 10)
+	buf.PutPixel(0, 0, tcg.Black)
+	buf.PutPixel(1, 0, tcg.Black)
+	buf.PutPixel(2, 0, tcg.Black)
+	buf.PutPixel(0, 0, tcg.Black)
+	buf.PutPixel(0, 1, tcg.Black)
+	buf.PutPixel(0, 2, tcg.Black)
+
+	tg.Buffer.BitBltAllSrc(40, 20, buf)
+	tg.Show()
+	time.Sleep(1 * time.Second)
+
+	tg.Buffer.BitBltAllSrc(55, 20, buf)
+	tg.Show()
+	time.Sleep(1 * time.Second)
+
+	tg.Buffer.BitBltAllSrc(70, 20, buf)
+	tg.Show()
+
 	time.Sleep(5 * time.Second)
 	tg.Finish()
 }
