@@ -73,7 +73,8 @@ func (tg Tcg) Finish() {
 // string don't save in the buffer of pixels!
 func (tg *Tcg) PrintStr(x, y int, str string) {
 	scrY := y / tg.mode.Height()
+	scrX := x / tg.mode.Width()
 	for i, ch := range []rune(str) {
-		tg.TCellScreen.SetContent(x+i, scrY, ch, nil, defaultStyle)
+		tg.TCellScreen.SetContent(scrX+i, scrY, ch, nil, defaultStyle)
 	}
 }
