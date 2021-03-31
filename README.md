@@ -37,4 +37,3 @@ Unicode symbols:
 Supported fonts:
 
   * [Iosevka font](https://github.com/be5invis/Iosevka)
-  * [JetBrains Mono font](https://github.com/JetBrains/JetBrainsMono)
