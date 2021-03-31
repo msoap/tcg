@@ -3,14 +3,14 @@ package tcg
 // HLine - draw horizontal line
 func (tg *Tcg) HLine(x, y int, length int, color int) {
 	for i := 0; i < length; i++ {
-		tg.PutPixel(x+i, y, color)
+		tg.Buffer.Set(x+i, y, color)
 	}
 }
 
 // VLine - draw vertical line
 func (tg *Tcg) VLine(x, y int, length int, color int) {
 	for i := 0; i < length; i++ {
-		tg.PutPixel(x, y+i, color)
+		tg.Buffer.Set(x, y+i, color)
 	}
 }
 

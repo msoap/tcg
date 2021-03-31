@@ -69,16 +69,6 @@ func (tg Tcg) Finish() {
 	tg.TCellScreen.Fini()
 }
 
-// PutPixel - put pixel on the screen
-func (tg *Tcg) PutPixel(x, y int, color int) {
-	tg.Buffer.PutPixel(x, y, color)
-}
-
-// GetPixel - get pixel from the screen
-func (tg *Tcg) GetPixel(x, y int) int {
-	return tg.Buffer.GetPixel(x, y)
-}
-
 // PrintStr - print string on screen, with white on black style
 // string don't save in the buffer of pixels!
 func (tg *Tcg) PrintStr(x, y int, str string) {

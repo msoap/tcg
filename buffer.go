@@ -28,8 +28,8 @@ func allocateBuffer(w, h int) [][]byte {
 	return buffer
 }
 
-// PutPixel - put pixel into buffer
-func (b *Buffer) PutPixel(x, y int, color int) {
+// Set - put pixel into buffer
+func (b *Buffer) Set(x, y int, color int) {
 	if x < 0 || x > b.Width-1 || y < 0 || y > b.Height-1 {
 		return
 	}
@@ -44,8 +44,8 @@ func (b *Buffer) PutPixel(x, y int, color int) {
 	}
 }
 
-// GetPixel - get pixel from buffer
-func (b Buffer) GetPixel(x, y int) int {
+// At - get pixel from buffer
+func (b Buffer) At(x, y int) int {
 	if x < 0 || x > b.Width-1 || y < 0 || y > b.Height-1 {
 		return White
 	}
@@ -70,7 +70,7 @@ func (b Buffer) getPixelsBlock(x, y, width, height int) int {
 
 	for h := 0; h < height; h++ {
 		for w := 0; w < width; w++ {
-			result |= b.GetPixel(x+w, y+h) << num
+			result |= b.At(x+w, y+h) << num
 			num--
 		}
 	}
@@ -89,7 +89,7 @@ func (b *Buffer) BitBltAllSrc(x, y int, from Buffer) {
 
 	for i := 0; i < from.Height && i+y < b.Height; i++ {
 		for j := 0; j < from.Width && j+x < b.Width; j++ {
-			b.PutPixel(j+x, i+y, from.GetPixel(j, i))
+			b.Set(j+x, i+y, from.At(j, i))
 		}
 	}
 }
@@ -98,7 +98,7 @@ func (b *Buffer) BitBltAllSrc(x, y int, from Buffer) {
 func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int) {
 	for i := 0; i+ys < from.Height && i < height && i+yd < b.Height; i++ {
 		for j := 0; j+xs < from.Width && j < width && j+xd < b.Width; j++ {
-			b.PutPixel(j+xd, i+yd, from.GetPixel(j+xs, i+ys))
+			b.Set(j+xd, i+yd, from.At(j+xs, i+ys))
 		}
 	}
 }

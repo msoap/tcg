@@ -72,7 +72,7 @@ func reader2buffer(in io.Reader) (tcg.Buffer, error) {
 				if fields[x] == "1" {
 					color = tcg.Black
 				}
-				buf.PutPixel(x, y, color)
+				buf.Set(x, y, color)
 			}
 			y++
 		default:

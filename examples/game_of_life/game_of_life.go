@@ -63,9 +63,9 @@ func initRandom(tg tcg.Tcg) {
 	for y := 0; y < tg.Height; y++ {
 		for x := 0; x < tg.Width; x++ {
 			if rand.Float64() < 0.2 {
-				tg.PutPixel(x, y, tcg.Black)
+				tg.Buffer.Set(x, y, tcg.Black)
 			} else {
-				tg.PutPixel(x, y, tcg.White)
+				tg.Buffer.Set(x, y, tcg.White)
 			}
 		}
 	}
@@ -78,14 +78,14 @@ func nextStep(tg tcg.Tcg) {
 	for y := 0; y < tg.Height; y++ {
 		for x := 0; x < tg.Width; x++ {
 			neighbors := getNeighbors(tg, x, y)
-			oldCell := tg.GetPixel(x, y)
+			oldCell := tg.Buffer.At(x, y)
 			switch {
 			case oldCell == tcg.White && neighbors == 3:
-				newGeneration.PutPixel(x, y, tcg.Black)
+				newGeneration.Set(x, y, tcg.Black)
 			case oldCell == tcg.Black && (neighbors == 2 || neighbors == 3):
-				newGeneration.PutPixel(x, y, tcg.Black)
+				newGeneration.Set(x, y, tcg.Black)
 			default:
-				newGeneration.PutPixel(x, y, tcg.White)
+				newGeneration.Set(x, y, tcg.White)
 			}
 		}
 	}
@@ -97,14 +97,14 @@ func nextStep(tg tcg.Tcg) {
 }
 
 func getNeighbors(tg tcg.Tcg, x, y int) int {
-	return tg.GetPixel(x-1, y-1) +
-		tg.GetPixel(x, y-1) +
-		tg.GetPixel(x+1, y-1) +
-		tg.GetPixel(x-1, y) +
-		tg.GetPixel(x+1, y) +
-		tg.GetPixel(x-1, y+1) +
-		tg.GetPixel(x, y+1) +
-		tg.GetPixel(x+1, y+1)
+	return tg.Buffer.At(x-1, y-1) +
+		tg.Buffer.At(x, y-1) +
+		tg.Buffer.At(x+1, y-1) +
+		tg.Buffer.At(x-1, y) +
+		tg.Buffer.At(x+1, y) +
+		tg.Buffer.At(x-1, y+1) +
+		tg.Buffer.At(x, y+1) +
+		tg.Buffer.At(x+1, y+1)
 }
 
 func getCommand(tg tcg.Tcg) chan cmds {

@@ -168,7 +168,7 @@ func TestBuffer_PutPixel(t *testing.T) {
 				Height: tt.fields.Height,
 				buffer: tt.fields.buffer,
 			}
-			b.PutPixel(tt.args.x, tt.args.y, tt.args.color)
+			b.Set(tt.args.x, tt.args.y, tt.args.color)
 			require.Equal(t, tt.want, b.buffer)
 		})
 	}
@@ -224,7 +224,7 @@ func TestBuffer_GetPixel(t *testing.T) {
 				Height: tt.fields.Height,
 				buffer: tt.fields.buffer,
 			}
-			if got := b.GetPixel(tt.args.x, tt.args.y); got != tt.want {
+			if got := b.At(tt.args.x, tt.args.y); got != tt.want {
 				t.Errorf("Buffer.GetPixel() = %v, want %v", got, tt.want)
 			}
 		})
