@@ -38,9 +38,9 @@ func (b *Buffer) Set(x, y int, color int) {
 	i, mask := x/8, byte(0x80>>byte(x%8))
 	switch color {
 	case Black:
-		b.buffer[y][i] = b.buffer[y][i] | mask
+		b.buffer[y][i] |= mask
 	case White:
-		b.buffer[y][i] = b.buffer[y][i] &^ mask
+		b.buffer[y][i] &^= mask
 	}
 }
 

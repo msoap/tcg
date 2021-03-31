@@ -61,8 +61,10 @@ func main() {
 	tg.Show()
 	time.Sleep(1 * time.Second)
 	tg.Buf.BitBlt(70, 40, 10, 10, buf, 0, 0)
+
+	tg.PrintStr(60, 10, "Hello")
 	tg.Show()
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(3 * time.Second)
 	tg.Finish()
 }
