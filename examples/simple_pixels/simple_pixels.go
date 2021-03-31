@@ -12,9 +12,9 @@ func main() {
 		panic(err)
 	}
 
-	tg.HLine(0, 4, 5, tcg.Black)
-	tg.HLine(5, 5, 5, tcg.Black)
-	tg.HLine(10, 6, 5, tcg.Black)
+	tg.Buffer.HLine(0, 4, 5, tcg.Black)
+	tg.Buffer.HLine(5, 5, 5, tcg.Black)
+	tg.Buffer.HLine(10, 6, 5, tcg.Black)
 
 	tg.Buffer.Set(0, 0, tcg.Black)
 	tg.Buffer.Set(2, 0, tcg.Black)
@@ -25,7 +25,7 @@ func main() {
 	tg.Buffer.Set(10, 8, tcg.Black)
 	tg.Buffer.Set(12, 8, tcg.Black)
 
-	tg.Box(3, 10, 20, 5, tcg.Black)
+	tg.Buffer.Box(3, 10, 20, 5, tcg.Black)
 
 	tg.Show()
 	time.Sleep(1 * time.Second)
