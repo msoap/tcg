@@ -17,9 +17,9 @@ func main() {
 		for y := 0; y < tg.Height; y++ {
 			for x := 0; x < tg.Width; x++ {
 				if rand.Float64() < 0.5 {
-					tg.Buffer.Set(x, y, tcg.Black)
+					tg.Buf.Set(x, y, tcg.Black)
 				} else {
-					tg.Buffer.Set(x, y, tcg.White)
+					tg.Buf.Set(x, y, tcg.White)
 				}
 			}
 		}

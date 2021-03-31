@@ -16,7 +16,7 @@ func main() {
 	maxX, maxY := tg.Width, tg.Height
 	x, y := maxX/2, maxY/2
 	drawNext := func() {
-		tg.Buffer.Set(x, y, tcg.Black)
+		tg.Buf.Set(x, y, tcg.Black)
 		tg.Show()
 	}
 

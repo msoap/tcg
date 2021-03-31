@@ -20,7 +20,7 @@ type Tcg struct {
 	scrW, scrH    int // screen width/height in characters
 	Width, Height int // screen width/height in pixels
 	TCellScreen   tcell.Screen
-	Buffer        Buffer
+	Buf           Buffer
 }
 
 // New - get new object with tcell inside
@@ -42,7 +42,7 @@ func New(mode PixelsInChar) (Tcg, error) {
 		Width:       w * mode.Width(),
 		Height:      h * mode.Height(),
 		TCellScreen: screen,
-		Buffer:      NewBuffer(w*mode.Width(), h*mode.Height()),
+		Buf:         NewBuffer(w*mode.Width(), h*mode.Height()),
 	}, nil
 }
 
@@ -58,7 +58,7 @@ func (tg Tcg) updateScreen() {
 
 	for x := 0; x < tg.scrW; x++ {
 		for y := 0; y < tg.scrH; y++ {
-			charIndex := tg.Buffer.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
+			charIndex := tg.Buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
 			tg.TCellScreen.SetContent(x, y, chatMapping[charIndex], nil, defaultStyle)
 		}
 	}

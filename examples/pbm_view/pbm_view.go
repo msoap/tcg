@@ -39,7 +39,7 @@ func main() {
 		log.Fatalf("failed to create tcg: %s", err)
 	}
 
-	tg.Buffer.BitBltAllSrc(0, 0, buf)
+	tg.Buf.BitBltAllSrc(0, 0, buf)
 
 	tg.Show()
 	<-getEscape(tg)

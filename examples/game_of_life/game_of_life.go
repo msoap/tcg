@@ -63,9 +63,9 @@ func initRandom(tg tcg.Tcg) {
 	for y := 0; y < tg.Height; y++ {
 		for x := 0; x < tg.Width; x++ {
 			if rand.Float64() < 0.2 {
-				tg.Buffer.Set(x, y, tcg.Black)
+				tg.Buf.Set(x, y, tcg.Black)
 			} else {
-				tg.Buffer.Set(x, y, tcg.White)
+				tg.Buf.Set(x, y, tcg.White)
 			}
 		}
 	}
@@ -78,7 +78,7 @@ func nextStep(tg tcg.Tcg) {
 	for y := 0; y < tg.Height; y++ {
 		for x := 0; x < tg.Width; x++ {
 			neighbors := getNeighbors(tg, x, y)
-			oldCell := tg.Buffer.At(x, y)
+			oldCell := tg.Buf.At(x, y)
 			switch {
 			case oldCell == tcg.White && neighbors == 3:
 				newGeneration.Set(x, y, tcg.Black)
@@ -91,20 +91,20 @@ func nextStep(tg tcg.Tcg) {
 	}
 
 	// copy to screen
-	tg.Buffer.BitBltAllSrc(0, 0, newGeneration)
+	tg.Buf.BitBltAllSrc(0, 0, newGeneration)
 
 	tg.Show()
 }
 
 func getNeighbors(tg tcg.Tcg, x, y int) int {
-	return tg.Buffer.At(x-1, y-1) +
-		tg.Buffer.At(x, y-1) +
-		tg.Buffer.At(x+1, y-1) +
-		tg.Buffer.At(x-1, y) +
-		tg.Buffer.At(x+1, y) +
-		tg.Buffer.At(x-1, y+1) +
-		tg.Buffer.At(x, y+1) +
-		tg.Buffer.At(x+1, y+1)
+	return tg.Buf.At(x-1, y-1) +
+		tg.Buf.At(x, y-1) +
+		tg.Buf.At(x+1, y-1) +
+		tg.Buf.At(x-1, y) +
+		tg.Buf.At(x+1, y) +
+		tg.Buf.At(x-1, y+1) +
+		tg.Buf.At(x, y+1) +
+		tg.Buf.At(x+1, y+1)
 }
 
 func getCommand(tg tcg.Tcg) chan cmds {
