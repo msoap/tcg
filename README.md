@@ -1,3 +1,5 @@
+![GitHub Action](https://github.com/msoap/tcg/actions/workflows/go.yml/badge.svg)
+
 # TCG - terminal cell graphics library
 
 Used unicode block symbols for drawing. 2x3 mode is supported by the latest versions of the Iosevka and JetBrains Mono fonts.
