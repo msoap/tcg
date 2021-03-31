@@ -26,6 +26,7 @@ func main() {
 	tg.Buffer.Set(12, 8, tcg.Black)
 
 	tg.Buffer.Box(3, 10, 20, 5, tcg.Black)
+	tg.Buffer.FillBox(60, 1, 15, 14, tcg.Black)
 
 	tg.Show()
 	time.Sleep(1 * time.Second)
