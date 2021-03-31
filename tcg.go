@@ -3,6 +3,8 @@
 package tcg
 
 import (
+	"errors"
+
 	"github.com/gdamore/tcell/v2"
 )
 
@@ -58,6 +60,40 @@ func (pic PixelsInChar) Height() int {
 	default:
 		return 0
 	}
+}
+
+// String represent
+func (pic PixelsInChar) String() string {
+	switch pic {
+	case Mode1x1:
+		return "1x1"
+	case Mode1x2:
+		return "1x2"
+	case Mode2x2:
+		return "2x2"
+	case Mode2x3:
+		return "2x3"
+	default:
+		return "-"
+	}
+}
+
+// Set from string (for use with flag.Var())
+func (pic *PixelsInChar) Set(in string) error {
+	switch in {
+	case "1x1":
+		*pic = Mode1x1
+	case "1x2":
+		*pic = Mode1x2
+	case "2x2":
+		*pic = Mode2x2
+	case "2x3":
+		*pic = Mode2x3
+	default:
+		return errors.New("not valid screen mode")
+	}
+
+	return nil
 }
 
 // New - get new object with tcell inside
