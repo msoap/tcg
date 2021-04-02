@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"github.com/gdamore/tcell/v2"
@@ -8,7 +9,11 @@ import (
 )
 
 func main() {
-	tg, err := tcg.New(tcg.Mode2x3)
+	mode := tcg.Mode2x3
+	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3")
+	flag.Parse()
+
+	tg, err := tcg.New(mode)
 	if err != nil {
 		log.Fatal(err)
 	}
