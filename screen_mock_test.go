@@ -59,8 +59,8 @@ type ScreenMock struct {
 	beforeDisablePasteCounter uint64
 	DisablePasteMock          mScreenMockDisablePaste
 
-	funcEnableMouse          func()
-	inspectFuncEnableMouse   func()
+	funcEnableMouse          func(p1 ...mm_tcell.MouseFlags)
+	inspectFuncEnableMouse   func(p1 ...mm_tcell.MouseFlags)
 	afterEnableMouseCounter  uint64
 	beforeEnableMouseCounter uint64
 	EnableMouseMock          mScreenMockEnableMouse
@@ -143,6 +143,12 @@ type ScreenMock struct {
 	beforeResizeCounter uint64
 	ResizeMock          mScreenMockResize
 
+	funcResume          func() (err error)
+	inspectFuncResume   func()
+	afterResumeCounter  uint64
+	beforeResumeCounter uint64
+	ResumeMock          mScreenMockResume
+
 	funcSetCell          func(x int, y int, style mm_tcell.Style, ch ...rune)
 	inspectFuncSetCell   func(x int, y int, style mm_tcell.Style, ch ...rune)
 	afterSetCellCounter  uint64
@@ -178,6 +184,12 @@ type ScreenMock struct {
 	afterSizeCounter  uint64
 	beforeSizeCounter uint64
 	SizeMock          mScreenMockSize
+
+	funcSuspend          func() (err error)
+	inspectFuncSuspend   func()
+	afterSuspendCounter  uint64
+	beforeSuspendCounter uint64
+	SuspendMock          mScreenMockSuspend
 
 	funcSync          func()
 	inspectFuncSync   func()
@@ -215,6 +227,7 @@ func NewScreenMock(t minimock.Tester) *ScreenMock {
 	m.DisablePasteMock = mScreenMockDisablePaste{mock: m}
 
 	m.EnableMouseMock = mScreenMockEnableMouse{mock: m}
+	m.EnableMouseMock.callArgs = []*ScreenMockEnableMouseParams{}
 
 	m.EnablePasteMock = mScreenMockEnablePaste{mock: m}
 
@@ -249,6 +262,8 @@ func NewScreenMock(t minimock.Tester) *ScreenMock {
 	m.ResizeMock = mScreenMockResize{mock: m}
 	m.ResizeMock.callArgs = []*ScreenMockResizeParams{}
 
+	m.ResumeMock = mScreenMockResume{mock: m}
+
 	m.SetCellMock = mScreenMockSetCell{mock: m}
 	m.SetCellMock.callArgs = []*ScreenMockSetCellParams{}
 
@@ -264,6 +279,8 @@ func NewScreenMock(t minimock.Tester) *ScreenMock {
 	m.ShowCursorMock.callArgs = []*ScreenMockShowCursorParams{}
 
 	m.SizeMock = mScreenMockSize{mock: m}
+
+	m.SuspendMock = mScreenMockSuspend{mock: m}
 
 	m.SyncMock = mScreenMockSync{mock: m}
 
@@ -1327,17 +1344,26 @@ type mScreenMockEnableMouse struct {
 	mock               *ScreenMock
 	defaultExpectation *ScreenMockEnableMouseExpectation
 	expectations       []*ScreenMockEnableMouseExpectation
+
+	callArgs []*ScreenMockEnableMouseParams
+	mutex    sync.RWMutex
 }
 
 // ScreenMockEnableMouseExpectation specifies expectation struct of the Screen.EnableMouse
 type ScreenMockEnableMouseExpectation struct {
-	mock *ScreenMock
+	mock   *ScreenMock
+	params *ScreenMockEnableMouseParams
 
 	Counter uint64
 }
 
+// ScreenMockEnableMouseParams contains parameters of the Screen.EnableMouse
+type ScreenMockEnableMouseParams struct {
+	p1 []mm_tcell.MouseFlags
+}
+
 // Expect sets up expected params for Screen.EnableMouse
-func (mmEnableMouse *mScreenMockEnableMouse) Expect() *mScreenMockEnableMouse {
+func (mmEnableMouse *mScreenMockEnableMouse) Expect(p1 ...mm_tcell.MouseFlags) *mScreenMockEnableMouse {
 	if mmEnableMouse.mock.funcEnableMouse != nil {
 		mmEnableMouse.mock.t.Fatalf("ScreenMock.EnableMouse mock is already set by Set")
 	}
@@ -1346,11 +1372,18 @@ func (mmEnableMouse *mScreenMockEnableMouse) Expect() *mScreenMockEnableMouse {
 		mmEnableMouse.defaultExpectation = &ScreenMockEnableMouseExpectation{}
 	}
 
+	mmEnableMouse.defaultExpectation.params = &ScreenMockEnableMouseParams{p1}
+	for _, e := range mmEnableMouse.expectations {
+		if minimock.Equal(e.params, mmEnableMouse.defaultExpectation.params) {
+			mmEnableMouse.mock.t.Fatalf("Expectation set by When has same params: %#v", *mmEnableMouse.defaultExpectation.params)
+		}
+	}
+
 	return mmEnableMouse
 }
 
 // Inspect accepts an inspector function that has same arguments as the Screen.EnableMouse
-func (mmEnableMouse *mScreenMockEnableMouse) Inspect(f func()) *mScreenMockEnableMouse {
+func (mmEnableMouse *mScreenMockEnableMouse) Inspect(f func(p1 ...mm_tcell.MouseFlags)) *mScreenMockEnableMouse {
 	if mmEnableMouse.mock.inspectFuncEnableMouse != nil {
 		mmEnableMouse.mock.t.Fatalf("Inspect function is already set for ScreenMock.EnableMouse")
 	}
@@ -1374,7 +1407,7 @@ func (mmEnableMouse *mScreenMockEnableMouse) Return() *ScreenMock {
 }
 
 //Set uses given function f to mock the Screen.EnableMouse method
-func (mmEnableMouse *mScreenMockEnableMouse) Set(f func()) *ScreenMock {
+func (mmEnableMouse *mScreenMockEnableMouse) Set(f func(p1 ...mm_tcell.MouseFlags)) *ScreenMock {
 	if mmEnableMouse.defaultExpectation != nil {
 		mmEnableMouse.mock.t.Fatalf("Default expectation is already set for the Screen.EnableMouse method")
 	}
@@ -1388,25 +1421,44 @@ func (mmEnableMouse *mScreenMockEnableMouse) Set(f func()) *ScreenMock {
 }
 
 // EnableMouse implements tcell.Screen
-func (mmEnableMouse *ScreenMock) EnableMouse() {
+func (mmEnableMouse *ScreenMock) EnableMouse(p1 ...mm_tcell.MouseFlags) {
 	mm_atomic.AddUint64(&mmEnableMouse.beforeEnableMouseCounter, 1)
 	defer mm_atomic.AddUint64(&mmEnableMouse.afterEnableMouseCounter, 1)
 
 	if mmEnableMouse.inspectFuncEnableMouse != nil {
-		mmEnableMouse.inspectFuncEnableMouse()
+		mmEnableMouse.inspectFuncEnableMouse(p1...)
+	}
+
+	mm_params := &ScreenMockEnableMouseParams{p1}
+
+	// Record call args
+	mmEnableMouse.EnableMouseMock.mutex.Lock()
+	mmEnableMouse.EnableMouseMock.callArgs = append(mmEnableMouse.EnableMouseMock.callArgs, mm_params)
+	mmEnableMouse.EnableMouseMock.mutex.Unlock()
+
+	for _, e := range mmEnableMouse.EnableMouseMock.expectations {
+		if minimock.Equal(e.params, mm_params) {
+			mm_atomic.AddUint64(&e.Counter, 1)
+			return
+		}
 	}
 
 	if mmEnableMouse.EnableMouseMock.defaultExpectation != nil {
 		mm_atomic.AddUint64(&mmEnableMouse.EnableMouseMock.defaultExpectation.Counter, 1)
+		mm_want := mmEnableMouse.EnableMouseMock.defaultExpectation.params
+		mm_got := ScreenMockEnableMouseParams{p1}
+		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
+			mmEnableMouse.t.Errorf("ScreenMock.EnableMouse got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
+		}
 
 		return
 
 	}
 	if mmEnableMouse.funcEnableMouse != nil {
-		mmEnableMouse.funcEnableMouse()
+		mmEnableMouse.funcEnableMouse(p1...)
 		return
 	}
-	mmEnableMouse.t.Fatalf("Unexpected call to ScreenMock.EnableMouse.")
+	mmEnableMouse.t.Fatalf("Unexpected call to ScreenMock.EnableMouse. %v", p1)
 
 }
 
@@ -1418,6 +1470,19 @@ func (mmEnableMouse *ScreenMock) EnableMouseAfterCounter() uint64 {
 // EnableMouseBeforeCounter returns a count of ScreenMock.EnableMouse invocations
 func (mmEnableMouse *ScreenMock) EnableMouseBeforeCounter() uint64 {
 	return mm_atomic.LoadUint64(&mmEnableMouse.beforeEnableMouseCounter)
+}
+
+// Calls returns a list of arguments used in each call to ScreenMock.EnableMouse.
+// The list is in the same order as the calls were made (i.e. recent calls have a higher index)
+func (mmEnableMouse *mScreenMockEnableMouse) Calls() []*ScreenMockEnableMouseParams {
+	mmEnableMouse.mutex.RLock()
+
+	argCopy := make([]*ScreenMockEnableMouseParams, len(mmEnableMouse.callArgs))
+	copy(argCopy, mmEnableMouse.callArgs)
+
+	mmEnableMouse.mutex.RUnlock()
+
+	return argCopy
 }
 
 // MinimockEnableMouseDone returns true if the count of the EnableMouse invocations corresponds
@@ -1444,13 +1509,17 @@ func (m *ScreenMock) MinimockEnableMouseDone() bool {
 func (m *ScreenMock) MinimockEnableMouseInspect() {
 	for _, e := range m.EnableMouseMock.expectations {
 		if mm_atomic.LoadUint64(&e.Counter) < 1 {
-			m.t.Error("Expected call to ScreenMock.EnableMouse")
+			m.t.Errorf("Expected call to ScreenMock.EnableMouse with params: %#v", *e.params)
 		}
 	}
 
 	// if default expectation was set then invocations count should be greater than zero
 	if m.EnableMouseMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterEnableMouseCounter) < 1 {
-		m.t.Error("Expected call to ScreenMock.EnableMouse")
+		if m.EnableMouseMock.defaultExpectation.params == nil {
+			m.t.Error("Expected call to ScreenMock.EnableMouse")
+		} else {
+			m.t.Errorf("Expected call to ScreenMock.EnableMouse with params: %#v", *m.EnableMouseMock.defaultExpectation.params)
+		}
 	}
 	// if func was set then invocations count should be greater than zero
 	if m.funcEnableMouse != nil && mm_atomic.LoadUint64(&m.afterEnableMouseCounter) < 1 {
@@ -3694,6 +3763,149 @@ func (m *ScreenMock) MinimockResizeInspect() {
 	}
 }
 
+type mScreenMockResume struct {
+	mock               *ScreenMock
+	defaultExpectation *ScreenMockResumeExpectation
+	expectations       []*ScreenMockResumeExpectation
+}
+
+// ScreenMockResumeExpectation specifies expectation struct of the Screen.Resume
+type ScreenMockResumeExpectation struct {
+	mock *ScreenMock
+
+	results *ScreenMockResumeResults
+	Counter uint64
+}
+
+// ScreenMockResumeResults contains results of the Screen.Resume
+type ScreenMockResumeResults struct {
+	err error
+}
+
+// Expect sets up expected params for Screen.Resume
+func (mmResume *mScreenMockResume) Expect() *mScreenMockResume {
+	if mmResume.mock.funcResume != nil {
+		mmResume.mock.t.Fatalf("ScreenMock.Resume mock is already set by Set")
+	}
+
+	if mmResume.defaultExpectation == nil {
+		mmResume.defaultExpectation = &ScreenMockResumeExpectation{}
+	}
+
+	return mmResume
+}
+
+// Inspect accepts an inspector function that has same arguments as the Screen.Resume
+func (mmResume *mScreenMockResume) Inspect(f func()) *mScreenMockResume {
+	if mmResume.mock.inspectFuncResume != nil {
+		mmResume.mock.t.Fatalf("Inspect function is already set for ScreenMock.Resume")
+	}
+
+	mmResume.mock.inspectFuncResume = f
+
+	return mmResume
+}
+
+// Return sets up results that will be returned by Screen.Resume
+func (mmResume *mScreenMockResume) Return(err error) *ScreenMock {
+	if mmResume.mock.funcResume != nil {
+		mmResume.mock.t.Fatalf("ScreenMock.Resume mock is already set by Set")
+	}
+
+	if mmResume.defaultExpectation == nil {
+		mmResume.defaultExpectation = &ScreenMockResumeExpectation{mock: mmResume.mock}
+	}
+	mmResume.defaultExpectation.results = &ScreenMockResumeResults{err}
+	return mmResume.mock
+}
+
+//Set uses given function f to mock the Screen.Resume method
+func (mmResume *mScreenMockResume) Set(f func() (err error)) *ScreenMock {
+	if mmResume.defaultExpectation != nil {
+		mmResume.mock.t.Fatalf("Default expectation is already set for the Screen.Resume method")
+	}
+
+	if len(mmResume.expectations) > 0 {
+		mmResume.mock.t.Fatalf("Some expectations are already set for the Screen.Resume method")
+	}
+
+	mmResume.mock.funcResume = f
+	return mmResume.mock
+}
+
+// Resume implements tcell.Screen
+func (mmResume *ScreenMock) Resume() (err error) {
+	mm_atomic.AddUint64(&mmResume.beforeResumeCounter, 1)
+	defer mm_atomic.AddUint64(&mmResume.afterResumeCounter, 1)
+
+	if mmResume.inspectFuncResume != nil {
+		mmResume.inspectFuncResume()
+	}
+
+	if mmResume.ResumeMock.defaultExpectation != nil {
+		mm_atomic.AddUint64(&mmResume.ResumeMock.defaultExpectation.Counter, 1)
+
+		mm_results := mmResume.ResumeMock.defaultExpectation.results
+		if mm_results == nil {
+			mmResume.t.Fatal("No results are set for the ScreenMock.Resume")
+		}
+		return (*mm_results).err
+	}
+	if mmResume.funcResume != nil {
+		return mmResume.funcResume()
+	}
+	mmResume.t.Fatalf("Unexpected call to ScreenMock.Resume.")
+	return
+}
+
+// ResumeAfterCounter returns a count of finished ScreenMock.Resume invocations
+func (mmResume *ScreenMock) ResumeAfterCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmResume.afterResumeCounter)
+}
+
+// ResumeBeforeCounter returns a count of ScreenMock.Resume invocations
+func (mmResume *ScreenMock) ResumeBeforeCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmResume.beforeResumeCounter)
+}
+
+// MinimockResumeDone returns true if the count of the Resume invocations corresponds
+// the number of defined expectations
+func (m *ScreenMock) MinimockResumeDone() bool {
+	for _, e := range m.ResumeMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			return false
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.ResumeMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterResumeCounter) < 1 {
+		return false
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcResume != nil && mm_atomic.LoadUint64(&m.afterResumeCounter) < 1 {
+		return false
+	}
+	return true
+}
+
+// MinimockResumeInspect logs each unmet expectation
+func (m *ScreenMock) MinimockResumeInspect() {
+	for _, e := range m.ResumeMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			m.t.Error("Expected call to ScreenMock.Resume")
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.ResumeMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterResumeCounter) < 1 {
+		m.t.Error("Expected call to ScreenMock.Resume")
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcResume != nil && mm_atomic.LoadUint64(&m.afterResumeCounter) < 1 {
+		m.t.Error("Expected call to ScreenMock.Resume")
+	}
+}
+
 type mScreenMockSetCell struct {
 	mock               *ScreenMock
 	defaultExpectation *ScreenMockSetCellExpectation
@@ -4729,6 +4941,149 @@ func (m *ScreenMock) MinimockSizeInspect() {
 	}
 }
 
+type mScreenMockSuspend struct {
+	mock               *ScreenMock
+	defaultExpectation *ScreenMockSuspendExpectation
+	expectations       []*ScreenMockSuspendExpectation
+}
+
+// ScreenMockSuspendExpectation specifies expectation struct of the Screen.Suspend
+type ScreenMockSuspendExpectation struct {
+	mock *ScreenMock
+
+	results *ScreenMockSuspendResults
+	Counter uint64
+}
+
+// ScreenMockSuspendResults contains results of the Screen.Suspend
+type ScreenMockSuspendResults struct {
+	err error
+}
+
+// Expect sets up expected params for Screen.Suspend
+func (mmSuspend *mScreenMockSuspend) Expect() *mScreenMockSuspend {
+	if mmSuspend.mock.funcSuspend != nil {
+		mmSuspend.mock.t.Fatalf("ScreenMock.Suspend mock is already set by Set")
+	}
+
+	if mmSuspend.defaultExpectation == nil {
+		mmSuspend.defaultExpectation = &ScreenMockSuspendExpectation{}
+	}
+
+	return mmSuspend
+}
+
+// Inspect accepts an inspector function that has same arguments as the Screen.Suspend
+func (mmSuspend *mScreenMockSuspend) Inspect(f func()) *mScreenMockSuspend {
+	if mmSuspend.mock.inspectFuncSuspend != nil {
+		mmSuspend.mock.t.Fatalf("Inspect function is already set for ScreenMock.Suspend")
+	}
+
+	mmSuspend.mock.inspectFuncSuspend = f
+
+	return mmSuspend
+}
+
+// Return sets up results that will be returned by Screen.Suspend
+func (mmSuspend *mScreenMockSuspend) Return(err error) *ScreenMock {
+	if mmSuspend.mock.funcSuspend != nil {
+		mmSuspend.mock.t.Fatalf("ScreenMock.Suspend mock is already set by Set")
+	}
+
+	if mmSuspend.defaultExpectation == nil {
+		mmSuspend.defaultExpectation = &ScreenMockSuspendExpectation{mock: mmSuspend.mock}
+	}
+	mmSuspend.defaultExpectation.results = &ScreenMockSuspendResults{err}
+	return mmSuspend.mock
+}
+
+//Set uses given function f to mock the Screen.Suspend method
+func (mmSuspend *mScreenMockSuspend) Set(f func() (err error)) *ScreenMock {
+	if mmSuspend.defaultExpectation != nil {
+		mmSuspend.mock.t.Fatalf("Default expectation is already set for the Screen.Suspend method")
+	}
+
+	if len(mmSuspend.expectations) > 0 {
+		mmSuspend.mock.t.Fatalf("Some expectations are already set for the Screen.Suspend method")
+	}
+
+	mmSuspend.mock.funcSuspend = f
+	return mmSuspend.mock
+}
+
+// Suspend implements tcell.Screen
+func (mmSuspend *ScreenMock) Suspend() (err error) {
+	mm_atomic.AddUint64(&mmSuspend.beforeSuspendCounter, 1)
+	defer mm_atomic.AddUint64(&mmSuspend.afterSuspendCounter, 1)
+
+	if mmSuspend.inspectFuncSuspend != nil {
+		mmSuspend.inspectFuncSuspend()
+	}
+
+	if mmSuspend.SuspendMock.defaultExpectation != nil {
+		mm_atomic.AddUint64(&mmSuspend.SuspendMock.defaultExpectation.Counter, 1)
+
+		mm_results := mmSuspend.SuspendMock.defaultExpectation.results
+		if mm_results == nil {
+			mmSuspend.t.Fatal("No results are set for the ScreenMock.Suspend")
+		}
+		return (*mm_results).err
+	}
+	if mmSuspend.funcSuspend != nil {
+		return mmSuspend.funcSuspend()
+	}
+	mmSuspend.t.Fatalf("Unexpected call to ScreenMock.Suspend.")
+	return
+}
+
+// SuspendAfterCounter returns a count of finished ScreenMock.Suspend invocations
+func (mmSuspend *ScreenMock) SuspendAfterCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmSuspend.afterSuspendCounter)
+}
+
+// SuspendBeforeCounter returns a count of ScreenMock.Suspend invocations
+func (mmSuspend *ScreenMock) SuspendBeforeCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmSuspend.beforeSuspendCounter)
+}
+
+// MinimockSuspendDone returns true if the count of the Suspend invocations corresponds
+// the number of defined expectations
+func (m *ScreenMock) MinimockSuspendDone() bool {
+	for _, e := range m.SuspendMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			return false
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.SuspendMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterSuspendCounter) < 1 {
+		return false
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcSuspend != nil && mm_atomic.LoadUint64(&m.afterSuspendCounter) < 1 {
+		return false
+	}
+	return true
+}
+
+// MinimockSuspendInspect logs each unmet expectation
+func (m *ScreenMock) MinimockSuspendInspect() {
+	for _, e := range m.SuspendMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			m.t.Error("Expected call to ScreenMock.Suspend")
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.SuspendMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterSuspendCounter) < 1 {
+		m.t.Error("Expected call to ScreenMock.Suspend")
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcSuspend != nil && mm_atomic.LoadUint64(&m.afterSuspendCounter) < 1 {
+		m.t.Error("Expected call to ScreenMock.Suspend")
+	}
+}
+
 type mScreenMockSync struct {
 	mock               *ScreenMock
 	defaultExpectation *ScreenMockSyncExpectation
@@ -5096,6 +5451,8 @@ func (m *ScreenMock) MinimockFinish() {
 
 		m.MinimockResizeInspect()
 
+		m.MinimockResumeInspect()
+
 		m.MinimockSetCellInspect()
 
 		m.MinimockSetContentInspect()
@@ -5107,6 +5464,8 @@ func (m *ScreenMock) MinimockFinish() {
 		m.MinimockShowCursorInspect()
 
 		m.MinimockSizeInspect()
+
+		m.MinimockSuspendInspect()
 
 		m.MinimockSyncInspect()
 
@@ -5155,12 +5514,14 @@ func (m *ScreenMock) minimockDone() bool {
 		m.MinimockPostEventWaitDone() &&
 		m.MinimockRegisterRuneFallbackDone() &&
 		m.MinimockResizeDone() &&
+		m.MinimockResumeDone() &&
 		m.MinimockSetCellDone() &&
 		m.MinimockSetContentDone() &&
 		m.MinimockSetStyleDone() &&
 		m.MinimockShowDone() &&
 		m.MinimockShowCursorDone() &&
 		m.MinimockSizeDone() &&
+		m.MinimockSuspendDone() &&
 		m.MinimockSyncDone() &&
 		m.MinimockUnregisterRuneFallbackDone()
 }
