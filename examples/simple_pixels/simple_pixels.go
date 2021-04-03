@@ -64,7 +64,22 @@ func main() {
 
 	tg.PrintStr(60, 10, "Hello")
 	tg.Show()
+	time.Sleep(1 * time.Second)
 
-	time.Sleep(3 * time.Second)
+	tg.Buf.FillBox(0, 0, tg.Width, tg.Height, tcg.White) // clear
+	for _, step := range []int{5, 6, 7, 17, 33} {
+		for y := 0; y < tg.Height; y++ {
+			for x := 0; x < tg.Width; x++ {
+				c := tcg.White
+				if (x^y)%step == 0 {
+					c = tcg.Black
+				}
+				tg.Buf.Set(x, y, c)
+			}
+		}
+		tg.Show()
+		time.Sleep(1 * time.Second)
+	}
+
 	tg.Finish()
 }
