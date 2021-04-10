@@ -6,6 +6,30 @@ import (
 	"github.com/msoap/tcg"
 )
 
+var letterA = []string{
+	"00011000",
+	"00100100",
+	"00111100",
+	"00100100",
+	"00100100",
+}
+
+var letterB = []string{
+	"00111000",
+	"00100100",
+	"00111000",
+	"00100100",
+	"00111000",
+}
+
+var letterC = []string{
+	"00011100",
+	"00100010",
+	"00100000",
+	"00100010",
+	"00011100",
+}
+
 func main() {
 	tg, err := tcg.New(tcg.Mode2x3)
 	if err != nil {
@@ -27,6 +51,11 @@ func main() {
 
 	tg.Buf.Box(3, 10, 20, 5, tcg.Black)
 	tg.Buf.FillBox(60, 1, 15, 14, tcg.Black)
+
+	// letters
+	tg.Buf.BitBltAllSrc(40, 30, tcg.MustNewBufferFromStrings(letterA))
+	tg.Buf.BitBltAllSrc(48, 30, tcg.MustNewBufferFromStrings(letterB))
+	tg.Buf.BitBltAllSrc(56, 30, tcg.MustNewBufferFromStrings(letterC))
 
 	tg.Show()
 	time.Sleep(1 * time.Second)

@@ -54,6 +54,15 @@ func NewBufferFromStrings(in []string) (*Buffer, error) {
 	return &buf, nil
 }
 
+// MustNewBufferFromStrings - get new buffer object from list of strings and die on error
+func MustNewBufferFromStrings(in []string) Buffer {
+	buf, err := NewBufferFromStrings(in)
+	if err != nil {
+		panic(err)
+	}
+	return *buf
+}
+
 func allocateBuffer(w, h int) [][]byte {
 	buffer := make([][]byte, h)
 	bytesLen := int(math.Ceil(float64(w) / 8))
