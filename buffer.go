@@ -1,6 +1,9 @@
 package tcg
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 // Buffer - implement base screen pixel buffer
 type Buffer struct {
@@ -16,6 +19,39 @@ func NewBuffer(width, height int) Buffer {
 		Height: height,
 		buffer: allocateBuffer(width, height),
 	}
+}
+
+// NewBufferFromStrings - get new buffer object from list of strings (00110001, 0001001, ...)
+func NewBufferFromStrings(in []string) (*Buffer, error) {
+	if len(in) == 0 {
+		return nil, fmt.Errorf("got empty string list")
+	}
+
+	width, height := len(in[0]), len(in)
+
+	buf := Buffer{
+		Width:  width,
+		Height: height,
+		buffer: allocateBuffer(width, height),
+	}
+
+	for y, line := range in {
+		if len(line) != width {
+			return nil, fmt.Errorf("got line with different width (%d != %d) on line %d", width, len(line), y)
+		}
+		for x, char := range line {
+			switch char {
+			case '0':
+				// pass
+			case '1':
+				buf.Set(x, y, Black)
+			default:
+				return nil, fmt.Errorf("got not valid char %v on %d:%d", char, x, y)
+			}
+		}
+	}
+
+	return &buf, nil
 }
 
 func allocateBuffer(w, h int) [][]byte {
