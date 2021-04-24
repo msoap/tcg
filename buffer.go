@@ -183,3 +183,12 @@ func (b Buffer) IsEqual(a Buffer) bool {
 
 	return true
 }
+
+// Clear - fill whole buffer with White
+func (b *Buffer) Clear() {
+	for y := 0; y < len(b.buffer); y++ {
+		for x := 0; x < len(b.buffer[y]); x++ {
+			b.buffer[y][x] = 0
+		}
+	}
+}

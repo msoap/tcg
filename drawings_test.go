@@ -25,7 +25,7 @@ func TestBuffer_Line(t *testing.T) {
 		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
 		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
 
-		b = NewBuffer(10, 10)
+		b.Clear()
 		b.Line(9, 9, 0, 0, Black)
 		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
 		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
