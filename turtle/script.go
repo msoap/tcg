@@ -9,7 +9,7 @@ import (
 
 var reComment = regexp.MustCompile(`#.*$`)
 var reSpaces = regexp.MustCompile(`\s+`)
-var reCommands = regexp.MustCompile(`([a-zA-Z]+)(?:(-?\d+)(?:,(-?\d+))?)?`)
+var reCommands = regexp.MustCompile(`([a-zA-Z]+)(?:(-?\d+)(?:,(-?\d+))?)?`) // "CMD-12,-5" "CMD3" or "CMD"
 
 // DrawScript - draw by script
 // U12 G 1,-1 # up 12 times, and goto to (1,-1)
@@ -23,9 +23,18 @@ func (t *Turtle) DrawScript(script string) *Turtle {
 				continue
 			}
 
-			name := cmd[1]
-			p1, _ := strconv.Atoi(cmd[2])
-			p2, _ := strconv.Atoi(cmd[3])
+			name, p1, p2 := cmd[1], 0, 0
+			var err error
+			if cmd[2] != "" {
+				if p1, err = strconv.Atoi(cmd[2]); err != nil {
+					continue
+				}
+			}
+			if cmd[3] != "" {
+				if p2, err = strconv.Atoi(cmd[3]); err != nil {
+					continue
+				}
+			}
 
 			switch strings.ToUpper(name) {
 			case "S":
