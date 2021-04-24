@@ -22,6 +22,7 @@ func NewBuffer(width, height int) Buffer {
 }
 
 // NewBufferFromStrings - get new buffer object from list of strings (00110001, 0001001, ...)
+// such symbols are also valid: "  **  ", "..##.."
 func NewBufferFromStrings(in []string) (*Buffer, error) {
 	if len(in) == 0 {
 		return nil, fmt.Errorf("got empty string list")
@@ -41,9 +42,9 @@ func NewBufferFromStrings(in []string) (*Buffer, error) {
 		}
 		for x, char := range line {
 			switch char {
-			case '0':
+			case '0', '.', ' ':
 				// pass
-			case '1':
+			case '1', '*', '#':
 				buf.Set(x, y, Black)
 			default:
 				return nil, fmt.Errorf("got not valid char %v on %d:%d", char, x, y)
@@ -52,6 +53,24 @@ func NewBufferFromStrings(in []string) (*Buffer, error) {
 	}
 
 	return &buf, nil
+}
+
+// Strings - render as slice of string, ["00011000", ...]
+func (b Buffer) Strings() []string {
+	result := make([]string, 0, b.Height)
+	for y := 0; y < b.Height; y++ {
+		line := ""
+		for x := 0; x < b.Width; x++ {
+			if b.At(x, y) == Black {
+				line += "1"
+			} else {
+				line += "0"
+			}
+		}
+		result = append(result, line)
+	}
+
+	return result
 }
 
 // MustNewBufferFromStrings - get new buffer object from list of strings and die on error
