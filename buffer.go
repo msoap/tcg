@@ -166,3 +166,20 @@ func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int) {
 		}
 	}
 }
+
+// IsEqual - are two buffers equal?
+func (b Buffer) IsEqual(a Buffer) bool {
+	if b.Width != a.Width || b.Height != a.Height {
+		return false
+	}
+
+	for y := 0; y < b.Height; y++ {
+		for x := 0; x < b.Width; x++ {
+			if b.At(x, y) != a.At(x, y) {
+				return false
+			}
+		}
+	}
+
+	return true
+}

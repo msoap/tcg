@@ -52,6 +52,8 @@ func main() {
 	tg.Buf.Box(3, 10, 20, 5, tcg.Black)
 	tg.Buf.FillBox(60, 1, 15, 14, tcg.Black)
 
+	tg.Buf.Line(0, 40, 25, 60, tcg.Black)
+
 	// letters
 	tg.Buf.BitBltAllSrc(40, 30, tcg.MustNewBufferFromStrings(letterA))
 	tg.Buf.BitBltAllSrc(48, 30, tcg.MustNewBufferFromStrings(letterB))
