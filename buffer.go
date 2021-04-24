@@ -55,16 +55,16 @@ func NewBufferFromStrings(in []string) (*Buffer, error) {
 	return &buf, nil
 }
 
-// Strings - render as slice of string, ["00011000", ...]
+// Strings - render as slice of string, ["...**...", ...]
 func (b Buffer) Strings() []string {
 	result := make([]string, 0, b.Height)
 	for y := 0; y < b.Height; y++ {
 		line := ""
 		for x := 0; x < b.Width; x++ {
 			if b.At(x, y) == Black {
-				line += "1"
+				line += "*"
 			} else {
-				line += "0"
+				line += "."
 			}
 		}
 		result = append(result, line)
