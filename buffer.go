@@ -92,6 +92,15 @@ func allocateBuffer(w, h int) [][]byte {
 	return buffer
 }
 
+// Clone to new buffer
+func (b *Buffer) Clone() *Buffer {
+	newBuf := NewBuffer(b.Width, b.Height)
+	for y := 0; y < b.Height; y++ {
+		copy(newBuf.buffer[y], b.buffer[y])
+	}
+	return &newBuf
+}
+
 // Set - put pixel into buffer
 func (b *Buffer) Set(x, y int, color int) {
 	if x < 0 || x > b.Width-1 || y < 0 || y > b.Height-1 {
