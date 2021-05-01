@@ -108,7 +108,7 @@ func (b *Buffer) Set(x, y int, color int) {
 	}
 
 	// [0][1][2][3] [4][5][6][7]
-	i, mask := x/8, byte(0x80>>byte(x%8))
+	i, mask := x/8, byte(0b1000_0000>>byte(x%8))
 	switch color {
 	case Black:
 		b.buffer[y][i] |= mask
@@ -124,7 +124,7 @@ func (b Buffer) At(x, y int) int {
 	}
 
 	// [0][1][2][3] [4][5][6][7]
-	i, mask := x/8, byte(0x80>>byte(x%8))
+	i, mask := x/8, byte(0b1000_0000>>byte(x%8))
 
 	if b.buffer[y][i]&mask > 0 {
 		return Black
