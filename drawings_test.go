@@ -1,7 +1,6 @@
 package tcg
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -115,7 +114,7 @@ func TestBuffer_Fill(t *testing.T) {
 			"..........",
 			"..........",
 		}
-		t.Log("\n" + strings.Join(b.Strings(), "\n"))
+		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
 		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
 	}
 	{
@@ -145,7 +144,7 @@ func TestBuffer_Fill(t *testing.T) {
 			"..*..***..",
 			"..........",
 		}
-		t.Log("\n" + strings.Join(b.Strings(), "\n"))
+		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
 		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
 	}
 }
