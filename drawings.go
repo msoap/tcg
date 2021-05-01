@@ -54,3 +54,34 @@ func (b *Buffer) Line(x1, y1, x2, y2 int, color int) {
 		}
 	}
 }
+
+// Fill an area with black color
+func (b *Buffer) Fill(x, y int) {
+	b.fillNBPixel(x, y)
+}
+
+// fill neighboring pixels, up/down/right/left
+func (b *Buffer) fillNBPixel(x, y int) {
+	if b.At(x, y) == Black {
+		return
+	}
+
+	b.Set(x, y, Black)
+
+	// up
+	if y > 0 {
+		b.fillNBPixel(x, y-1)
+	}
+	// down
+	if y < b.Height-1 {
+		b.fillNBPixel(x, y+1)
+	}
+	// left
+	if x > 0 {
+		b.fillNBPixel(x-1, y)
+	}
+	// right
+	if x < b.Width-1 {
+		b.fillNBPixel(x+1, y)
+	}
+}
