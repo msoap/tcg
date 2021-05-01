@@ -16,16 +16,16 @@ func (b *Buffer) VLine(x, y int, length int, color int) {
 	}
 }
 
-// Box - draw box
-func (b *Buffer) Box(x, y int, width, height int, color int) {
+// Rect - draw rectangle with 1px frame
+func (b *Buffer) Rect(x, y int, width, height int, color int) {
 	b.HLine(x, y, width, color)
 	b.HLine(x, y+height-1, width, color)
 	b.VLine(x, y, height, color)
 	b.VLine(x+width-1, y, height, color)
 }
 
-// FillBox - draw filled box
-func (b *Buffer) FillBox(x, y int, width, height int, color int) {
+// FillRect - draw filled rectangle
+func (b *Buffer) FillRect(x, y int, width, height int, color int) {
 	for i := 0; i < height; i++ {
 		b.HLine(x, y+i, width, color)
 	}

@@ -49,8 +49,8 @@ func main() {
 	tg.Buf.Set(10, 8, tcg.Black)
 	tg.Buf.Set(12, 8, tcg.Black)
 
-	tg.Buf.Box(3, 10, 20, 5, tcg.Black)
-	tg.Buf.FillBox(60, 1, 15, 14, tcg.Black)
+	tg.Buf.Rect(3, 10, 20, 5, tcg.Black)
+	tg.Buf.FillRect(60, 1, 15, 14, tcg.Black)
 
 	tg.Buf.Line(0, 40, 25, 60, tcg.Black)
 
@@ -97,7 +97,7 @@ func main() {
 	tg.Show()
 	time.Sleep(1 * time.Second)
 
-	tg.Buf.FillBox(0, 0, tg.Width, tg.Height, tcg.White) // clear
+	tg.Buf.FillRect(0, 0, tg.Width, tg.Height, tcg.White) // clear
 	for _, step := range []int{5, 6, 7, 17, 33} {
 		for y := 0; y < tg.Height; y++ {
 			for x := 0; x < tg.Width; x++ {
