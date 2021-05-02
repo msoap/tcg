@@ -201,3 +201,12 @@ func (b *Buffer) Clear() {
 		}
 	}
 }
+
+// Invert pixels in the buffer
+func (b *Buffer) Invert() {
+	for y := 0; y < len(b.buffer); y++ {
+		for x := 0; x < len(b.buffer[y]); x++ {
+			b.buffer[y][x] = ^b.buffer[y][x]
+		}
+	}
+}

@@ -230,3 +230,34 @@ func TestBuffer_GetPixel(t *testing.T) {
 		})
 	}
 }
+
+func TestBuffer_Invert(t *testing.T) {
+	b := MustNewBufferFromStrings([]string{
+		"..........",
+		".*******..",
+		".*.....*..",
+		".*.....*..",
+		".*.....*..",
+		".*.....*..",
+		".*******..",
+		"..........",
+		"..........",
+		"..........",
+	})
+	b.Invert()
+
+	expected := []string{
+		"**********",
+		"*.......**",
+		"*.*****.**",
+		"*.*****.**",
+		"*.*****.**",
+		"*.*****.**",
+		"*.......**",
+		"**********",
+		"**********",
+		"**********",
+	}
+	// t.Log("\n" + strings.Join(b.Strings(), "\n"))
+	require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+}
