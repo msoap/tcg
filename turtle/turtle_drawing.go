@@ -1,5 +1,5 @@
 /*
-Implement Turtle drawing
+Package turtle implement Turtle drawing
 */
 package turtle
 
@@ -160,14 +160,14 @@ func (t *Turtle) DownLeft(cnt int) *Turtle {
 	return t
 }
 
-// Goto to relative point without draw (script: "G3,-1")
+// GoTo to relative point without draw (script: "G3,-1")
 func (t *Turtle) GoTo(x, y int) *Turtle {
 	t.x += x
 	t.y += y
 	return t
 }
 
-// Goto to absulute point without draw (script: "GA2,1")
+// GoToAbs - goto absulute point without draw (script: "GA2,1")
 func (t *Turtle) GoToAbs(x, y int) *Turtle {
 	t.x = x
 	t.y = y
