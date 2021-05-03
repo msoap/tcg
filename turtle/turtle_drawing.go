@@ -181,3 +181,11 @@ func (t *Turtle) LineTo(x, y int) *Turtle {
 	t.y += y
 	return t
 }
+
+// RectTo - draw rectangle to relative point (script: "RT3,3")
+func (t *Turtle) RectTo(x, y int) *Turtle {
+	t.buf.Rect(t.x, t.y, t.x+x, t.y+y, t.color)
+	t.x += x
+	t.y += y
+	return t
+}
