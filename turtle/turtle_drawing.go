@@ -189,3 +189,9 @@ func (t *Turtle) RectTo(x, y int) *Turtle {
 	t.y += y
 	return t
 }
+
+// Fill an area with black color (script: "F")
+func (t *Turtle) Fill() *Turtle {
+	t.buf.Fill(t.x, t.y)
+	return t
+}

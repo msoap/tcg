@@ -69,6 +69,8 @@ func (t *Turtle) DrawScript(script string) *Turtle {
 				t.LineTo(p1, p2)
 			case "RT":
 				t.RectTo(p1, p2)
+			case "F":
+				t.Fill()
 			}
 		}
 	}
