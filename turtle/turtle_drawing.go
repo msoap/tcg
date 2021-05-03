@@ -201,3 +201,9 @@ func (t *Turtle) Circle(r float64) *Turtle {
 	t.buf.Circle(t.x, t.y, r, t.color)
 	return t
 }
+
+// Arc - draw circle arc
+func (t *Turtle) Arc(r, from, to float64) *Turtle {
+	t.buf.Arc(t.x, t.y, r, from, to, t.color)
+	return t
+}

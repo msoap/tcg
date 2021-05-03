@@ -88,8 +88,15 @@ func (b *Buffer) fillNBPixel(x, y int, whatPrev int) {
 
 // Circle - draw circle
 func (b *Buffer) Circle(x, y int, r float64, color int) {
+	b.Arc(x, y, r, 0, 360, color)
+}
+
+// Arc - draw circle arc, from and to: 0 .. 360
+func (b *Buffer) Arc(x, y int, r float64, from, to float64, color int) {
 	step := 2 * math.Pi / (r * 8) // in radians
-	for θ := 0.0; θ < 2*math.Pi; θ += step {
+	fromR := from / 180 * math.Pi
+	toR := to / 180 * math.Pi
+	for θ := fromR; θ < toR; θ += step {
 		nx := x + int(math.Round(r*math.Cos(θ)))
 		ny := y - int(math.Round(r*math.Sin(θ)))
 		b.Set(nx, ny, color)
