@@ -85,3 +85,13 @@ func (b *Buffer) fillNBPixel(x, y int, whatPrev int) {
 		b.fillNBPixel(x+1, y, 4)
 	}
 }
+
+// Circle - draw circle
+func (b *Buffer) Circle(x, y int, r float64, color int) {
+	step := 2 * math.Pi / (r * 8) // in radians
+	for θ := 0.0; θ < 2*math.Pi; θ += step {
+		nx := x + int(math.Round(float64(r)*math.Cos(θ)))
+		ny := y - int(math.Round(float64(r)*math.Sin(θ)))
+		b.Set(nx, ny, color)
+	}
+}

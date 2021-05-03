@@ -148,3 +148,36 @@ func TestBuffer_Fill(t *testing.T) {
 		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
 	}
 }
+
+func TestBuffer_Circle(t *testing.T) {
+	{
+		b := MustNewBufferFromStrings([]string{
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+		})
+		b.Circle(5, 5, 4, Black)
+
+		expected := []string{
+			"..........",
+			"...*****..",
+			"..**...**.",
+			".**.....**",
+			".*.......*",
+			".*.......*",
+			".*.......*",
+			".**.....**",
+			"..**...**.",
+			"...*****..",
+		}
+		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+	}
+}
