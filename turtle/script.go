@@ -71,6 +71,8 @@ func (t *Turtle) DrawScript(script string) *Turtle {
 				t.RectTo(p1, p2)
 			case "F":
 				t.Fill()
+			case "CI":
+				t.Circle(float64(p1))
 			}
 		}
 	}
