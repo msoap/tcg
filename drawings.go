@@ -55,37 +55,6 @@ func (b *Buffer) Line(x1, y1, x2, y2 int, color int) {
 	}
 }
 
-// Fill an area with black color
-func (b *Buffer) Fill(x, y int) {
-	b.fillNBPixel(x, y, 0)
-}
-
-// fill neighboring pixels, up/down/right/left, whatPrev - where did we come from?
-func (b *Buffer) fillNBPixel(x, y int, whatPrev int) {
-	if b.At(x, y) == Black {
-		return
-	}
-
-	b.Set(x, y, Black)
-
-	// up
-	if whatPrev != 2 && y > 0 {
-		b.fillNBPixel(x, y-1, 1)
-	}
-	// down
-	if whatPrev != 1 && y < b.Height-1 {
-		b.fillNBPixel(x, y+1, 2)
-	}
-	// left
-	if whatPrev != 4 && x > 0 {
-		b.fillNBPixel(x-1, y, 3)
-	}
-	// right
-	if whatPrev != 3 && x < b.Width-1 {
-		b.fillNBPixel(x+1, y, 4)
-	}
-}
-
 // Circle - draw circle
 func (b *Buffer) Circle(x, y int, r float64, color int) {
 	b.Arc(x, y, r, 0, 360, color)
