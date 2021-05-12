@@ -80,3 +80,14 @@ func (b *Buffer) FlipH() {
 		b.buffer[y], b.buffer[b.Height-y-1] = b.buffer[b.Height-y-1], b.buffer[y]
 	}
 }
+
+// FlipV - vertical flip image buffer
+func (b *Buffer) FlipV() {
+	for y := 0; y < b.Height; y++ {
+		for x := 0; x < b.Width/2; x++ {
+			leftColor, rightColor := b.At(x, y), b.At(b.Width-x-1, y)
+			b.Set(x, y, rightColor)
+			b.Set(b.Width-x-1, y, leftColor)
+		}
+	}
+}

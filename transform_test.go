@@ -128,3 +128,34 @@ func TestBuffer_FlipH(t *testing.T) {
 	// t.Log("\n" + strings.Join(b.Strings(), "\n"))
 	require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
 }
+
+func TestBuffer_FlipV(t *testing.T) {
+	b := MustNewBufferFromStrings([]string{
+		"..........",
+		"..........",
+		".*........",
+		".**.......",
+		".*.*......",
+		".*..*.....",
+		".*.*......",
+		".**.......",
+		".*........",
+		"..........",
+	})
+	b.FlipV()
+
+	expected := []string{
+		"..........",
+		"..........",
+		"........*.",
+		".......**.",
+		"......*.*.",
+		".....*..*.",
+		"......*.*.",
+		".......**.",
+		"........*.",
+		"..........",
+	}
+	// t.Log("\n" + strings.Join(b.Strings(), "\n"))
+	require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+}
