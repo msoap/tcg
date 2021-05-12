@@ -73,3 +73,10 @@ func (b *Buffer) fillNBPixel(x, y int, whatPrev int) {
 		b.fillNBPixel(x+1, y, 4)
 	}
 }
+
+// FlipH - horizontal flip image buffer
+func (b *Buffer) FlipH() {
+	for y := 0; y < b.Height/2; y++ {
+		b.buffer[y], b.buffer[b.Height-y-1] = b.buffer[b.Height-y-1], b.buffer[y]
+	}
+}
