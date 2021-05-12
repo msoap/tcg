@@ -1,4 +1,4 @@
-![GitHub Action](https://github.com/msoap/tcg/actions/workflows/go.yml/badge.svg)
+[![GitHub Action](https://github.com/msoap/tcg/actions/workflows/go.yml/badge.svg)](https://github.com/msoap/tcg/actions/workflows/go.yml)
 
 # TCG - terminal cell graphics library
 
