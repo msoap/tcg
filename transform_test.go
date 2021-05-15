@@ -246,3 +246,94 @@ func TestBuffer_ScrollV(t *testing.T) {
 		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 }
+
+func TestBuffer_ScrollH(t *testing.T) {
+	{
+		b := MustNewBufferFromStrings([]string{
+			".*........",
+			".**.......",
+			"**.*......",
+			"**..*.....",
+			"**.*......",
+			".**.......",
+			".*........",
+			"..........",
+			"..........",
+			"..........",
+		})
+
+		b.ScrollH(1)
+		expected := MustNewBufferFromStrings([]string{
+			"..*.......",
+			"..**......",
+			".**.*.....",
+			".**..*....",
+			".**.*.....",
+			"..**......",
+			"..*.......",
+			"..........",
+			"..........",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+
+		b.ScrollH(3)
+		expected = MustNewBufferFromStrings([]string{
+			".....*....",
+			".....**...",
+			"....**.*..",
+			"....**..*.",
+			"....**.*..",
+			".....**...",
+			".....*....",
+			"..........",
+			"..........",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	}
+	{
+		b := MustNewBufferFromStrings([]string{
+			"..........",
+			"..........",
+			"........*.",
+			".......**.",
+			"......*.**",
+			".....*..**",
+			"......*.**",
+			".......**.",
+			"........*.",
+			"..........",
+		})
+
+		b.ScrollH(-1)
+		expected := MustNewBufferFromStrings([]string{
+			"..........",
+			"..........",
+			".......*..",
+			"......**..",
+			".....*.**.",
+			"....*..**.",
+			".....*.**.",
+			"......**..",
+			".......*..",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+
+		b.ScrollH(-3)
+		expected = MustNewBufferFromStrings([]string{
+			"..........",
+			"..........",
+			"....*.....",
+			"...**.....",
+			"..*.**....",
+			".*..**....",
+			"..*.**....",
+			"...**.....",
+			"....*.....",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	}
+}

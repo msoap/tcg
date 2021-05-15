@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -310,6 +311,6 @@ func assertEqBuffers(t *testing.T, got, expected Buffer) {
 		for y := 0; y < got.Height; y++ {
 			msg += fmt.Sprintf("%-*s | %-*s\n", got.Width, gotStrings[y], expected.Width, expectedStrings[y])
 		}
-		t.Error(msg)
+		assert.True(t, false, msg)
 	}
 }

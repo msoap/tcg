@@ -92,7 +92,7 @@ func (b *Buffer) FlipV() {
 	}
 }
 
-// ScrollV - vertical scroll image buffer, cnt > 0 - scroll down, cnt < 0 - up
+// ScrollV - vertical scroll image buffer by cnt pixels, cnt > 0 - scroll down, cnt < 0 - up
 func (b *Buffer) ScrollV(cnt int) {
 	zeroLine := make([]byte, widthInBytes(b.Width))
 
@@ -111,6 +111,31 @@ func (b *Buffer) ScrollV(cnt int) {
 		// clear rest
 		for y := b.Height + cnt; y < b.Height; y++ {
 			copy(b.buffer[y], zeroLine)
+		}
+	}
+}
+
+// ScrollH - horizontal scroll image buffer by cnt pixels, cnt > 0 - scroll right, cnt < 0 - left
+func (b *Buffer) ScrollH(cnt int) {
+	if cnt > 0 {
+		for y := 0; y < b.Height; y++ {
+			for x := b.Width - 1; x > cnt-1; x-- {
+				b.Set(x, y, b.At(x-cnt, y))
+			}
+			// clear rest
+			for x := 0; x < cnt; x++ {
+				b.Set(x, y, White)
+			}
+		}
+	} else if cnt < 0 {
+		for y := 0; y < b.Height; y++ {
+			for x := 0; x < b.Width+cnt; x++ {
+				b.Set(x, y, b.At(x-cnt, y))
+			}
+			// clear rest
+			for x := b.Width + cnt; x < b.Width; x++ {
+				b.Set(x, y, White)
+			}
 		}
 	}
 }
