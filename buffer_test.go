@@ -105,7 +105,7 @@ func mustBin(str string) []byte {
 	return result
 }
 
-func TestBuffer_PutPixel(t *testing.T) {
+func TestBuffer_Set(t *testing.T) {
 	type fields struct {
 		Width  int
 		Height int
@@ -174,7 +174,7 @@ func TestBuffer_PutPixel(t *testing.T) {
 	}
 }
 
-func TestBuffer_GetPixel(t *testing.T) {
+func TestBuffer_At(t *testing.T) {
 	type fields struct {
 		Width  int
 		Height int
