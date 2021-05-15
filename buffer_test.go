@@ -1,11 +1,15 @@
 package tcg
 
 import (
+	"image"
+	_ "image/png"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -257,4 +261,35 @@ func Test_widthInBytes(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_NewBufferFromImage(t *testing.T) {
+	reader, err := os.Open("testdata/z.png")
+	if err != nil {
+		t.Fatalf("failed to open file: %s", err)
+	}
+
+	img, _, err := image.Decode(reader)
+	if err != nil {
+		t.Fatalf("failed to decode image: %s", err)
+	}
+
+	b := NewBufferFromImage(img)
+
+	expected := []string{
+		"..........",
+		"..........",
+		"..******..",
+		"......**..",
+		"......*...",
+		".....**...",
+		"....**....",
+		"...**.....",
+		"...*......",
+		"..**......",
+		".*******..",
+		"..******..",
+		"..........",
+	}
+	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 }

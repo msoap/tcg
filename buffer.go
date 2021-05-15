@@ -2,6 +2,8 @@ package tcg
 
 import (
 	"fmt"
+	"image"
+	"image/color"
 )
 
 // Buffer - implement base screen pixel buffer
@@ -97,6 +99,23 @@ func widthInBytes(w int) int {
 		result++
 	}
 	return result
+}
+
+// NewBufferFromImage - get new buffer from image.Image object
+func NewBufferFromImage(img image.Image) Buffer {
+	buf := NewBuffer(img.Bounds().Size().X, img.Bounds().Size().Y)
+
+	for y := 0; y < buf.Height; y++ {
+		for x := 0; x < buf.Width; x++ {
+			tc := Black
+			if color.GrayModel.Convert(img.At(x, y)).(color.Gray).Y >= 128 {
+				tc = White
+			}
+			buf.Set(x, y, tc)
+		}
+	}
+
+	return buf
 }
 
 // Clone to new buffer
