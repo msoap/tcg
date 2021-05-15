@@ -3,7 +3,7 @@ module github.com/msoap/tcg
 go 1.15
 
 require (
-	github.com/gdamore/tcell/v2 v2.2.0
+	github.com/gdamore/tcell/v2 v2.2.1
 	github.com/gojuno/minimock/v3 v3.0.8
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/msoap/byline v1.1.1
