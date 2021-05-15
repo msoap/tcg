@@ -1,6 +1,7 @@
 package tcg
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -22,13 +23,11 @@ func TestBuffer_Line(t *testing.T) {
 			"........*.",
 			".........*",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 
 		b.Clear()
 		b.Line(9, 9, 0, 0, Black)
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 	{
 		b := NewBuffer(10, 10)
@@ -45,8 +44,7 @@ func TestBuffer_Line(t *testing.T) {
 			"..........",
 			"..........",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 	{
 		b := NewBuffer(10, 10)
@@ -63,8 +61,7 @@ func TestBuffer_Line(t *testing.T) {
 			".*........",
 			".*........",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 	{
 		b := NewBuffer(10, 10)
@@ -81,8 +78,7 @@ func TestBuffer_Line(t *testing.T) {
 			"..........",
 			"..........",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 }
 
@@ -103,8 +99,7 @@ func TestBuffer_Circle(t *testing.T) {
 			"..**...**.",
 			"...*****..",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 }
 
@@ -125,8 +120,7 @@ func TestBuffer_Arc(t *testing.T) {
 			"..........",
 			"..........",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 	{
 		b := NewBuffer(10, 10)
@@ -144,7 +138,6 @@ func TestBuffer_Arc(t *testing.T) {
 			"..........",
 			"..........",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 }
