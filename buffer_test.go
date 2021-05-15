@@ -1,6 +1,7 @@
 package tcg
 
 import (
+	"fmt"
 	"image"
 	_ "image/png"
 	"os"
@@ -9,7 +10,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -276,7 +276,7 @@ func Test_NewBufferFromImage(t *testing.T) {
 
 	b := NewBufferFromImage(img)
 
-	expected := []string{
+	expected := MustNewBufferFromStrings([]string{
 		"..........",
 		"..........",
 		"..******..",
@@ -290,6 +290,26 @@ func Test_NewBufferFromImage(t *testing.T) {
 		".*******..",
 		"..******..",
 		"..........",
+	})
+	assertEqBuffers(t, b, expected)
+}
+
+func assertEqBuffers(t *testing.T, got, expected Buffer) {
+	if got.Width != expected.Width {
+		t.Errorf("buffer width of got (%d) != expected (%d)", got.Width, expected.Width)
+		return
 	}
-	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+	if got.Height != expected.Height {
+		t.Errorf("buffer height of got (%d) != expected (%d)", got.Height, expected.Height)
+		return
+	}
+
+	if !expected.IsEqual(got) {
+		gotStrings, expectedStrings := got.Strings(), expected.Strings()
+		msg := fmt.Sprintf("buffers isn't equal:\n%-*s | %-*s\n", got.Width, "got", expected.Width, "expected")
+		for y := 0; y < got.Height; y++ {
+			msg += fmt.Sprintf("%-*s | %-*s\n", got.Width, gotStrings[y], expected.Width, expectedStrings[y])
+		}
+		t.Error(msg)
+	}
 }
