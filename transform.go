@@ -1,9 +1,5 @@
 package tcg
 
-import (
-	"math"
-)
-
 // Clear - fill whole buffer with White
 func (b *Buffer) Clear() {
 	for y := 0; y < len(b.buffer); y++ {
@@ -98,7 +94,7 @@ func (b *Buffer) FlipV() {
 
 // ScrollV - vertical scroll image buffer, cnt > 0 - scroll down, cnt < 0 - up
 func (b *Buffer) ScrollV(cnt int) {
-	zeroLine := make([]byte, int(math.Ceil(float64(b.Width)/8)))
+	zeroLine := make([]byte, widthInBytes(b.Width))
 
 	if cnt > 0 {
 		for y := b.Height - 1; y > cnt-1; y-- {

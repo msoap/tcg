@@ -2,7 +2,6 @@ package tcg
 
 import (
 	"fmt"
-	"math"
 )
 
 // Buffer - implement base screen pixel buffer
@@ -84,12 +83,20 @@ func MustNewBufferFromStrings(in []string) Buffer {
 
 func allocateBuffer(w, h int) [][]byte {
 	buffer := make([][]byte, h)
-	bytesLen := int(math.Ceil(float64(w) / 8))
+	bytesLen := widthInBytes(w)
 	for i := range buffer {
 		buffer[i] = make([]byte, bytesLen)
 	}
 
 	return buffer
+}
+
+func widthInBytes(w int) int {
+	result := w / 8
+	if w%8 > 0 {
+		result++
+	}
+	return result
 }
 
 // Clone to new buffer

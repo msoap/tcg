@@ -230,3 +230,31 @@ func TestBuffer_GetPixel(t *testing.T) {
 		})
 	}
 }
+
+func Test_widthInBytes(t *testing.T) {
+	tests := []struct {
+		name string
+		w    int
+		want int
+	}{
+		{w: 0, want: 0},
+		{w: 1, want: 1},
+		{w: 4, want: 1},
+		{w: 7, want: 1},
+		{w: 8, want: 1},
+		{w: 9, want: 2},
+		{w: 12, want: 2},
+		{w: 15, want: 2},
+		{w: 16, want: 2},
+		{w: 17, want: 3},
+		{w: 256, want: 32},
+		{w: 257, want: 33},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := widthInBytes(tt.w); got != tt.want {
+				t.Errorf("widthInBytes() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
