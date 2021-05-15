@@ -1,9 +1,10 @@
 package tcg
 
 import (
+	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBuffer_Fill(t *testing.T) {
@@ -34,8 +35,7 @@ func TestBuffer_Fill(t *testing.T) {
 			"..........",
 			"..........",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 	{
 		b := MustNewBufferFromStrings([]string{
@@ -64,8 +64,7 @@ func TestBuffer_Fill(t *testing.T) {
 			"..*..***..",
 			"..........",
 		}
-		// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-		require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 	}
 }
 
@@ -96,8 +95,7 @@ func TestBuffer_Invert(t *testing.T) {
 		"**********",
 		"**********",
 	}
-	// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-	require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 }
 
 func TestBuffer_FlipH(t *testing.T) {
@@ -125,8 +123,7 @@ func TestBuffer_FlipH(t *testing.T) {
 		"*********.",
 		"..........",
 	}
-	// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-	require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
 }
 
 func TestBuffer_FlipV(t *testing.T) {
@@ -156,6 +153,96 @@ func TestBuffer_FlipV(t *testing.T) {
 		"........*.",
 		"..........",
 	}
-	// t.Log("\n" + strings.Join(b.Strings(), "\n"))
-	require.True(t, MustNewBufferFromStrings(expected).IsEqual(b))
+	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+}
+
+func TestBuffer_ScrollV(t *testing.T) {
+	{
+		b := MustNewBufferFromStrings([]string{
+			".*........",
+			".**.......",
+			".*.*......",
+			".*..*.....",
+			".*.*......",
+			".**.......",
+			".*........",
+			"..........",
+			"..........",
+			"..........",
+		})
+
+		b.ScrollV(1)
+		expected := []string{
+			"..........",
+			".*........",
+			".**.......",
+			".*.*......",
+			".*..*.....",
+			".*.*......",
+			".**.......",
+			".*........",
+			"..........",
+			"..........",
+		}
+		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+
+		b.ScrollV(3)
+		expected = []string{
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			".*........",
+			".**.......",
+			".*.*......",
+			".*..*.....",
+			".*.*......",
+			".**.......",
+		}
+		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+	}
+	{
+		b := MustNewBufferFromStrings([]string{
+			"..........",
+			"..........",
+			"..........",
+			".*........",
+			".**.......",
+			".*.*......",
+			".*..*.....",
+			".*.*......",
+			".**.......",
+			".*........",
+		})
+
+		b.ScrollV(-1)
+		expected := []string{
+			"..........",
+			"..........",
+			".*........",
+			".**.......",
+			".*.*......",
+			".*..*.....",
+			".*.*......",
+			".**.......",
+			".*........",
+			"..........",
+		}
+		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+
+		b.ScrollV(-3)
+		expected = []string{
+			".**.......",
+			".*.*......",
+			".*..*.....",
+			".*.*......",
+			".**.......",
+			".*........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+		}
+		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+	}
 }
