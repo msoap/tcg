@@ -1,10 +1,7 @@
 package tcg
 
 import (
-	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestBuffer_Fill(t *testing.T) {
@@ -23,7 +20,7 @@ func TestBuffer_Fill(t *testing.T) {
 		})
 		b.Fill(3, 3)
 
-		expected := []string{
+		expected := MustNewBufferFromStrings([]string{
 			"..........",
 			".*******..",
 			".*******..",
@@ -34,8 +31,8 @@ func TestBuffer_Fill(t *testing.T) {
 			"..........",
 			"..........",
 			"..........",
-		}
-		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+		})
+		assertEqBuffers(t, b, expected)
 	}
 	{
 		b := MustNewBufferFromStrings([]string{
@@ -52,7 +49,7 @@ func TestBuffer_Fill(t *testing.T) {
 		})
 		b.Fill(3, 3)
 
-		expected := []string{
+		expected := MustNewBufferFromStrings([]string{
 			"..........",
 			".*******..",
 			".*******..",
@@ -63,8 +60,8 @@ func TestBuffer_Fill(t *testing.T) {
 			".***.***..",
 			"..*..***..",
 			"..........",
-		}
-		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+		})
+		assertEqBuffers(t, b, expected)
 	}
 }
 
@@ -83,7 +80,7 @@ func TestBuffer_Invert(t *testing.T) {
 	})
 	b.Invert()
 
-	expected := []string{
+	expected := MustNewBufferFromStrings([]string{
 		"**********",
 		"*.......**",
 		"*.*****.**",
@@ -94,8 +91,8 @@ func TestBuffer_Invert(t *testing.T) {
 		"**********",
 		"**********",
 		"**********",
-	}
-	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+	})
+	assertEqBuffers(t, b, expected)
 }
 
 func TestBuffer_FlipH(t *testing.T) {
@@ -112,7 +109,7 @@ func TestBuffer_FlipH(t *testing.T) {
 	})
 	b.FlipH()
 
-	expected := []string{
+	expected := MustNewBufferFromStrings([]string{
 		"..........",
 		"..........",
 		"..........",
@@ -122,8 +119,8 @@ func TestBuffer_FlipH(t *testing.T) {
 		".*.....*..",
 		"*********.",
 		"..........",
-	}
-	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+	})
+	assertEqBuffers(t, b, expected)
 }
 
 func TestBuffer_FlipV(t *testing.T) {
@@ -141,7 +138,7 @@ func TestBuffer_FlipV(t *testing.T) {
 	})
 	b.FlipV()
 
-	expected := []string{
+	expected := MustNewBufferFromStrings([]string{
 		"..........",
 		"..........",
 		"........*.",
@@ -152,8 +149,8 @@ func TestBuffer_FlipV(t *testing.T) {
 		".......**.",
 		"........*.",
 		"..........",
-	}
-	assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+	})
+	assertEqBuffers(t, b, expected)
 }
 
 func TestBuffer_ScrollV(t *testing.T) {
@@ -172,7 +169,7 @@ func TestBuffer_ScrollV(t *testing.T) {
 		})
 
 		b.ScrollV(1)
-		expected := []string{
+		expected := MustNewBufferFromStrings([]string{
 			"..........",
 			".*........",
 			".**.......",
@@ -183,11 +180,11 @@ func TestBuffer_ScrollV(t *testing.T) {
 			".*........",
 			"..........",
 			"..........",
-		}
-		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+		})
+		assertEqBuffers(t, b, expected)
 
 		b.ScrollV(3)
-		expected = []string{
+		expected = MustNewBufferFromStrings([]string{
 			"..........",
 			"..........",
 			"..........",
@@ -198,8 +195,8 @@ func TestBuffer_ScrollV(t *testing.T) {
 			".*..*.....",
 			".*.*......",
 			".**.......",
-		}
-		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+		})
+		assertEqBuffers(t, b, expected)
 	}
 	{
 		b := MustNewBufferFromStrings([]string{
@@ -216,7 +213,7 @@ func TestBuffer_ScrollV(t *testing.T) {
 		})
 
 		b.ScrollV(-1)
-		expected := []string{
+		expected := MustNewBufferFromStrings([]string{
 			"..........",
 			"..........",
 			".*........",
@@ -227,11 +224,11 @@ func TestBuffer_ScrollV(t *testing.T) {
 			".**.......",
 			".*........",
 			"..........",
-		}
-		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+		})
+		assertEqBuffers(t, b, expected)
 
 		b.ScrollV(-3)
-		expected = []string{
+		expected = MustNewBufferFromStrings([]string{
 			".**.......",
 			".*.*......",
 			".*..*.....",
@@ -242,8 +239,8 @@ func TestBuffer_ScrollV(t *testing.T) {
 			"..........",
 			"..........",
 			"..........",
-		}
-		assert.True(t, MustNewBufferFromStrings(expected).IsEqual(b), "expected:\n"+strings.Join(b.Strings(), "\n"))
+		})
+		assertEqBuffers(t, b, expected)
 	}
 }
 
