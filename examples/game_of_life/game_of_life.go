@@ -27,13 +27,19 @@ func main() {
 	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3")
 	flag.Parse()
 
-	var opts []tcg.Opt
+	var (
+		opts          []tcg.Opt
+		width, height int
+		err           error
+	)
 	if *size != "" {
-		width, height, err := tcg.ParseSizeString(*size)
+		width, height, err = tcg.ParseSizeString(*size)
 		if err != nil {
 			log.Fatal(err)
 		}
 		opts = append(opts, tcg.WithClipCenter(width, height))
+	} else {
+
 	}
 
 	tg, err := tcg.New(mode, opts...)
@@ -41,6 +47,16 @@ func main() {
 		log.Fatal(err)
 	}
 
+	tg.Buf.Rect(1, 2, tg.Width-2, tg.Height-4, tcg.Black)
+	tg.Show()
+
+	if width == 0 {
+		width, height = tg.TCellScreen.Size()
+	}
+	if err := tg.SetClipCenter(width-2, height-2); err != nil {
+		tg.Finish()
+		log.Fatal(err)
+	}
 	initRandom(tg)
 
 	ticker := time.Tick(*delay)

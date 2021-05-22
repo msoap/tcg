@@ -46,15 +46,8 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 
 	width := scrW * mode.Width()
 	height := scrH * mode.Height()
-	// setup clip
-	if config.clip.width > 0 && config.clip.height > 0 {
-		scrW = config.clip.width
-		scrH = config.clip.height
-		width = config.clip.width * mode.Width()
-		height = config.clip.height * mode.Height()
-	}
 
-	return &Tcg{
+	result := Tcg{
 		mode:        mode,
 		config:      config,
 		scrW:        scrW,
@@ -62,17 +55,30 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 		Width:       width,
 		Height:      height,
 		TCellScreen: screen,
-		Buf:         NewBuffer(width, height),
-	}, nil
+	}
+	result.applyClip()
+
+	return &result, nil
+}
+
+func (tg *Tcg) applyClip() {
+	if tg.config.clip.width > 0 && tg.config.clip.height > 0 {
+		tg.scrW = tg.config.clip.width
+		tg.scrH = tg.config.clip.height
+		tg.Width = tg.config.clip.width * tg.mode.Width()
+		tg.Height = tg.config.clip.height * tg.mode.Height()
+	}
+
+	tg.Buf = NewBuffer(tg.Width, tg.Height)
 }
 
 // Show - update screen
-func (tg Tcg) Show() {
+func (tg *Tcg) Show() {
 	tg.updateScreen()
 	tg.TCellScreen.Show()
 }
 
-func (tg Tcg) updateScreen() {
+func (tg *Tcg) updateScreen() {
 	chatMapping := pixelChars[tg.mode]
 	blockW, blockH := tg.mode.Width(), tg.mode.Height()
 
@@ -85,8 +91,26 @@ func (tg Tcg) updateScreen() {
 }
 
 // Finish application
-func (tg Tcg) Finish() {
+func (tg *Tcg) Finish() {
 	tg.TCellScreen.Fini()
+}
+
+// SetClip - set new clip of screen
+func (tg *Tcg) SetClip(x, y, width, height int) error {
+	if err := WithClip(x, y, width, height)(&tg.config); err != nil {
+		return err
+	}
+	tg.applyClip()
+	return nil
+}
+
+// SetClipCenter - set new clip in center of screen
+func (tg *Tcg) SetClipCenter(width, height int) error {
+	if err := WithClipCenter(width, height)(&tg.config); err != nil {
+		return err
+	}
+	tg.applyClip()
+	return nil
 }
 
 // PrintStr - print string on screen, with white on black style
