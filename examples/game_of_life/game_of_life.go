@@ -21,11 +21,21 @@ const (
 
 func main() {
 	delay := flag.Duration("delay", defaultDelay, "delay between steps")
+	size := flag.String("size", "", "screen size, in 'width x height' format, example: '80x25'")
 	mode := tcg.Mode2x3
 	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3")
 	flag.Parse()
 
-	tg, err := tcg.New(mode)
+	var opts []tcg.Opt
+	if *size != "" {
+		width, height, err := tcg.ParseSizeString(*size)
+		if err != nil {
+			panic(err)
+		}
+		opts = append(opts, tcg.WithClipCenter(width, height))
+	}
+
+	tg, err := tcg.New(mode, opts...)
 	if err != nil {
 		panic(err)
 	}
@@ -58,7 +68,7 @@ LOOP:
 	tg.Finish()
 }
 
-func initRandom(tg tcg.Tcg) {
+func initRandom(tg *tcg.Tcg) {
 	rand.Seed(time.Now().UnixNano())
 	for y := 0; y < tg.Height; y++ {
 		for x := 0; x < tg.Width; x++ {
@@ -72,7 +82,7 @@ func initRandom(tg tcg.Tcg) {
 	tg.Show()
 }
 
-func nextStep(tg tcg.Tcg) {
+func nextStep(tg *tcg.Tcg) {
 	newGeneration := tcg.NewBuffer(tg.Width, tg.Height)
 
 	for y := 0; y < tg.Height; y++ {
@@ -96,7 +106,7 @@ func nextStep(tg tcg.Tcg) {
 	tg.Show()
 }
 
-func getNeighbors(tg tcg.Tcg, x, y int) int {
+func getNeighbors(tg *tcg.Tcg, x, y int) int {
 	return tg.Buf.At(x-1, y-1) +
 		tg.Buf.At(x, y-1) +
 		tg.Buf.At(x+1, y-1) +
@@ -107,7 +117,7 @@ func getNeighbors(tg tcg.Tcg, x, y int) int {
 		tg.Buf.At(x+1, y+1)
 }
 
-func getCommand(tg tcg.Tcg) chan cmds {
+func getCommand(tg *tcg.Tcg) chan cmds {
 	resultCh := make(chan cmds)
 
 	go func() {

@@ -17,6 +17,7 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 // Tcg - tcell graphics object
 type Tcg struct {
 	mode          PixelsInChar
+	config        tcgConfig
 	scrW, scrH    int // screen width/height in characters
 	Width, Height int // screen width/height in pixels
 	TCellScreen   tcell.Screen
@@ -24,25 +25,43 @@ type Tcg struct {
 }
 
 // New - get new object with tcell inside
-func New(mode PixelsInChar) (Tcg, error) {
+func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 	screen, err := tcell.NewScreen()
 	if err != nil {
-		return Tcg{}, err
+		return nil, err
 	}
 
 	if err := screen.Init(); err != nil {
-		return Tcg{}, err
+		return nil, err
 	}
-	w, h := screen.Size()
 
-	return Tcg{
+	scrW, scrH := screen.Size()
+	config := tcgConfig{width: scrW, height: scrH}
+	for _, optFn := range opts {
+		if err := optFn(&config); err != nil {
+			return nil, err
+		}
+	}
+
+	width := scrW * mode.Width()
+	height := scrH * mode.Height()
+	// setup clip
+	if config.clip.width > 0 && config.clip.height > 0 {
+		scrW = config.clip.width
+		scrH = config.clip.height
+		width = config.clip.width * mode.Width()
+		height = config.clip.height * mode.Height()
+	}
+
+	return &Tcg{
 		mode:        mode,
-		scrW:        w,
-		scrH:        h,
-		Width:       w * mode.Width(),
-		Height:      h * mode.Height(),
+		config:      config,
+		scrW:        scrW,
+		scrH:        scrH,
+		Width:       width,
+		Height:      height,
 		TCellScreen: screen,
-		Buf:         NewBuffer(w*mode.Width(), h*mode.Height()),
+		Buf:         NewBuffer(width, height),
 	}, nil
 }
 
@@ -59,7 +78,7 @@ func (tg Tcg) updateScreen() {
 	for x := 0; x < tg.scrW; x++ {
 		for y := 0; y < tg.scrH; y++ {
 			charIndex := tg.Buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			tg.TCellScreen.SetContent(x, y, chatMapping[charIndex], nil, defaultStyle)
+			tg.TCellScreen.SetContent(tg.config.clip.x+x, tg.config.clip.y+y, chatMapping[charIndex], nil, defaultStyle)
 		}
 	}
 }

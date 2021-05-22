@@ -89,7 +89,7 @@ func reader2buffer(in io.Reader) (tcg.Buffer, error) {
 	return buf, nil
 }
 
-func getEscape(tg tcg.Tcg) chan struct{} {
+func getEscape(tg *tcg.Tcg) chan struct{} {
 	resultCh := make(chan struct{})
 
 	go func() {
