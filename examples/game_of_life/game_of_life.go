@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	"math/rand"
 	"time"
 
@@ -30,14 +31,14 @@ func main() {
 	if *size != "" {
 		width, height, err := tcg.ParseSizeString(*size)
 		if err != nil {
-			panic(err)
+			log.Fatal(err)
 		}
 		opts = append(opts, tcg.WithClipCenter(width, height))
 	}
 
 	tg, err := tcg.New(mode, opts...)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	initRandom(tg)

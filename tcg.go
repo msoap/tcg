@@ -39,6 +39,7 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 	config := tcgConfig{width: scrW, height: scrH}
 	for _, optFn := range opts {
 		if err := optFn(&config); err != nil {
+			screen.Fini()
 			return nil, err
 		}
 	}
