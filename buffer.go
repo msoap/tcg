@@ -161,7 +161,7 @@ func (b Buffer) At(x, y int) int {
 
 // getPixelsBlock - get rectangular block of pixels as linear bits
 func (b Buffer) getPixelsBlock(x, y, width, height int) int {
-	if x < 0 || x+width > b.Width || y < 0 || y+height > b.Height {
+	if x < 0 || x > b.Width || y < 0 || y > b.Height {
 		return 0
 	}
 
