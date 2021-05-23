@@ -90,7 +90,7 @@ func (tg *Tcg) updateScreen() {
 	}
 }
 
-// RenderAsStrings - render buffer as slice of strings
+// RenderAsStrings - render buffer as slice of strings with pixel characters
 func RenderAsStrings(buf Buffer, mode PixelsInChar) []string {
 	chatMapping := pixelChars[mode]
 	blockW, blockH := mode.Width(), mode.Height()
