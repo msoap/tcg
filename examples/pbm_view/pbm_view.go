@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gdamore/tcell/v2"
 	"github.com/msoap/byline"
 	"github.com/msoap/tcg"
 )
@@ -34,16 +33,10 @@ func main() {
 	}
 	_ = fReader.Close()
 
-	tg, err := tcg.New(tcg.Mode2x3)
-	if err != nil {
-		log.Fatalf("failed to create tcg: %s", err)
+	list := tcg.RenderAsStrings(buf, tcg.Mode2x3)
+	for _, line := range list {
+		fmt.Println(line)
 	}
-
-	tg.Buf.BitBltAllSrc(0, 0, buf)
-
-	tg.Show()
-	<-getEscape(tg)
-	tg.Finish()
 }
 
 func reader2buffer(in io.Reader) (tcg.Buffer, error) {
@@ -87,23 +80,4 @@ func reader2buffer(in io.Reader) (tcg.Buffer, error) {
 	}
 
 	return buf, nil
-}
-
-func getEscape(tg *tcg.Tcg) chan struct{} {
-	resultCh := make(chan struct{})
-
-	go func() {
-		for {
-			ev := tg.TCellScreen.PollEvent()
-			switch ev := ev.(type) {
-			case *tcell.EventKey:
-				switch ev.Key() {
-				case tcell.KeyEscape:
-					resultCh <- struct{}{}
-				}
-			}
-		}
-	}()
-
-	return resultCh
 }
