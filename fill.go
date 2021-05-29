@@ -14,7 +14,7 @@ func (b *Buffer) Fill(x, y int, opts ...FillOpt) {
 	b.fillNBPixel(x, y, x, y, 0, fo)
 }
 
-func positive(in int) int {
+func abs(in int) int {
 	if in < 0 {
 		return -in
 	}
@@ -29,7 +29,7 @@ func (b *Buffer) fillNBPixel(x, y, xs, ys int, whatPrev int, fo fillOptions) {
 			return
 		}
 		fo.fillBuf.Set(x, y, Black)
-		color = fo.pattern.At((x-xs)%fo.pattern.Width, (y-ys)%fo.pattern.Height)
+		color = fo.pattern.At(abs(x-xs)%fo.pattern.Width, abs(y-ys)%fo.pattern.Height)
 	} else {
 		if b.At(x, y) == Black {
 			return

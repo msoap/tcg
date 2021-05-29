@@ -64,12 +64,12 @@ func TestBuffer_Fill(t *testing.T) {
 }
 
 func TestBuffer_FillWithPattern(t *testing.T) {
-	{
-		pattern := MustNewBufferFromStrings([]string{
-			".*",
-			"*.",
-		})
+	pattern := MustNewBufferFromStrings([]string{
+		".*",
+		"*.",
+	})
 
+	{
 		b := MustNewBufferFromStrings([]string{
 			"..........",
 			".********.",
@@ -93,6 +93,35 @@ func TestBuffer_FillWithPattern(t *testing.T) {
 			".**.*.*.*.",
 			".*.*.*.**.",
 			".**.*.*.*.",
+			".********.",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	}
+	{
+		b := MustNewBufferFromStrings([]string{
+			"..........",
+			".********.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".********.",
+			"..........",
+		})
+		b.Fill(3, 2, WithPattern(pattern))
+
+		expected := MustNewBufferFromStrings([]string{
+			"..........",
+			".********.",
+			".**.*.*.*.",
+			".*.*.*.**.",
+			".**.*.*.*.",
+			".*.*.*.**.",
+			".**.*.*.*.",
+			".*.*.*.**.",
 			".********.",
 			"..........",
 		})
