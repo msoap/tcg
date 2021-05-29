@@ -4,67 +4,6 @@ import (
 	"testing"
 )
 
-func TestBuffer_Fill(t *testing.T) {
-	{
-		b := MustNewBufferFromStrings([]string{
-			"..........",
-			".*******..",
-			".*.....*..",
-			".*.....*..",
-			".*.....*..",
-			".*.....*..",
-			".*******..",
-			"..........",
-			"..........",
-			"..........",
-		})
-		b.Fill(3, 3)
-
-		expected := MustNewBufferFromStrings([]string{
-			"..........",
-			".*******..",
-			".*******..",
-			".*******..",
-			".*******..",
-			".*******..",
-			".*******..",
-			"..........",
-			"..........",
-			"..........",
-		})
-		assertEqBuffers(t, b, expected)
-	}
-	{
-		b := MustNewBufferFromStrings([]string{
-			"..........",
-			".*******..",
-			".*.....*..",
-			".*...**...",
-			".*....**..",
-			".*......*.",
-			".*.***.*..",
-			".*.*.*.*..",
-			"..*..***..",
-			"..........",
-		})
-		b.Fill(3, 3)
-
-		expected := MustNewBufferFromStrings([]string{
-			"..........",
-			".*******..",
-			".*******..",
-			".******...",
-			".*******..",
-			".********.",
-			".*******..",
-			".***.***..",
-			"..*..***..",
-			"..........",
-		})
-		assertEqBuffers(t, b, expected)
-	}
-}
-
 func TestBuffer_Invert(t *testing.T) {
 	b := MustNewBufferFromStrings([]string{
 		"..........",

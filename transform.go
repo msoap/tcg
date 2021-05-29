@@ -43,37 +43,6 @@ func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int) {
 	}
 }
 
-// Fill an area with black color
-func (b *Buffer) Fill(x, y int) {
-	b.fillNBPixel(x, y, 0)
-}
-
-// fill neighboring pixels, up/down/right/left, whatPrev - where did we come from?
-func (b *Buffer) fillNBPixel(x, y int, whatPrev int) {
-	if b.At(x, y) == Black {
-		return
-	}
-
-	b.Set(x, y, Black)
-
-	// up
-	if whatPrev != 2 && y > 0 {
-		b.fillNBPixel(x, y-1, 1)
-	}
-	// down
-	if whatPrev != 1 && y < b.Height-1 {
-		b.fillNBPixel(x, y+1, 2)
-	}
-	// left
-	if whatPrev != 4 && x > 0 {
-		b.fillNBPixel(x-1, y, 3)
-	}
-	// right
-	if whatPrev != 3 && x < b.Width-1 {
-		b.fillNBPixel(x+1, y, 4)
-	}
-}
-
 // FlipH - horizontal flip image buffer
 func (b *Buffer) FlipH() {
 	for y := 0; y < b.Height/2; y++ {

@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Opt - options type for New buffer
 type Opt func(*tcgConfig) error
 
 type tcgConfig struct {
