@@ -30,6 +30,11 @@ var letterC = []string{
 	"00011100",
 }
 
+var pattern = []string{
+	"01",
+	"10",
+}
+
 func main() {
 	tg, err := tcg.New(tcg.Mode2x3)
 	if err != nil {
@@ -49,7 +54,8 @@ func main() {
 	tg.Buf.Set(10, 8, tcg.Black)
 	tg.Buf.Set(12, 8, tcg.Black)
 
-	tg.Buf.Rect(3, 10, 20, 5, tcg.Black)
+	tg.Buf.Rect(3, 10, 30, 20, tcg.Black)
+	tg.Buf.Fill(5, 11, tcg.WithPattern(tcg.MustNewBufferFromStrings(pattern)))
 	tg.Buf.FillRect(60, 1, 15, 14, tcg.Black)
 
 	tg.Buf.Line(0, 40, 25, 60, tcg.Black)
@@ -81,23 +87,25 @@ func main() {
 
 	tg.Buf.BitBltAllSrc(70, 20, buf)
 	tg.Show()
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	// second moving
 	buf.BitBlt(0, 0, 10, 10, tg.Buf, 5, 5)
 	tg.Buf.BitBlt(40, 40, 10, 10, buf, 0, 0)
 	tg.Show()
 	time.Sleep(1 * time.Second)
+
 	tg.Buf.BitBlt(55, 40, 10, 10, buf, 0, 0)
 	tg.Show()
 	time.Sleep(1 * time.Second)
+
 	tg.Buf.BitBlt(70, 40, 10, 10, buf, 0, 0)
-
-	tg.PrintStr(60, 10, "Hello")
 	tg.Show()
-	time.Sleep(1 * time.Second)
 
-	tg.Buf.FillRect(0, 0, tg.Width, tg.Height, tcg.White) // clear
+	tg.PrintStr(25, 8, "Hello World!")
+	time.Sleep(3 * time.Second)
+
+	tg.SetClipCenter(100, 30)
 	for _, step := range []int{5, 6, 7, 17, 33} {
 		for y := 0; y < tg.Height; y++ {
 			for x := 0; x < tg.Width; x++ {
