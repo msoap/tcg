@@ -4,8 +4,8 @@ package tcg
 type FillOpt func(*fillOptions)
 
 type fillOptions struct {
-	pattern *Buffer
-	fillBuf *Buffer // buffer for check where we already fill pixels
+	pattern  *Buffer
+	checkBuf *Buffer // buffer for check where we already fill pixels
 }
 
 // WithPattern - option for Fill method, which provide fill pattern from another buffer

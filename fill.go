@@ -8,7 +8,7 @@ func (b *Buffer) Fill(x, y int, opts ...FillOpt) {
 	}
 
 	if fo.pattern != nil {
-		fo.fillBuf = b.Clone()
+		fo.checkBuf = b.Clone()
 	}
 
 	b.fillNBPixel(x, y, x, y, 0, fo)
@@ -23,17 +23,18 @@ func abs(in int) int {
 
 // fill neighboring pixels, up/down/right/left, whatPrev - where did we come from?
 func (b *Buffer) fillNBPixel(x, y, xs, ys int, whatPrev int, fo fillOptions) {
-	color := Black
+	var color int
 	if fo.pattern != nil {
-		if fo.fillBuf.At(x, y) == Black {
+		if fo.checkBuf.At(x, y) == Black {
 			return
 		}
-		fo.fillBuf.Set(x, y, Black)
+		fo.checkBuf.Set(x, y, Black)
 		color = fo.pattern.At(abs(x-xs)%fo.pattern.Width, abs(y-ys)%fo.pattern.Height)
 	} else {
 		if b.At(x, y) == Black {
 			return
 		}
+		color = Black
 	}
 
 	b.Set(x, y, color)
