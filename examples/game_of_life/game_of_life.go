@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -100,6 +101,9 @@ func initRandom(tg *tcg.Tcg) {
 }
 
 func nextStep(tg *tcg.Tcg) {
+	_, fpsY := tg.TCellScreen.Size()
+	startedAt := time.Now()
+
 	newGeneration := tcg.NewBuffer(tg.Width, tg.Height)
 
 	for y := 0; y < tg.Height; y++ {
@@ -121,6 +125,8 @@ func nextStep(tg *tcg.Tcg) {
 	tg.Buf.BitBltAllSrc(0, 0, newGeneration)
 
 	tg.Show()
+
+	tg.PrintStr(3, fpsY-1, fmt.Sprintf(" %-3d FPS ", time.Second/time.Since(startedAt)))
 }
 
 func getNeighbors(tg *tcg.Tcg, x, y int) int {
