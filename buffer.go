@@ -118,6 +118,22 @@ func NewBufferFromImage(img image.Image) Buffer {
 	return buf
 }
 
+// ToImage - convert buffer to std (Gray) Image, for example for save buffer to image file like png
+func (b *Buffer) ToImage() image.Image {
+	img := image.NewGray(image.Rect(0, 0, b.Width, b.Height))
+	for y := 0; y < b.Height; y++ {
+		for x := 0; x < b.Width; x++ {
+			c := color.Gray{Y: 0}
+			if b.At(x, y) == White {
+				c = color.Gray{Y: 255}
+			}
+			img.SetGray(x, y, c)
+		}
+	}
+
+	return img
+}
+
 // Clone to new buffer
 func (b *Buffer) Clone() *Buffer {
 	newBuf := NewBuffer(b.Width, b.Height)

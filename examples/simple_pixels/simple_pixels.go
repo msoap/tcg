@@ -1,10 +1,16 @@
 package main
 
 import (
+	"flag"
+	"image/png"
+	"log"
+	"os"
 	"time"
 
 	"github.com/msoap/tcg"
 )
+
+const screenshotFilename = "buffer_screenshot.png"
 
 var letterA = []string{
 	"00011000",
@@ -36,7 +42,13 @@ var pattern = []string{
 }
 
 func main() {
-	tg, err := tcg.New(tcg.Mode2x3)
+	mode := tcg.Mode2x3
+	doSavePNG := false
+	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3")
+	flag.BoolVar(&doSavePNG, "save-png", false, "save PNG file (buffer_screenshot.png)?")
+	flag.Parse()
+
+	tg, err := tcg.New(mode)
 	if err != nil {
 		panic(err)
 	}
@@ -102,6 +114,10 @@ func main() {
 	tg.Buf.BitBlt(70, 40, 10, 10, buf, 0, 0)
 	tg.Show()
 
+	if doSavePNG {
+		savePNG(tg.Buf)
+	}
+
 	tg.PrintStr(25, 8, "Hello World!")
 	time.Sleep(3 * time.Second)
 
@@ -121,4 +137,22 @@ func main() {
 	}
 
 	tg.Finish()
+}
+
+func savePNG(buf tcg.Buffer) {
+	file, err := os.Create(screenshotFilename)
+	if err != nil {
+		log.Print(err)
+		return
+	}
+
+	if err := png.Encode(file, buf.ToImage()); err != nil {
+		file.Close()
+		log.Print(err)
+		return
+	}
+
+	if err := file.Close(); err != nil {
+		log.Print(err)
+	}
 }
