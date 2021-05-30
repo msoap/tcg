@@ -128,3 +128,38 @@ func TestBuffer_FillWithPattern(t *testing.T) {
 		assertEqBuffers(t, b, expected)
 	}
 }
+
+func TestBuffer_FillWithMask(t *testing.T) {
+	pattern := MustNewBufferFromStrings([]string{
+		"*.",
+		".*",
+	})
+	mask := MustNewBufferFromStrings([]string{
+		"**********",
+		"*........*",
+		"*........*",
+		"*........*",
+		"*........*",
+		"*........*",
+		"*........*",
+		"*........*",
+		"*........*",
+		"**********",
+	})
+	b := NewBuffer(10, 10)
+	b.Fill(2, 2, WithPattern(pattern), WithMask(mask))
+
+	expected := MustNewBufferFromStrings([]string{
+		"..........",
+		".*.*.*.*..",
+		"..*.*.*.*.",
+		".*.*.*.*..",
+		"..*.*.*.*.",
+		".*.*.*.*..",
+		"..*.*.*.*.",
+		".*.*.*.*..",
+		"..*.*.*.*.",
+		"..........",
+	})
+	assertEqBuffers(t, b, expected)
+}

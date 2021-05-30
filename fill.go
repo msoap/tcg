@@ -7,7 +7,9 @@ func (b *Buffer) Fill(x, y int, opts ...FillOpt) {
 		fn(&fo)
 	}
 
-	if fo.pattern != nil {
+	if fo.mask != nil {
+		fo.checkBuf = fo.mask.Clone()
+	} else if fo.pattern != nil {
 		fo.checkBuf = b.Clone()
 	}
 
