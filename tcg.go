@@ -144,7 +144,8 @@ func (tg *Tcg) SetClipCenter(width, height int) error {
 
 // PrintStr - print string on screen, with white on black style
 // string don't save in the buffer of pixels!
-// x, y - is in screen character coordinates, not pixels
+// x, y - is in screen character coordinates, not pixels.
+// Also x/y coordinates is not use Clip of the screen, it's always absolute.
 func (tg *Tcg) PrintStr(x, y int, str string) {
 	for i, ch := range []rune(str) {
 		tg.TCellScreen.SetContent(x+i, y, ch, nil, defaultStyle)
