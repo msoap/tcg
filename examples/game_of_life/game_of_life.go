@@ -39,8 +39,6 @@ func main() {
 			log.Fatal(err)
 		}
 		opts = append(opts, tcg.WithClipCenter(width, height))
-	} else {
-
 	}
 
 	tg, err := tcg.New(mode, opts...)
