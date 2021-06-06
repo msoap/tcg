@@ -121,7 +121,11 @@ func main() {
 	tg.PrintStr(25, 8, "Hello World!")
 	time.Sleep(3 * time.Second)
 
-	tg.SetClipCenter(100, 30)
+	if err := tg.SetClipCenter(100, 30); err != nil {
+		tg.Finish()
+		log.Fatalf("failed to SetClipCenter: %s", err)
+	}
+
 	for _, step := range []int{5, 6, 7, 17, 33} {
 		for y := 0; y < tg.Height; y++ {
 			for x := 0; x < tg.Width; x++ {
@@ -147,7 +151,7 @@ func savePNG(buf tcg.Buffer) {
 	}
 
 	if err := png.Encode(file, buf.ToImage()); err != nil {
-		file.Close()
+		_ = file.Close()
 		log.Print(err)
 		return
 	}
