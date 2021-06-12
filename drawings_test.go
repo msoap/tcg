@@ -4,6 +4,90 @@ import (
 	"testing"
 )
 
+func TestBuffer_HLine(t *testing.T) {
+	{
+		b := NewBuffer(10, 10)
+		b.HLine(1, 5, 7, Black)
+
+		expected := MustNewBufferFromStrings([]string{
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+			".*******..",
+			"..........",
+			"..........",
+			"..........",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	}
+}
+
+func TestBuffer_VLine(t *testing.T) {
+	{
+		b := NewBuffer(10, 10)
+		b.VLine(5, 1, 7, Black)
+
+		expected := MustNewBufferFromStrings([]string{
+			"..........",
+			".....*....",
+			".....*....",
+			".....*....",
+			".....*....",
+			".....*....",
+			".....*....",
+			".....*....",
+			"..........",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	}
+}
+
+func TestBuffer_Rect(t *testing.T) {
+	{
+		b := NewBuffer(10, 10)
+		b.Rect(1, 1, 8, 8, Black)
+
+		expected := MustNewBufferFromStrings([]string{
+			"..........",
+			".********.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".*......*.",
+			".********.",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	}
+}
+
+func TestBuffer_FillRect(t *testing.T) {
+	{
+		b := NewBuffer(10, 10)
+		b.FillRect(1, 1, 8, 8, Black)
+
+		expected := MustNewBufferFromStrings([]string{
+			"..........",
+			".********.",
+			".********.",
+			".********.",
+			".********.",
+			".********.",
+			".********.",
+			".********.",
+			".********.",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	}
+}
+
 func TestBuffer_Line(t *testing.T) {
 	{
 		b := NewBuffer(10, 10)
