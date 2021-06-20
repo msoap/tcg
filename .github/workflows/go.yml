@@ -5,21 +5,32 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  schedule:
+    - cron: '0 12 * * 0'
 
 jobs:
 
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ['1.15.x', '1.16.x']
     steps:
     - uses: actions/checkout@v2
 
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16
+        go-version: ${{ matrix.go }}
 
-    - name: Build
-      run: go build -v ./...
+    - name: Install errcheck
+      run: go get github.com/kisielk/errcheck
+
+    - name: errcheck
+      run: errcheck -verbose ./...
+
+    - name: gofmt check
+      run: diff <(gofmt -d .) <(echo -n "")
 
     - name: Test
       run: go test -v ./...
