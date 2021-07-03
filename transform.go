@@ -43,15 +43,15 @@ func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int) {
 	}
 }
 
-// FlipH - horizontal flip image buffer
-func (b *Buffer) FlipH() {
+// HFlip - horizontal flip image buffer
+func (b *Buffer) HFlip() {
 	for y := 0; y < b.Height/2; y++ {
 		b.buffer[y], b.buffer[b.Height-y-1] = b.buffer[b.Height-y-1], b.buffer[y]
 	}
 }
 
-// FlipV - vertical flip image buffer
-func (b *Buffer) FlipV() {
+// VFlip - vertical flip image buffer
+func (b *Buffer) VFlip() {
 	for y := 0; y < b.Height; y++ {
 		for x := 0; x < b.Width/2; x++ {
 			leftColor, rightColor := b.At(x, y), b.At(b.Width-x-1, y)

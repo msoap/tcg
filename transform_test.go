@@ -46,7 +46,7 @@ func TestBuffer_FlipH(t *testing.T) {
 		"..........",
 		"..........",
 	})
-	b.FlipH()
+	b.HFlip()
 
 	expected := MustNewBufferFromStrings([]string{
 		"..........",
@@ -75,7 +75,7 @@ func TestBuffer_FlipV(t *testing.T) {
 		".*........",
 		"..........",
 	})
-	b.FlipV()
+	b.VFlip()
 
 	expected := MustNewBufferFromStrings([]string{
 		"..........",
