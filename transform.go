@@ -61,8 +61,8 @@ func (b *Buffer) FlipV() {
 	}
 }
 
-// ScrollV - vertical scroll image buffer by cnt pixels, cnt > 0 - scroll down, cnt < 0 - up
-func (b *Buffer) ScrollV(cnt int) {
+// VScroll - vertical scroll image buffer by cnt pixels, cnt > 0 - scroll down, cnt < 0 - up
+func (b *Buffer) VScroll(cnt int) {
 	zeroLine := make([]byte, widthInBytes(b.Width))
 
 	if cnt > 0 {
@@ -84,8 +84,8 @@ func (b *Buffer) ScrollV(cnt int) {
 	}
 }
 
-// ScrollH - horizontal scroll image buffer by cnt pixels, cnt > 0 - scroll right, cnt < 0 - left
-func (b *Buffer) ScrollH(cnt int) {
+// HScroll - horizontal scroll image buffer by cnt pixels, cnt > 0 - scroll right, cnt < 0 - left
+func (b *Buffer) HScroll(cnt int) {
 	if cnt > 0 {
 		for y := 0; y < b.Height; y++ {
 			for x := b.Width - 1; x > cnt-1; x-- {

@@ -107,7 +107,7 @@ func TestBuffer_ScrollV(t *testing.T) {
 			"..........",
 		})
 
-		b.ScrollV(1)
+		b.VScroll(1)
 		expected := MustNewBufferFromStrings([]string{
 			"..........",
 			".*........",
@@ -122,7 +122,7 @@ func TestBuffer_ScrollV(t *testing.T) {
 		})
 		assertEqBuffers(t, b, expected)
 
-		b.ScrollV(3)
+		b.VScroll(3)
 		expected = MustNewBufferFromStrings([]string{
 			"..........",
 			"..........",
@@ -151,7 +151,7 @@ func TestBuffer_ScrollV(t *testing.T) {
 			".*........",
 		})
 
-		b.ScrollV(-1)
+		b.VScroll(-1)
 		expected := MustNewBufferFromStrings([]string{
 			"..........",
 			"..........",
@@ -166,7 +166,7 @@ func TestBuffer_ScrollV(t *testing.T) {
 		})
 		assertEqBuffers(t, b, expected)
 
-		b.ScrollV(-3)
+		b.VScroll(-3)
 		expected = MustNewBufferFromStrings([]string{
 			".**.......",
 			".*.*......",
@@ -198,7 +198,7 @@ func TestBuffer_ScrollH(t *testing.T) {
 			"..........",
 		})
 
-		b.ScrollH(1)
+		b.HScroll(1)
 		expected := MustNewBufferFromStrings([]string{
 			"..*.......",
 			"..**......",
@@ -213,7 +213,7 @@ func TestBuffer_ScrollH(t *testing.T) {
 		})
 		assertEqBuffers(t, b, expected)
 
-		b.ScrollH(3)
+		b.HScroll(3)
 		expected = MustNewBufferFromStrings([]string{
 			".....*....",
 			".....**...",
@@ -242,7 +242,7 @@ func TestBuffer_ScrollH(t *testing.T) {
 			"..........",
 		})
 
-		b.ScrollH(-1)
+		b.HScroll(-1)
 		expected := MustNewBufferFromStrings([]string{
 			"..........",
 			"..........",
@@ -257,7 +257,7 @@ func TestBuffer_ScrollH(t *testing.T) {
 		})
 		assertEqBuffers(t, b, expected)
 
-		b.ScrollH(-3)
+		b.HScroll(-3)
 		expected = MustNewBufferFromStrings([]string{
 			"..........",
 			"..........",
