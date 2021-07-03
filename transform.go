@@ -91,20 +91,20 @@ func (b *Buffer) ScrollH(cnt int) {
 			for x := b.Width - 1; x > cnt-1; x-- {
 				b.Set(x, y, b.At(x-cnt, y))
 			}
-			// clear rest
-			for x := 0; x < cnt; x++ {
-				b.Set(x, y, White)
-			}
+		}
+		// clear rest
+		for x := 0; x < cnt; x++ {
+			b.VLine(x, 0, b.Height, White)
 		}
 	} else if cnt < 0 {
 		for y := 0; y < b.Height; y++ {
 			for x := 0; x < b.Width+cnt; x++ {
 				b.Set(x, y, b.At(x-cnt, y))
 			}
-			// clear rest
-			for x := b.Width + cnt; x < b.Width; x++ {
-				b.Set(x, y, White)
-			}
+		}
+		// clear rest
+		for x := b.Width + cnt; x < b.Width; x++ {
+			b.VLine(x, 0, b.Height, White)
 		}
 	}
 }
