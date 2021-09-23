@@ -29,6 +29,14 @@ type ScreenMock struct {
 	beforeCanDisplayCounter uint64
 	CanDisplayMock          mScreenMockCanDisplay
 
+	funcChannelEvents func(ch chan<- mm_tcell.Event, quit <-chan struct {
+	})
+	inspectFuncChannelEvents func(ch chan<- mm_tcell.Event, quit <-chan struct {
+	})
+	afterChannelEventsCounter  uint64
+	beforeChannelEventsCounter uint64
+	ChannelEventsMock          mScreenMockChannelEvents
+
 	funcCharacterSet          func() (s1 string)
 	inspectFuncCharacterSet   func()
 	afterCharacterSetCounter  uint64
@@ -100,6 +108,12 @@ type ScreenMock struct {
 	afterHasMouseCounter  uint64
 	beforeHasMouseCounter uint64
 	HasMouseMock          mScreenMockHasMouse
+
+	funcHasPendingEvent          func() (b1 bool)
+	inspectFuncHasPendingEvent   func()
+	afterHasPendingEventCounter  uint64
+	beforeHasPendingEventCounter uint64
+	HasPendingEventMock          mScreenMockHasPendingEvent
 
 	funcHideCursor          func()
 	inspectFuncHideCursor   func()
@@ -216,6 +230,9 @@ func NewScreenMock(t minimock.Tester) *ScreenMock {
 	m.CanDisplayMock = mScreenMockCanDisplay{mock: m}
 	m.CanDisplayMock.callArgs = []*ScreenMockCanDisplayParams{}
 
+	m.ChannelEventsMock = mScreenMockChannelEvents{mock: m}
+	m.ChannelEventsMock.callArgs = []*ScreenMockChannelEventsParams{}
+
 	m.CharacterSetMock = mScreenMockCharacterSet{mock: m}
 
 	m.ClearMock = mScreenMockClear{mock: m}
@@ -243,6 +260,8 @@ func NewScreenMock(t minimock.Tester) *ScreenMock {
 	m.HasKeyMock.callArgs = []*ScreenMockHasKeyParams{}
 
 	m.HasMouseMock = mScreenMockHasMouse{mock: m}
+
+	m.HasPendingEventMock = mScreenMockHasPendingEvent{mock: m}
 
 	m.HideCursorMock = mScreenMockHideCursor{mock: m}
 
@@ -646,6 +665,199 @@ func (m *ScreenMock) MinimockCanDisplayInspect() {
 	// if func was set then invocations count should be greater than zero
 	if m.funcCanDisplay != nil && mm_atomic.LoadUint64(&m.afterCanDisplayCounter) < 1 {
 		m.t.Error("Expected call to ScreenMock.CanDisplay")
+	}
+}
+
+type mScreenMockChannelEvents struct {
+	mock               *ScreenMock
+	defaultExpectation *ScreenMockChannelEventsExpectation
+	expectations       []*ScreenMockChannelEventsExpectation
+
+	callArgs []*ScreenMockChannelEventsParams
+	mutex    sync.RWMutex
+}
+
+// ScreenMockChannelEventsExpectation specifies expectation struct of the Screen.ChannelEvents
+type ScreenMockChannelEventsExpectation struct {
+	mock   *ScreenMock
+	params *ScreenMockChannelEventsParams
+
+	Counter uint64
+}
+
+// ScreenMockChannelEventsParams contains parameters of the Screen.ChannelEvents
+type ScreenMockChannelEventsParams struct {
+	ch   chan<- mm_tcell.Event
+	quit <-chan struct {
+	}
+}
+
+// Expect sets up expected params for Screen.ChannelEvents
+func (mmChannelEvents *mScreenMockChannelEvents) Expect(ch chan<- mm_tcell.Event, quit <-chan struct {
+}) *mScreenMockChannelEvents {
+	if mmChannelEvents.mock.funcChannelEvents != nil {
+		mmChannelEvents.mock.t.Fatalf("ScreenMock.ChannelEvents mock is already set by Set")
+	}
+
+	if mmChannelEvents.defaultExpectation == nil {
+		mmChannelEvents.defaultExpectation = &ScreenMockChannelEventsExpectation{}
+	}
+
+	mmChannelEvents.defaultExpectation.params = &ScreenMockChannelEventsParams{ch, quit}
+	for _, e := range mmChannelEvents.expectations {
+		if minimock.Equal(e.params, mmChannelEvents.defaultExpectation.params) {
+			mmChannelEvents.mock.t.Fatalf("Expectation set by When has same params: %#v", *mmChannelEvents.defaultExpectation.params)
+		}
+	}
+
+	return mmChannelEvents
+}
+
+// Inspect accepts an inspector function that has same arguments as the Screen.ChannelEvents
+func (mmChannelEvents *mScreenMockChannelEvents) Inspect(f func(ch chan<- mm_tcell.Event, quit <-chan struct {
+})) *mScreenMockChannelEvents {
+	if mmChannelEvents.mock.inspectFuncChannelEvents != nil {
+		mmChannelEvents.mock.t.Fatalf("Inspect function is already set for ScreenMock.ChannelEvents")
+	}
+
+	mmChannelEvents.mock.inspectFuncChannelEvents = f
+
+	return mmChannelEvents
+}
+
+// Return sets up results that will be returned by Screen.ChannelEvents
+func (mmChannelEvents *mScreenMockChannelEvents) Return() *ScreenMock {
+	if mmChannelEvents.mock.funcChannelEvents != nil {
+		mmChannelEvents.mock.t.Fatalf("ScreenMock.ChannelEvents mock is already set by Set")
+	}
+
+	if mmChannelEvents.defaultExpectation == nil {
+		mmChannelEvents.defaultExpectation = &ScreenMockChannelEventsExpectation{mock: mmChannelEvents.mock}
+	}
+
+	return mmChannelEvents.mock
+}
+
+//Set uses given function f to mock the Screen.ChannelEvents method
+func (mmChannelEvents *mScreenMockChannelEvents) Set(f func(ch chan<- mm_tcell.Event, quit <-chan struct {
+})) *ScreenMock {
+	if mmChannelEvents.defaultExpectation != nil {
+		mmChannelEvents.mock.t.Fatalf("Default expectation is already set for the Screen.ChannelEvents method")
+	}
+
+	if len(mmChannelEvents.expectations) > 0 {
+		mmChannelEvents.mock.t.Fatalf("Some expectations are already set for the Screen.ChannelEvents method")
+	}
+
+	mmChannelEvents.mock.funcChannelEvents = f
+	return mmChannelEvents.mock
+}
+
+// ChannelEvents implements tcell.Screen
+func (mmChannelEvents *ScreenMock) ChannelEvents(ch chan<- mm_tcell.Event, quit <-chan struct {
+}) {
+	mm_atomic.AddUint64(&mmChannelEvents.beforeChannelEventsCounter, 1)
+	defer mm_atomic.AddUint64(&mmChannelEvents.afterChannelEventsCounter, 1)
+
+	if mmChannelEvents.inspectFuncChannelEvents != nil {
+		mmChannelEvents.inspectFuncChannelEvents(ch, quit)
+	}
+
+	mm_params := &ScreenMockChannelEventsParams{ch, quit}
+
+	// Record call args
+	mmChannelEvents.ChannelEventsMock.mutex.Lock()
+	mmChannelEvents.ChannelEventsMock.callArgs = append(mmChannelEvents.ChannelEventsMock.callArgs, mm_params)
+	mmChannelEvents.ChannelEventsMock.mutex.Unlock()
+
+	for _, e := range mmChannelEvents.ChannelEventsMock.expectations {
+		if minimock.Equal(e.params, mm_params) {
+			mm_atomic.AddUint64(&e.Counter, 1)
+			return
+		}
+	}
+
+	if mmChannelEvents.ChannelEventsMock.defaultExpectation != nil {
+		mm_atomic.AddUint64(&mmChannelEvents.ChannelEventsMock.defaultExpectation.Counter, 1)
+		mm_want := mmChannelEvents.ChannelEventsMock.defaultExpectation.params
+		mm_got := ScreenMockChannelEventsParams{ch, quit}
+		if mm_want != nil && !minimock.Equal(*mm_want, mm_got) {
+			mmChannelEvents.t.Errorf("ScreenMock.ChannelEvents got unexpected parameters, want: %#v, got: %#v%s\n", *mm_want, mm_got, minimock.Diff(*mm_want, mm_got))
+		}
+
+		return
+
+	}
+	if mmChannelEvents.funcChannelEvents != nil {
+		mmChannelEvents.funcChannelEvents(ch, quit)
+		return
+	}
+	mmChannelEvents.t.Fatalf("Unexpected call to ScreenMock.ChannelEvents. %v %v", ch, quit)
+
+}
+
+// ChannelEventsAfterCounter returns a count of finished ScreenMock.ChannelEvents invocations
+func (mmChannelEvents *ScreenMock) ChannelEventsAfterCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmChannelEvents.afterChannelEventsCounter)
+}
+
+// ChannelEventsBeforeCounter returns a count of ScreenMock.ChannelEvents invocations
+func (mmChannelEvents *ScreenMock) ChannelEventsBeforeCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmChannelEvents.beforeChannelEventsCounter)
+}
+
+// Calls returns a list of arguments used in each call to ScreenMock.ChannelEvents.
+// The list is in the same order as the calls were made (i.e. recent calls have a higher index)
+func (mmChannelEvents *mScreenMockChannelEvents) Calls() []*ScreenMockChannelEventsParams {
+	mmChannelEvents.mutex.RLock()
+
+	argCopy := make([]*ScreenMockChannelEventsParams, len(mmChannelEvents.callArgs))
+	copy(argCopy, mmChannelEvents.callArgs)
+
+	mmChannelEvents.mutex.RUnlock()
+
+	return argCopy
+}
+
+// MinimockChannelEventsDone returns true if the count of the ChannelEvents invocations corresponds
+// the number of defined expectations
+func (m *ScreenMock) MinimockChannelEventsDone() bool {
+	for _, e := range m.ChannelEventsMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			return false
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.ChannelEventsMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterChannelEventsCounter) < 1 {
+		return false
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcChannelEvents != nil && mm_atomic.LoadUint64(&m.afterChannelEventsCounter) < 1 {
+		return false
+	}
+	return true
+}
+
+// MinimockChannelEventsInspect logs each unmet expectation
+func (m *ScreenMock) MinimockChannelEventsInspect() {
+	for _, e := range m.ChannelEventsMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			m.t.Errorf("Expected call to ScreenMock.ChannelEvents with params: %#v", *e.params)
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.ChannelEventsMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterChannelEventsCounter) < 1 {
+		if m.ChannelEventsMock.defaultExpectation.params == nil {
+			m.t.Error("Expected call to ScreenMock.ChannelEvents")
+		} else {
+			m.t.Errorf("Expected call to ScreenMock.ChannelEvents with params: %#v", *m.ChannelEventsMock.defaultExpectation.params)
+		}
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcChannelEvents != nil && mm_atomic.LoadUint64(&m.afterChannelEventsCounter) < 1 {
+		m.t.Error("Expected call to ScreenMock.ChannelEvents")
 	}
 }
 
@@ -2559,6 +2771,149 @@ func (m *ScreenMock) MinimockHasMouseInspect() {
 	// if func was set then invocations count should be greater than zero
 	if m.funcHasMouse != nil && mm_atomic.LoadUint64(&m.afterHasMouseCounter) < 1 {
 		m.t.Error("Expected call to ScreenMock.HasMouse")
+	}
+}
+
+type mScreenMockHasPendingEvent struct {
+	mock               *ScreenMock
+	defaultExpectation *ScreenMockHasPendingEventExpectation
+	expectations       []*ScreenMockHasPendingEventExpectation
+}
+
+// ScreenMockHasPendingEventExpectation specifies expectation struct of the Screen.HasPendingEvent
+type ScreenMockHasPendingEventExpectation struct {
+	mock *ScreenMock
+
+	results *ScreenMockHasPendingEventResults
+	Counter uint64
+}
+
+// ScreenMockHasPendingEventResults contains results of the Screen.HasPendingEvent
+type ScreenMockHasPendingEventResults struct {
+	b1 bool
+}
+
+// Expect sets up expected params for Screen.HasPendingEvent
+func (mmHasPendingEvent *mScreenMockHasPendingEvent) Expect() *mScreenMockHasPendingEvent {
+	if mmHasPendingEvent.mock.funcHasPendingEvent != nil {
+		mmHasPendingEvent.mock.t.Fatalf("ScreenMock.HasPendingEvent mock is already set by Set")
+	}
+
+	if mmHasPendingEvent.defaultExpectation == nil {
+		mmHasPendingEvent.defaultExpectation = &ScreenMockHasPendingEventExpectation{}
+	}
+
+	return mmHasPendingEvent
+}
+
+// Inspect accepts an inspector function that has same arguments as the Screen.HasPendingEvent
+func (mmHasPendingEvent *mScreenMockHasPendingEvent) Inspect(f func()) *mScreenMockHasPendingEvent {
+	if mmHasPendingEvent.mock.inspectFuncHasPendingEvent != nil {
+		mmHasPendingEvent.mock.t.Fatalf("Inspect function is already set for ScreenMock.HasPendingEvent")
+	}
+
+	mmHasPendingEvent.mock.inspectFuncHasPendingEvent = f
+
+	return mmHasPendingEvent
+}
+
+// Return sets up results that will be returned by Screen.HasPendingEvent
+func (mmHasPendingEvent *mScreenMockHasPendingEvent) Return(b1 bool) *ScreenMock {
+	if mmHasPendingEvent.mock.funcHasPendingEvent != nil {
+		mmHasPendingEvent.mock.t.Fatalf("ScreenMock.HasPendingEvent mock is already set by Set")
+	}
+
+	if mmHasPendingEvent.defaultExpectation == nil {
+		mmHasPendingEvent.defaultExpectation = &ScreenMockHasPendingEventExpectation{mock: mmHasPendingEvent.mock}
+	}
+	mmHasPendingEvent.defaultExpectation.results = &ScreenMockHasPendingEventResults{b1}
+	return mmHasPendingEvent.mock
+}
+
+//Set uses given function f to mock the Screen.HasPendingEvent method
+func (mmHasPendingEvent *mScreenMockHasPendingEvent) Set(f func() (b1 bool)) *ScreenMock {
+	if mmHasPendingEvent.defaultExpectation != nil {
+		mmHasPendingEvent.mock.t.Fatalf("Default expectation is already set for the Screen.HasPendingEvent method")
+	}
+
+	if len(mmHasPendingEvent.expectations) > 0 {
+		mmHasPendingEvent.mock.t.Fatalf("Some expectations are already set for the Screen.HasPendingEvent method")
+	}
+
+	mmHasPendingEvent.mock.funcHasPendingEvent = f
+	return mmHasPendingEvent.mock
+}
+
+// HasPendingEvent implements tcell.Screen
+func (mmHasPendingEvent *ScreenMock) HasPendingEvent() (b1 bool) {
+	mm_atomic.AddUint64(&mmHasPendingEvent.beforeHasPendingEventCounter, 1)
+	defer mm_atomic.AddUint64(&mmHasPendingEvent.afterHasPendingEventCounter, 1)
+
+	if mmHasPendingEvent.inspectFuncHasPendingEvent != nil {
+		mmHasPendingEvent.inspectFuncHasPendingEvent()
+	}
+
+	if mmHasPendingEvent.HasPendingEventMock.defaultExpectation != nil {
+		mm_atomic.AddUint64(&mmHasPendingEvent.HasPendingEventMock.defaultExpectation.Counter, 1)
+
+		mm_results := mmHasPendingEvent.HasPendingEventMock.defaultExpectation.results
+		if mm_results == nil {
+			mmHasPendingEvent.t.Fatal("No results are set for the ScreenMock.HasPendingEvent")
+		}
+		return (*mm_results).b1
+	}
+	if mmHasPendingEvent.funcHasPendingEvent != nil {
+		return mmHasPendingEvent.funcHasPendingEvent()
+	}
+	mmHasPendingEvent.t.Fatalf("Unexpected call to ScreenMock.HasPendingEvent.")
+	return
+}
+
+// HasPendingEventAfterCounter returns a count of finished ScreenMock.HasPendingEvent invocations
+func (mmHasPendingEvent *ScreenMock) HasPendingEventAfterCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmHasPendingEvent.afterHasPendingEventCounter)
+}
+
+// HasPendingEventBeforeCounter returns a count of ScreenMock.HasPendingEvent invocations
+func (mmHasPendingEvent *ScreenMock) HasPendingEventBeforeCounter() uint64 {
+	return mm_atomic.LoadUint64(&mmHasPendingEvent.beforeHasPendingEventCounter)
+}
+
+// MinimockHasPendingEventDone returns true if the count of the HasPendingEvent invocations corresponds
+// the number of defined expectations
+func (m *ScreenMock) MinimockHasPendingEventDone() bool {
+	for _, e := range m.HasPendingEventMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			return false
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.HasPendingEventMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterHasPendingEventCounter) < 1 {
+		return false
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcHasPendingEvent != nil && mm_atomic.LoadUint64(&m.afterHasPendingEventCounter) < 1 {
+		return false
+	}
+	return true
+}
+
+// MinimockHasPendingEventInspect logs each unmet expectation
+func (m *ScreenMock) MinimockHasPendingEventInspect() {
+	for _, e := range m.HasPendingEventMock.expectations {
+		if mm_atomic.LoadUint64(&e.Counter) < 1 {
+			m.t.Error("Expected call to ScreenMock.HasPendingEvent")
+		}
+	}
+
+	// if default expectation was set then invocations count should be greater than zero
+	if m.HasPendingEventMock.defaultExpectation != nil && mm_atomic.LoadUint64(&m.afterHasPendingEventCounter) < 1 {
+		m.t.Error("Expected call to ScreenMock.HasPendingEvent")
+	}
+	// if func was set then invocations count should be greater than zero
+	if m.funcHasPendingEvent != nil && mm_atomic.LoadUint64(&m.afterHasPendingEventCounter) < 1 {
+		m.t.Error("Expected call to ScreenMock.HasPendingEvent")
 	}
 }
 
@@ -5413,6 +5768,8 @@ func (m *ScreenMock) MinimockFinish() {
 
 		m.MinimockCanDisplayInspect()
 
+		m.MinimockChannelEventsInspect()
+
 		m.MinimockCharacterSetInspect()
 
 		m.MinimockClearInspect()
@@ -5436,6 +5793,8 @@ func (m *ScreenMock) MinimockFinish() {
 		m.MinimockHasKeyInspect()
 
 		m.MinimockHasMouseInspect()
+
+		m.MinimockHasPendingEventInspect()
 
 		m.MinimockHideCursorInspect()
 
@@ -5495,6 +5854,7 @@ func (m *ScreenMock) minimockDone() bool {
 	return done &&
 		m.MinimockBeepDone() &&
 		m.MinimockCanDisplayDone() &&
+		m.MinimockChannelEventsDone() &&
 		m.MinimockCharacterSetDone() &&
 		m.MinimockClearDone() &&
 		m.MinimockColorsDone() &&
@@ -5507,6 +5867,7 @@ func (m *ScreenMock) minimockDone() bool {
 		m.MinimockGetContentDone() &&
 		m.MinimockHasKeyDone() &&
 		m.MinimockHasMouseDone() &&
+		m.MinimockHasPendingEventDone() &&
 		m.MinimockHideCursorDone() &&
 		m.MinimockInitDone() &&
 		m.MinimockPollEventDone() &&
