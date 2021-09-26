@@ -11,7 +11,7 @@ var reComment = regexp.MustCompile(`#.*$`)
 var reSpaces = regexp.MustCompile(`\s+`)
 var reCommands = regexp.MustCompile(`([a-zA-Z]+)(?:(-?\d+)(?:,(-?\d+))?)?`) // "CMD-12,-5" "CMD3" or "CMD"
 
-// DrawScript - draw by script
+// DrawScript - draw with the script in the buffer
 // U12 G 1,-1 # up 12 times, and goto to (1,-1)
 func (t *Turtle) DrawScript(script string) *Turtle {
 	scanner := bufio.NewScanner(strings.NewReader(script))

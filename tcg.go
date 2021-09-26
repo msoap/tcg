@@ -133,7 +133,7 @@ func (tg *Tcg) SetClip(x, y, width, height int) error {
 	return nil
 }
 
-// SetClipCenter - set new clip in center of screen
+// SetClipCenter - set new clip in the center of screen
 func (tg *Tcg) SetClipCenter(width, height int) error {
 	if err := WithClipCenter(width, height)(&tg.config); err != nil {
 		return err
