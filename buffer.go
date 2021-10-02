@@ -121,13 +121,14 @@ func NewBufferFromImage(img image.Image) Buffer {
 // ToImage - convert buffer to std (Gray) Image, for example for save buffer to image file like png
 func (b *Buffer) ToImage() image.Image {
 	img := image.NewGray(image.Rect(0, 0, b.Width, b.Height))
+	var c uint8
 	for y := 0; y < b.Height; y++ {
 		for x := 0; x < b.Width; x++ {
-			c := color.Gray{Y: 0}
+			c = 0
 			if b.At(x, y) == White {
-				c = color.Gray{Y: 255}
+				c = 255
 			}
-			img.SetGray(x, y, c)
+			img.SetGray(x, y, color.Gray{Y: c})
 		}
 	}
 
