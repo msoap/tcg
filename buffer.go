@@ -144,6 +144,19 @@ func (b *Buffer) Clone() *Buffer {
 	return &newBuf
 }
 
+// Cut area to new buffer
+func (b *Buffer) Cut(x, y, width, height int) Buffer {
+	newBuf := NewBuffer(width, height)
+
+	for h := 0; h < height; h++ {
+		for w := 0; w < width; w++ {
+			newBuf.Set(w, h, b.At(x+w, y+h))
+		}
+	}
+
+	return newBuf
+}
+
 // Set - put pixel into buffer
 func (b *Buffer) Set(x, y int, color int) {
 	if x < 0 || x > b.Width-1 || y < 0 || y > b.Height-1 {

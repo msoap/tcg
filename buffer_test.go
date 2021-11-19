@@ -314,3 +314,28 @@ func assertEqBuffers(t *testing.T, got, expected Buffer) {
 		assert.True(t, false, msg)
 	}
 }
+
+func TestBuffer_Cut(t *testing.T) {
+	src := MustNewBufferFromStrings([]string{
+		"..........",
+		"...*****..",
+		"..**...**.",
+		".**.....**",
+		".*.......*",
+		".*.......*",
+		".*.......*",
+		".**.....**",
+		"..**...**.",
+		"...*****..",
+	})
+	new := src.Cut(2, 0, 6, 5)
+	expected := MustNewBufferFromStrings([]string{
+		"......",
+		".*****",
+		"**...*",
+		"*.....",
+		"......",
+	})
+
+	assertEqBuffers(t, new, expected)
+}
