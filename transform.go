@@ -27,11 +27,7 @@ func (b *Buffer) BitBltAllSrc(x, y int, from Buffer) {
 		return
 	}
 
-	for i := 0; i < from.Height && i+y < b.Height; i++ {
-		for j := 0; j < from.Width && j+x < b.Width; j++ {
-			b.Set(j+x, i+y, from.At(j, i))
-		}
-	}
+	b.BitBlt(x, y, from.Width, from.Height, from, 0, 0)
 }
 
 // BitBlt - copy part of buffer into this buffer
