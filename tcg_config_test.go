@@ -34,6 +34,18 @@ func TestParseSizeString(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			in:      "80 x A",
+			w:       0,
+			h:       0,
+			wantErr: true,
+		},
+		{
+			in:      "A x 25",
+			w:       0,
+			h:       0,
+			wantErr: true,
+		},
+		{
 			in:      "80x25",
 			w:       80,
 			h:       25,
