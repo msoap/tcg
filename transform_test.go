@@ -308,3 +308,33 @@ func TestBuffer_BitBltAllSrc(t *testing.T) {
 	})
 	assertEqBuffers(t, b, expected)
 }
+
+func TestBuffer_BitBlt(t *testing.T) {
+	b := MustNewBufferFromStrings([]string{
+		"..........",
+		".*******..",
+		".*.*.*.*..",
+		".*******..",
+		"..........",
+		"..........",
+		"..........",
+		"..........",
+		"..........",
+		"..........",
+	})
+	b.BitBlt(3, 5, 5, 4, b, 1, 1)
+
+	expected := MustNewBufferFromStrings([]string{
+		"..........",
+		".*******..",
+		".*.*.*.*..",
+		".*******..",
+		"..........",
+		"...*****..",
+		"...*.*.*..",
+		"...*****..",
+		"..........",
+		"..........",
+	})
+	assertEqBuffers(t, b, expected)
+}
