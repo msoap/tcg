@@ -147,13 +147,7 @@ func (b *Buffer) Clone() *Buffer {
 // Cut area to new buffer
 func (b *Buffer) Cut(x, y, width, height int) Buffer {
 	newBuf := NewBuffer(width, height)
-
-	for h := 0; h < height; h++ {
-		for w := 0; w < width; w++ {
-			newBuf.Set(w, h, b.At(x+w, y+h))
-		}
-	}
-
+	newBuf.BitBlt(0, 0, width, height, *b, x, y)
 	return newBuf
 }
 
