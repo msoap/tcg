@@ -55,7 +55,7 @@ func (pic PixelsInChar) String() string {
 	}
 }
 
-// Set from string (for use with flag.Var())
+// Set from string (for using with flag.Var())
 func (pic *PixelsInChar) Set(in string) error {
 	switch in {
 	case "1x1":
