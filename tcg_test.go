@@ -16,17 +16,21 @@ func TestRenderAsStrings(t *testing.T) {
 		want []string
 	}{
 		{
-			name: "1",
+			name: "1x1",
 			img: []string{
 				"..**..",
 				".*..*.",
 				".****.",
 			},
-			mode: Mode2x3,
-			want: []string{"🬦🬰🬓"},
+			mode: Mode1x1,
+			want: []string{
+				"  ██  ",
+				" █  █ ",
+				" ████ ",
+			},
 		},
 		{
-			name: "2",
+			name: "1x2",
 			img: []string{
 				"..**..",
 				".*..*.",
@@ -37,6 +41,29 @@ func TestRenderAsStrings(t *testing.T) {
 				" ▄▀▀▄ ",
 				" ▀▀▀▀ ",
 			},
+		},
+		{
+			name: "2x2",
+			img: []string{
+				"..**..",
+				".*..*.",
+				".****.",
+			},
+			mode: Mode2x2,
+			want: []string{
+				"▗▀▖",
+				"▝▀▘",
+			},
+		},
+		{
+			name: "2x3",
+			img: []string{
+				"..**..",
+				".*..*.",
+				".****.",
+			},
+			mode: Mode2x3,
+			want: []string{"🬦🬰🬓"},
 		},
 	}
 
