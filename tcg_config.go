@@ -26,7 +26,7 @@ func WithClip(x, y, width, height int) Opt {
 			return fmt.Errorf("width (%d) or height (%d) is less than 1 x 1", width, height)
 		}
 		if x+width > cfg.width || y+height > cfg.height {
-			return fmt.Errorf("clip size (%d, %d / %d x %d) does not fit in screen size (%d x %d)", x, y, width, height, cfg.width, cfg.height)
+			return fmt.Errorf("clip size (%d, %d; %d x %d) does not fit in screen size (%d x %d)", x, y, width, height, cfg.width, cfg.height)
 		}
 
 		cfg.clip = geom{
@@ -43,20 +43,7 @@ func WithClip(x, y, width, height int) Opt {
 // w, h - is in screen character coordinates, not pixels
 func WithClipCenter(width, height int) Opt {
 	return func(cfg *tcgConfig) error {
-		if width < 1 || height < 1 {
-			return fmt.Errorf("width (%d) or height (%d) is less than 1 x 1", width, height)
-		}
-		if width > cfg.width || height > cfg.height {
-			return fmt.Errorf("width (%d) or height (%d) is greater than screen size (%d x %d)", width, height, cfg.width, cfg.height)
-		}
-
-		cfg.clip = geom{
-			x:      (cfg.width - width) / 2,
-			y:      (cfg.height - height) / 2,
-			width:  width,
-			height: height,
-		}
-		return nil
+		return WithClip((cfg.width-width)/2, (cfg.height-height)/2, width, height)(cfg)
 	}
 }
 
