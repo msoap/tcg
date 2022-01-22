@@ -106,5 +106,10 @@ var (
 		'█', // 111111
 	}
 
-	pixelChars = [][]rune{pixelChars1x1, pixelChars1x2, pixelChars2x2, pixelChars2x3}
+	pixelChars = [][]rune{
+		Mode1x1: pixelChars1x1,
+		Mode1x2: pixelChars1x2,
+		Mode2x2: pixelChars2x2,
+		Mode2x3: pixelChars2x3,
+	}
 )
