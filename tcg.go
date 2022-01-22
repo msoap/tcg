@@ -9,7 +9,7 @@ import (
 // pixel colors
 const (
 	White = 0
-	Black = 1
+	Black = 1 // it will be black on a terminal with light theme, and white on dark terminals
 )
 
 var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
