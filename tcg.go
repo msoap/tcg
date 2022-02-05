@@ -147,8 +147,14 @@ func (tg *Tcg) SetClipCenter(width, height int) error {
 // x, y - is in screen character coordinates, not pixels.
 // Also x/y coordinates is not use Clip of the screen, it's always absolute.
 func (tg *Tcg) PrintStr(x, y int, str string) {
+	tg.PrintStrStyle(x, y, str, defaultStyle)
+}
+
+// PrintStrStyle - print string on screen
+// see the PrintStr about restrictions
+func (tg *Tcg) PrintStrStyle(x, y int, str string, style tcell.Style) {
 	for i, ch := range []rune(str) {
-		tg.TCellScreen.SetContent(x+i, y, ch, nil, defaultStyle)
+		tg.TCellScreen.SetContent(x+i, y, ch, nil, style)
 	}
 }
 
