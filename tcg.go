@@ -18,10 +18,10 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 type Tcg struct {
 	mode          PixelsInChar
 	config        tcgConfig
-	scrW, scrH    int // screen or clip of screen width/height in characters
-	Width, Height int // screen or clip of screen width/height in pixels
-	TCellScreen   tcell.Screen
-	Buf           Buffer
+	scrW, scrH    int          // screen or clip of screen width/height in characters
+	Width, Height int          // screen or clip of screen width/height in pixels
+	TCellScreen   tcell.Screen // tcell object for keyboard interactions, or low level interactions with terminal screen
+	Buf           Buffer       // buffer presents current screen
 }
 
 // New - get new object with tcell inside
@@ -150,4 +150,9 @@ func (tg *Tcg) PrintStr(x, y int, str string) {
 	for i, ch := range []rune(str) {
 		tg.TCellScreen.SetContent(x+i, y, ch, nil, defaultStyle)
 	}
+}
+
+// ScreenSize - returns terminal screen size in chars (width, height)
+func (tg *Tcg) ScreenSize() (int, int) {
+	return tg.TCellScreen.Size()
 }

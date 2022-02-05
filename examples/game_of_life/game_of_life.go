@@ -50,7 +50,7 @@ func main() {
 	tg.Show()
 
 	if width == 0 {
-		width, height = tg.TCellScreen.Size()
+		width, height = tg.ScreenSize()
 	}
 	if err := tg.SetClipCenter(width-2, height-2); err != nil {
 		tg.Finish()
@@ -99,7 +99,7 @@ func initRandom(tg *tcg.Tcg) {
 }
 
 func nextStep(tg *tcg.Tcg) {
-	_, fpsY := tg.TCellScreen.Size()
+	_, fpsY := tg.ScreenSize()
 	startedAt := time.Now()
 
 	newGeneration := tcg.NewBuffer(tg.Width, tg.Height)
