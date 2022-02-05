@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/gdamore/tcell/v2"
@@ -25,6 +26,25 @@ func main() {
 		tg.Show()
 	}
 
+	width, height := tg.ScreenSize()
+	if err := tg.SetClip(0, 0, width, height-1); err != nil {
+		tg.Finish()
+		log.Fatalf("SetClip: %s", err)
+	}
+
+	if tg.TCellScreen.HasMouse() {
+		tg.TCellScreen.EnableMouse(tcell.MouseMotionEvents)
+	}
+
+	var (
+		mx, my int
+	)
+
+	tg.PrintStrStyle(18, height-1, " <q> ", tcell.StyleDefault.Background(tcell.ColorGray))
+	tg.PrintStr(23, height-1, " Quit ")
+	tg.PrintStrStyle(29, height-1, " <c> ", tcell.StyleDefault.Background(tcell.ColorGray))
+	tg.PrintStr(34, height-1, " Clear ")
+
 LOOP:
 	for {
 		ev := tg.TCellScreen.PollEvent()
@@ -32,6 +52,11 @@ LOOP:
 		case *tcell.EventKey:
 			if ev.Rune() == 'q' {
 				break LOOP
+			}
+			if ev.Rune() == 'c' {
+				tg.Buf.Clear()
+				tg.Show()
+				continue LOOP
 			}
 			switch ev.Key() {
 			case tcell.KeyDown:
@@ -49,7 +74,25 @@ LOOP:
 			case tcell.KeyEscape:
 				break LOOP
 			}
+		case *tcell.EventMouse:
+			cx, cy := ev.Position()
+			if cx > mx {
+				x++
+			}
+			if cx < mx {
+				x--
+			}
+			if cy > my {
+				y++
+			}
+			if cy < my {
+				y--
+			}
+			mx, my = cx, cy
+			drawNext()
 		}
+		tg.PrintStrStyle(0, height-1, " Coord: ", tcell.StyleDefault.Background(tcell.ColorGray))
+		tg.PrintStr(9, height-1, fmt.Sprintf("%3d x%3d", x, y))
 	}
 
 	tg.Finish()
