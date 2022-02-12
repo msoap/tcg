@@ -3,7 +3,7 @@
 
 # TCG - terminal cell graphics
 
-Go Graphics library for use in a terminal. Only 1bit graphics can be used with two colors. Used unicode block symbols for drawing. 2x3 mode is supported by the latest versions of the Iosevka font.
+Go Graphics library for use in a text terminal. Only 1bit graphics can be used with two colors. Used unicode block symbols for drawing. 2x3 mode is supported by the latest versions of the Iosevka font.
 
 ## Features
 
