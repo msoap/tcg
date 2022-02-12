@@ -1,8 +1,19 @@
+[![Go Reference](https://pkg.go.dev/badge/github.com/msoap/tcg.svg)](https://pkg.go.dev/github.com/msoap/tcg)
 [![GitHub Action](https://github.com/msoap/tcg/actions/workflows/go.yml/badge.svg)](https://github.com/msoap/tcg/actions/workflows/go.yml)
 
-# TCG - terminal cell graphics library
+# TCG - terminal cell graphics
 
-Graphics library for use in the terminal. Used unicode block symbols for drawing. 2x3 mode is supported by the latest versions of the Iosevka font.
+Go Graphics library for use in a terminal. Only 1bit graphics can be used with two colors. Used unicode block symbols for drawing. 2x3 mode is supported by the latest versions of the Iosevka font.
+
+## Features
+
+  * Available 4 graphics mode, from 2x3 pixels grid for terminal symbol to 1x1, 1x2 and 2x2
+  * Set/get one pixel
+  * Drawings: lines (vertical, horizontal, or with any angle), boxes, circles, arcs
+  * Fill area with a different options, for example fill with patterns
+  * Buffer manipulating, copy, cut, clone, convert to/from stdlib Image or text
+  * Buffer transform: BitBlt, clear, flip, invert, scroll (vertical, horizontal)
+  * Sub-package for turtle graphics, also available drawing by text script
 
 ## Install
 
@@ -23,6 +34,7 @@ main () {
     tg.Finish()                // finish application and resore screen
 }
 ```
+
 ## TODO
 
   * [ ] fonts support
