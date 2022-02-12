@@ -11,7 +11,10 @@ import (
 	"github.com/msoap/tcg"
 )
 
-const defaultDelay = time.Millisecond * 100
+const (
+	defaultDelay          = time.Millisecond * 100
+	defaultInitFillFactor = 0.2
+)
 
 type cmds int
 
@@ -24,6 +27,7 @@ const (
 func main() {
 	delay := flag.Duration("delay", defaultDelay, "delay between steps")
 	size := flag.String("size", "", "screen size, in 'width x height' format, example: '80x25'")
+	fillFactor := flag.Float64("fill", defaultInitFillFactor, "how much to fill the area initially")
 	mode := tcg.Mode2x3
 	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3")
 	flag.Parse()
@@ -56,7 +60,7 @@ func main() {
 		tg.Finish()
 		log.Fatal(err)
 	}
-	initRandom(tg)
+	initRandom(tg, *fillFactor)
 
 	ticker := time.Tick(*delay)
 	command := getCommand(tg)
@@ -84,11 +88,11 @@ LOOP:
 	tg.Finish()
 }
 
-func initRandom(tg *tcg.Tcg) {
+func initRandom(tg *tcg.Tcg, fillFact float64) {
 	rand.Seed(time.Now().UnixNano())
 	for y := 0; y < tg.Height; y++ {
 		for x := 0; x < tg.Width; x++ {
-			if rand.Float64() < 0.2 {
+			if rand.Float64() < fillFact {
 				tg.Buf.Set(x, y, tcg.Black)
 			} else {
 				tg.Buf.Set(x, y, tcg.White)
