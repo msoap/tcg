@@ -31,7 +31,7 @@ main () {
     tg.Set(10, 10, tcg.Black)  // draw one pixel
     pix := tg.At(10, 10)       // get color of pixel
     tg.Show()                  // synchronize buffer with screen
-    tg.Finish()                // finish application and resore screen
+    tg.Finish()                // finish application and restore screen
 }
 ```
 
