@@ -28,12 +28,21 @@ import (
 
 main () {
     tg := tcg.New(tcg.Mode2x3) // each terminal symbol contains a 2x3 pixels grid, also you can use 1x1, 1x2, and 2x2 modes
-    tg.Set(10, 10, tcg.Black)  // draw one pixel
-    pix := tg.At(10, 10)       // get color of pixel
-    tg.Show()                  // synchronize buffer with screen
+    for {
+        tg.Set(10, 10, tcg.Black)  // draw one pixel
+        pix := tg.At(10, 10)       // get color of pixel
+        tg.Show()                  // synchronize buffer with screen
+
+        time.Sleep(time.Millisecond * 100) // 10 FPS
+        if doExit {
+            break
+        }
+    }
     tg.Finish()                // finish application and restore screen
 }
 ```
+
+See more examples in `examples` folder.
 
 ## TODO
 
