@@ -59,7 +59,10 @@ func main() {
 	if width == 0 {
 		width, height = tg.ScreenSize()
 	} else {
-		tg.SetClipCenter(width, height)
+		if err := tg.SetClipCenter(width, height); err != nil {
+			tg.Finish()
+			log.Fatal(err)
+		}
 	}
 
 	tg.Buf.Rect(1, 2, tg.Width-2, tg.Height-4, tcg.Black) // coordinates in pixels
