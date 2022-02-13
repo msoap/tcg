@@ -46,6 +46,10 @@ See more examples in `examples` folder.
 
 ## Screenshot
 
+Game of Life exmple in iTerm2 terminal with Iosevka font:
+
+<img width="663" alt="Screenshot 2022-02-13 at 19 12 58 " src="https://user-images.githubusercontent.com/844117/153767605-76dd1552-9424-49b9-9bf3-9163132af9b2.png">
+
 ## TODO
 
   * [ ] fonts support
