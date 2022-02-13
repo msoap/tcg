@@ -7,13 +7,13 @@ Go Graphics library for use in a text terminal. Only 1bit graphics can be used w
 
 ## Features
 
-  * Available 4 graphics mode, from 2x3 pixels grid for terminal symbol to 1x1, 1x2 and 2x2
-  * Set/get one pixel
-  * Drawings: lines (vertical, horizontal, or with any angle), boxes, circles, arcs
-  * Fill area with a different options, for example fill with patterns
-  * Buffer manipulating, copy, cut, clone, convert to/from stdlib Image or text
-  * Buffer transform: BitBlt, clear, flip, invert, scroll (vertical, horizontal)
-  * Sub-package for turtle graphics, also available drawing by text script
+  * Available 4 [graphics mode](https://pkg.go.dev/github.com/msoap/tcg#PixelsInChar), from 2x3 pixels grid for terminal symbol to 1x1, 1x2 and 2x2
+  * [Set](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Set)/[get](https://pkg.go.dev/github.com/msoap/tcg#Buffer.At) one pixel
+  * Drawings: [lines](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Line) (vertical, horizontal, or with any angle), [boxes](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Rect), [circles](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Circle), [arcs](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Arc)
+  * [Fill](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Fill) area with a different [options](https://pkg.go.dev/github.com/msoap/tcg#FillOpt), for example fill with [patterns](https://pkg.go.dev/github.com/msoap/tcg#WithPattern)
+  * Buffer manipulating, copy, cut, clone, convert to/from stdlib [Image](https://pkg.go.dev/github.com/msoap/tcg#Buffer.ToImage) or text
+  * Buffer transform: [BitBlt](https://pkg.go.dev/github.com/msoap/tcg#Buffer.BitBlt), clear, flip, invert, scroll (vertical, horizontal)
+  * Sub-package for [turtle graphics](https://pkg.go.dev/github.com/msoap/tcg/turtle), also available drawing by text script
 
 ## Install
 
@@ -43,6 +43,8 @@ main () {
 ```
 
 See more examples in `examples` folder.
+
+## Screenshot
 
 ## TODO
 
