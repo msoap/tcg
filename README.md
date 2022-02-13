@@ -11,9 +11,9 @@ Go Graphics library for use in a text terminal. Only 1bit graphics can be used w
   * [Set](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Set)/[get](https://pkg.go.dev/github.com/msoap/tcg#Buffer.At) one pixel
   * Drawings: [lines](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Line) (vertical, horizontal, or with any angle), [boxes](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Rect), [circles](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Circle), [arcs](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Arc)
   * [Fill](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Fill) area with a different [options](https://pkg.go.dev/github.com/msoap/tcg#FillOpt), for example fill with [patterns](https://pkg.go.dev/github.com/msoap/tcg#WithPattern)
-  * Buffer manipulating, copy, cut, clone, convert to/from stdlib [Image](https://pkg.go.dev/github.com/msoap/tcg#Buffer.ToImage) or text
-  * Buffer transform: [BitBlt](https://pkg.go.dev/github.com/msoap/tcg#Buffer.BitBlt), clear, flip, invert, scroll (vertical, horizontal)
-  * Sub-package for [turtle graphics](https://pkg.go.dev/github.com/msoap/tcg/turtle), also available drawing by text script
+  * Buffer manipulating: [cut](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Cut), [clone](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Clone), convert to/from stdlib [Image](https://pkg.go.dev/github.com/msoap/tcg#Buffer.ToImage) or text
+  * Buffer transform: [BitBlt](https://pkg.go.dev/github.com/msoap/tcg#Buffer.BitBlt), [clear](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Clear), [flip](https://pkg.go.dev/github.com/msoap/tcg#Buffer.HFlip), [invert](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Invert), scroll ([vertical](https://pkg.go.dev/github.com/msoap/tcg#Buffer.VScroll), [horizontal](https://pkg.go.dev/github.com/msoap/tcg#Buffer.HScroll))
+  * Sub-package for [turtle graphics](https://pkg.go.dev/github.com/msoap/tcg/turtle), also available [drawing](https://pkg.go.dev/github.com/msoap/tcg@v0.0.1/turtle#Turtle.DrawScript) by text script
 
 ## Install
 
@@ -46,9 +46,9 @@ See more examples in `examples` folder.
 
 ## Screenshot
 
-Game of Life exmple in iTerm2 terminal with Iosevka font:
+[Game of Life](https://github.com/msoap/tcg/blob/master/examples/game_of_life/game_of_life.go) example in iTerm2 terminal with Iosevka font:
 
-<img width="663" alt="Screenshot 2022-02-13 at 19 12 58 " src="https://user-images.githubusercontent.com/844117/153767605-76dd1552-9424-49b9-9bf3-9163132af9b2.png">
+<img width="663" alt="TCG example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/153767605-76dd1552-9424-49b9-9bf3-9163132af9b2.png">
 
 ## TODO
 
