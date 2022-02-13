@@ -33,7 +33,6 @@ func main() {
 	flag.Parse()
 
 	var (
-		opts          []tcg.Opt
 		width, height int
 		err           error
 	)
@@ -42,20 +41,32 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		opts = append(opts, tcg.WithClipCenter(width, height))
 	}
 
-	tg, err := tcg.New(mode, opts...)
+	tg, err := tcg.New(mode)
 	if err != nil {
 		log.Fatal(err)
 	}
+	_, scrH := tg.ScreenSize()
 
-	tg.Buf.Rect(1, 2, tg.Width-2, tg.Height-4, tcg.Black)
+	pattern := tcg.MustNewBufferFromStrings([]string{
+		" *",
+		"* ",
+	})
+	tg.Buf.Fill(0, 0, tcg.WithPattern(pattern))
 	tg.Show()
 
 	if width == 0 {
 		width, height = tg.ScreenSize()
+	} else {
+		tg.SetClipCenter(width, height)
 	}
+
+	tg.Buf.Rect(1, 2, tg.Width-2, tg.Height-4, tcg.Black) // coordinates in pixels
+	tg.PrintStr(5, 1, " Game of Life ")                   // coordinates in chars, not pixels
+	tg.PrintStr(15, scrH-1, ` <q> - Quit <p> - Pause <Right> Next step `)
+	tg.Show()
+
 	if err := tg.SetClipCenter(width-2, height-2); err != nil {
 		tg.Finish()
 		log.Fatal(err)
@@ -71,7 +82,7 @@ LOOP:
 		select {
 		case <-ticker:
 			if !paused {
-				nextStep(tg)
+				nextStep(scrH, tg)
 			}
 		case cmd := <-command:
 			switch cmd {
@@ -80,7 +91,7 @@ LOOP:
 			case cmdPause:
 				paused = !paused
 			case cmdNext:
-				nextStep(tg)
+				nextStep(scrH, tg)
 			}
 		}
 	}
@@ -102,8 +113,7 @@ func initRandom(tg *tcg.Tcg, fillFact float64) {
 	tg.Show()
 }
 
-func nextStep(tg *tcg.Tcg) {
-	_, fpsY := tg.ScreenSize()
+func nextStep(scrH int, tg *tcg.Tcg) {
 	startedAt := time.Now()
 
 	newGeneration := tcg.NewBuffer(tg.Width, tg.Height)
@@ -128,7 +138,7 @@ func nextStep(tg *tcg.Tcg) {
 
 	tg.Show()
 
-	tg.PrintStr(3, fpsY-1, fmt.Sprintf(" %-3d FPS ", time.Second/time.Since(startedAt)))
+	tg.PrintStr(3, scrH-1, fmt.Sprintf(" %-3d FPS ", time.Second/time.Since(startedAt)))
 }
 
 func getNeighbors(tg *tcg.Tcg, x, y int) int {
