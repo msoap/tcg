@@ -1,5 +1,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/msoap/tcg.svg)](https://pkg.go.dev/github.com/msoap/tcg)
 [![GitHub Action](https://github.com/msoap/tcg/actions/workflows/go.yml/badge.svg)](https://github.com/msoap/tcg/actions/workflows/go.yml)
+[![Coverage Status](https://coveralls.io/repos/github/msoap/tcg/badge.svg?branch=master)](https://coveralls.io/github/msoap/tcg?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/msoap/tcg)](https://goreportcard.com/report/github.com/msoap/tcg)
 
 # TCG - terminal cell graphics
 
