@@ -24,27 +24,39 @@ Go Graphics library for use in a text terminal. Only 1bit graphics can be used w
 ## Usage
 
 ```go
+package main
+
 import (
-    "github.com/msoap/tcg"
+	"log"
+
+	"github.com/gdamore/tcell/v2"
+	"github.com/msoap/tcg"
 )
 
-main () {
-    tg := tcg.New(tcg.Mode2x3) // each terminal symbol contains a 2x3 pixels grid, also you can use 1x1, 1x2, and 2x2 modes
-    for {
-        tg.Set(10, 10, tcg.Black)  // draw one pixel
-        pix := tg.At(10, 10)       // get color of pixel
-        tg.Show()                  // synchronize buffer with screen
+func main() {
+	tg, err := tcg.New(tcg.Mode2x3) // each terminal symbol contains a 2x3 pixels grid, also you can use 1x1, 1x2, and 2x2 modes
+	if err != nil {
+		log.Fatalf("create tg: %s", err)
+	}
 
-        time.Sleep(time.Millisecond * 100) // 10 FPS
-        if doExit {
-            break
-        }
-    }
-    tg.Finish()                // finish application and restore screen
+	i := 0
+	for {
+		pixColor := tg.Buf.At(10, 10)       // get color of pixel
+		tg.Buf.Set(11, 11, pixColor)        // draw one pixel with color from 10,10
+		tg.Buf.Line(0, 0, 50, i, tcg.Black) // draw a diagonal line
+		tg.Show()                           // synchronize buffer with screen
+
+		if ev, ok := tg.TCellScreen.PollEvent().(*tcell.EventKey); ok && ev.Rune() == 'q' {
+			break // exit by 'q' key
+		}
+		i++
+	}
+
+	tg.Finish() // finish application and restore screen
 }
 ```
 
-See more examples in `examples` folder.
+See more examples in [examples](https://github.com/msoap/tcg/tree/master/examples) folder.
 
 ## Screenshot
 
