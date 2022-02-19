@@ -118,7 +118,7 @@ func NewBufferFromImage(img image.Image) Buffer {
 	return buf
 }
 
-// ToImage - convert buffer to std (Gray) Image, for example for save buffer to image file like png
+// ToImage - convert buffer to std Image with Gray colorspace, for example for save buffer to image file like png
 func (b *Buffer) ToImage() image.Image {
 	img := image.NewGray(image.Rect(0, 0, b.Width, b.Height))
 	var c uint8
@@ -167,7 +167,7 @@ func (b *Buffer) Set(x, y int, color int) {
 	}
 }
 
-// At - get pixel from buffer
+// At - get pixel color from buffer
 func (b Buffer) At(x, y int) int {
 	if x < 0 || x > b.Width-1 || y < 0 || y > b.Height-1 {
 		return White
