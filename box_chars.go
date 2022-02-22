@@ -113,3 +113,17 @@ var (
 		Mode2x3: pixelChars2x3,
 	}
 )
+
+func checkCM(mode PixelsInChar, cm []rune) bool {
+	switch mode {
+	case Mode1x1:
+		return len(cm) == 2
+	case Mode1x2:
+		return len(cm) == 4
+	case Mode2x2:
+		return len(cm) == 16
+	case Mode2x3:
+		return len(cm) == 64
+	}
+	return false
+}
