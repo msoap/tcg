@@ -38,7 +38,7 @@ func (b *Buffer) Line(x1, y1, x2, y2 int, color int) {
 
 	if math.Abs(dx) > math.Abs(dy) {
 		if x2 < x1 {
-			x1, y1, x2, y2 = x2, y2, x1, y1 // swap
+			x1, y1, x2 = x2, y2, x1 // swap
 		}
 		for x := x1; x <= x2; x++ {
 			y := int(math.Round(float64(y1) + dy*float64(x-x1)/dx))
@@ -46,7 +46,7 @@ func (b *Buffer) Line(x1, y1, x2, y2 int, color int) {
 		}
 	} else {
 		if y2 < y1 {
-			x1, y1, x2, y2 = x2, y2, x1, y1 // swap
+			x1, y1, y2 = x2, y2, y1 // swap
 		}
 		for y := y1; y <= y2; y++ {
 			x := int(math.Round(float64(x1) + dx*float64(y-y1)/dy))
