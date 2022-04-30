@@ -65,8 +65,8 @@ func main() {
 		}
 	}
 
-	tg.Buf.Rect(1, 2, tg.Width-2, tg.Height-4, tcg.Black) // coordinates in pixels
-	tg.PrintStr(5, 1, " Game of Life ")                   // coordinates in chars, not pixels
+	tg.Buf.Rect(0, 0, tg.Width, tg.Height, tcg.Black) // coordinates in pixels
+	tg.PrintStr(5, 1, " Game of Life ")               // coordinates in chars, not pixels
 	tg.PrintStr(15, scrH-1, ` <q> - Quit <p> - Pause <Right> Next step `)
 	tg.Show()
 
