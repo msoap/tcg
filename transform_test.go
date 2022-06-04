@@ -275,38 +275,61 @@ func TestBuffer_ScrollH(t *testing.T) {
 }
 
 func TestBuffer_BitBltAllSrc(t *testing.T) {
-	src := MustNewBufferFromStrings([]string{
-		"..*..",
-		".*.*.",
-		"..*..",
-	})
-	b := MustNewBufferFromStrings([]string{
-		"..........",
-		".*******..",
-		".*.....*..",
-		".*.....*..",
-		".*.....*..",
-		".*.....*..",
-		".*.....*..",
-		".*******..",
-		"..........",
-		"..........",
-	})
-	b.BitBltAllSrc(2, 3, src)
+	t.Run("same buffers", func(t *testing.T) {
+		src := MustNewBufferFromStrings([]string{
+			"..*..",
+			".*.*.",
+			"..*..",
+		})
+		b := MustNewBufferFromStrings([]string{
+			"..*..",
+			"*****",
+			"..*..",
+		})
+		b.BitBltAllSrc(0, 0, src)
 
-	expected := MustNewBufferFromStrings([]string{
-		"..........",
-		".*******..",
-		".*.....*..",
-		".*..*..*..",
-		".*.*.*.*..",
-		".*..*..*..",
-		".*.....*..",
-		".*******..",
-		"..........",
-		"..........",
+		expected := MustNewBufferFromStrings([]string{
+			"..*..",
+			".*.*.",
+			"..*..",
+		})
+		assertEqBuffers(t, b, expected)
 	})
-	assertEqBuffers(t, b, expected)
+
+	t.Run("different buffers", func(t *testing.T) {
+		src := MustNewBufferFromStrings([]string{
+			"..*..",
+			".*.*.",
+			"..*..",
+		})
+		b := MustNewBufferFromStrings([]string{
+			"..........",
+			".*******..",
+			".*.....*..",
+			".*.....*..",
+			".*.....*..",
+			".*.....*..",
+			".*.....*..",
+			".*******..",
+			"..........",
+			"..........",
+		})
+		b.BitBltAllSrc(2, 3, src)
+
+		expected := MustNewBufferFromStrings([]string{
+			"..........",
+			".*******..",
+			".*.....*..",
+			".*..*..*..",
+			".*.*.*.*..",
+			".*..*..*..",
+			".*.....*..",
+			".*******..",
+			"..........",
+			"..........",
+		})
+		assertEqBuffers(t, b, expected)
+	})
 }
 
 func TestBuffer_BitBlt(t *testing.T) {
