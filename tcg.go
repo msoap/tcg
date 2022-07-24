@@ -8,7 +8,7 @@ import (
 
 // pixel colors
 const (
-	White = 0
+	White = 0 // without pixel
 	Black = 1 // it will be black on a terminal with light theme, and white on dark terminals
 )
 
@@ -22,6 +22,7 @@ type Tcg struct {
 	Width, Height int          // screen or clip of screen width/height in pixels
 	TCellScreen   tcell.Screen // tcell object for keyboard interactions, or low level interactions with terminal screen
 	Buf           Buffer       // buffer presents current screen
+	style         tcell.Style
 }
 
 // New - get new object with tcell inside
@@ -36,7 +37,7 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 	}
 
 	scrW, scrH := screen.Size()
-	config := tcgConfig{width: scrW, height: scrH}
+	config := tcgConfig{width: scrW, height: scrH, style: defaultStyle}
 	for _, optFn := range opts {
 		if err := optFn(&config); err != nil {
 			screen.Fini()
@@ -55,6 +56,7 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 		Width:       width,
 		Height:      height,
 		TCellScreen: screen,
+		style:       config.style,
 	}
 	result.applyClip()
 
@@ -85,7 +87,7 @@ func (tg *Tcg) updateScreen() {
 	for x := 0; x < tg.scrW; x++ {
 		for y := 0; y < tg.scrH; y++ {
 			charIndex := tg.Buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			tg.TCellScreen.SetContent(tg.config.clip.x+x, tg.config.clip.y+y, chatMapping[charIndex], nil, defaultStyle)
+			tg.TCellScreen.SetContent(tg.config.clip.x+x, tg.config.clip.y+y, chatMapping[charIndex], nil, tg.style)
 		}
 	}
 }
@@ -147,7 +149,7 @@ func (tg *Tcg) SetClipCenter(width, height int) error {
 // x, y - is in screen character coordinates, not pixels.
 // Also x/y coordinates is not use Clip of the screen, it's always absolute.
 func (tg *Tcg) PrintStr(x, y int, str string) {
-	tg.PrintStrStyle(x, y, str, defaultStyle)
+	tg.PrintStrStyle(x, y, str, tg.style)
 }
 
 // PrintStrStyle - print string on screen

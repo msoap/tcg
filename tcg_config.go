@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/gdamore/tcell/v2"
 )
 
 // Opt - options type for New buffer
@@ -12,6 +14,7 @@ type Opt func(*tcgConfig) error
 type tcgConfig struct {
 	width, height int  // screen size in characters
 	clip          geom // clip, width == 0 - without clip
+	style         tcell.Style
 }
 
 type geom struct {
@@ -44,6 +47,24 @@ func WithClip(x, y, width, height int) Opt {
 func WithClipCenter(width, height int) Opt {
 	return func(cfg *tcgConfig) error {
 		return WithClip((cfg.width-width)/2, (cfg.height-height)/2, width, height)(cfg)
+	}
+}
+
+// WithColor - set default color of pixels, this will affect the block of pixels per full symbol
+// color can be in the form of different options: "blue", "yellow" or "#ffaa11", see tcell.GetColor
+func WithColor(colorName string) Opt {
+	return func(cfg *tcgConfig) error {
+		cfg.style = cfg.style.Foreground(tcell.GetColor(colorName))
+		return nil
+	}
+}
+
+// WithBackgroundColor - set default background color of pixels, this will affect the block of pixels per full symbol
+// color can be in the form of different options: "blue", "yellow" or "#ffaa11", see tcell.GetColor
+func WithBackgroundColor(colorName string) Opt {
+	return func(cfg *tcgConfig) error {
+		cfg.style = cfg.style.Background(tcell.GetColor(colorName))
+		return nil
 	}
 }
 
