@@ -27,6 +27,7 @@ const (
 func main() {
 	delay := flag.Duration("delay", defaultDelay, "delay between steps")
 	size := flag.String("size", "", "screen size, in 'width x height' format, example: '80x25'")
+	colorName := flag.String("color", "", "redefine color, it can be: 'yellow', 'red' or like '#ffaa11'")
 	fillFactor := flag.Float64("fill", defaultInitFillFactor, "how much to fill the area initially")
 	mode := tcg.Mode2x3
 	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3")
@@ -43,7 +44,12 @@ func main() {
 		}
 	}
 
-	tg, err := tcg.New(mode)
+	opts := []tcg.Opt{}
+	if *colorName != "" {
+		opts = append(opts, tcg.WithColor(*colorName))
+	}
+
+	tg, err := tcg.New(mode, opts...)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,8 +71,8 @@ func main() {
 		}
 	}
 
-	tg.Buf.Rect(1, 2, tg.Width-2, tg.Height-4, tcg.Black) // coordinates in pixels
-	tg.PrintStr(5, 1, " Game of Life ")                   // coordinates in chars, not pixels
+	tg.Buf.Rect(0, 0, tg.Width, tg.Height, tcg.Black) // coordinates in pixels
+	tg.PrintStr(5, 1, " Game of Life ")               // coordinates in chars, not pixels
 	tg.PrintStr(15, scrH-1, ` <q> - Quit <p> - Pause <Right> Next step `)
 	tg.Show()
 
