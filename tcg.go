@@ -20,7 +20,7 @@ type Tcg struct {
 	Width, Height int          // screen or clip of screen width/height in pixels
 	TCellScreen   tcell.Screen // tcell object for keyboard interactions, or low level interactions with terminal screen
 	Buf           Buffer       // buffer presents current screen
-	ChatMapping   []rune       // chatMap used to render the pixels on screen
+	charMapping   []rune       // chatMap used to render the pixels on screen
 	style         tcell.Style
 }
 
@@ -55,7 +55,7 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 		Width:       width,
 		Height:      height,
 		TCellScreen: screen,
-		ChatMapping: pixelChars[mode],
+		charMapping: pixelChars[mode],
 		style:       config.style,
 	}
 	result.applyClip()
@@ -69,7 +69,7 @@ func NewWithMapping(mode PixelsInChar, cm []rune, opts ...Opt) (*Tcg, error) {
 	if err != nil {
 		return nil, err
 	}
-	o.ChatMapping = cm
+	o.charMapping = cm
 	return o, nil
 }
 
@@ -91,7 +91,7 @@ func (tg *Tcg) Show() {
 }
 
 func (tg *Tcg) updateScreen() {
-	chatMapping := tg.ChatMapping
+	chatMapping := tg.charMapping
 	blockW, blockH := tg.mode.Width(), tg.mode.Height()
 
 	for x := 0; x < tg.scrW; x++ {
@@ -104,11 +104,11 @@ func (tg *Tcg) updateScreen() {
 
 // RenderAsStrings - render buffer as slice of strings with pixel characters
 func RenderAsStrings(buf Buffer, mode PixelsInChar, cm ...[]rune) []string {
-	chatMapping := []rune{}
+	charMapping := []rune{}
 	if len(cm) == 0 || !checkCM(mode, cm[0]) {
-		chatMapping = pixelChars[mode]
+		charMapping = pixelChars[mode]
 	} else {
-		chatMapping = cm[0]
+		charMapping = cm[0]
 	}
 	blockW, blockH := mode.Width(), mode.Height()
 
@@ -128,7 +128,7 @@ func RenderAsStrings(buf Buffer, mode PixelsInChar, cm ...[]rune) []string {
 		line := ""
 		for x := 0; x < width; x++ {
 			charIndex := buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			line += string(chatMapping[charIndex])
+			line += string(charMapping[charIndex])
 		}
 		result = append(result, line)
 	}
