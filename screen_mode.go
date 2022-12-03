@@ -1,6 +1,63 @@
 package tcg
 
-import "errors"
+import (
+	"errors"
+	"strconv"
+)
+
+// PixelMode - graphics mode, size and symbols for graphics
+type PixelMode struct {
+	width, height int
+	charMapping   []rune // chatMap used to render the pixels on screen
+}
+
+var (
+	Mode1x1v = PixelMode{width: 1, height: 1, charMapping: pixelChars1x1}
+	Mode1x2v = PixelMode{width: 1, height: 2, charMapping: pixelChars1x2}
+	Mode2x2v = PixelMode{width: 2, height: 2, charMapping: pixelChars2x2}
+	Mode2x3v = PixelMode{width: 2, height: 3, charMapping: pixelChars2x3}
+)
+
+// Width - returns the width in pixels of one character in the text console
+func (pm PixelMode) Width() int {
+	return pm.width
+}
+
+// Height - returns the height in pixels of one character in the text console
+func (pm PixelMode) Height() int {
+	return pm.height
+}
+
+// String representation like "2x3"
+func (pm PixelMode) String() string {
+	return strconv.Itoa(pm.width) + "x" + strconv.Itoa(pm.height)
+}
+
+// Set from string (for using with flag.Var())
+func (pm *PixelMode) Set(in string) error {
+	switch in {
+	case "1x1":
+		*pm = Mode1x1v
+	case "1x2":
+		*pm = Mode1x2v
+	case "2x2":
+		*pm = Mode2x2v
+	case "2x3":
+		*pm = Mode2x3v
+	default:
+		return errors.New("not valid screen mode")
+	}
+
+	return nil
+}
+
+func NewPixelMode(width, height int, charMapping []rune) (*PixelMode, error) {
+	if err := checkCharMapping(width, height, charMapping); err != nil {
+		return nil, err
+	}
+
+	return &PixelMode{width: width, height: height, charMapping: charMapping}, nil
+}
 
 // PixelsInChar - a type representing the graphics mode
 type PixelsInChar int

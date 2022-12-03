@@ -15,6 +15,7 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 // Tcg - tcell graphics object
 type Tcg struct {
 	mode          PixelsInChar
+	pixelMode     PixelMode
 	config        tcgConfig
 	scrW, scrH    int          // screen or clip of screen width/height in characters
 	Width, Height int          // screen or clip of screen width/height in pixels
