@@ -65,7 +65,7 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 
 // NewWithMapping - get a new object with tcell inside and a custom pixel to rune mapping
 func NewWithMapping(mode PixelsInChar, cm []rune, opts ...Opt) (*Tcg, error) {
-	o, err := New(mode, opts)
+	o, err := New(mode, opts...)
 	if err != nil {
 		return nil, err
 	}
