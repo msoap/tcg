@@ -14,7 +14,7 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 
 // Tcg - tcell graphics object
 type Tcg struct {
-	mode          PixelsInChar
+	oldMode       PixelsInChar
 	pixelMode     PixelMode
 	config        tcgConfig
 	scrW, scrH    int          // screen or clip of screen width/height in characters
@@ -49,7 +49,7 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 	height := scrH * mode.Height()
 
 	result := Tcg{
-		mode:        mode,
+		oldMode:     mode,
 		config:      config,
 		scrW:        scrW,
 		scrH:        scrH,
@@ -78,8 +78,8 @@ func (tg *Tcg) applyClip() {
 	if tg.config.clip.width > 0 && tg.config.clip.height > 0 {
 		tg.scrW = tg.config.clip.width
 		tg.scrH = tg.config.clip.height
-		tg.Width = tg.config.clip.width * tg.mode.Width()
-		tg.Height = tg.config.clip.height * tg.mode.Height()
+		tg.Width = tg.config.clip.width * tg.oldMode.Width()
+		tg.Height = tg.config.clip.height * tg.oldMode.Height()
 	}
 
 	tg.Buf = NewBuffer(tg.Width, tg.Height)
@@ -93,7 +93,7 @@ func (tg *Tcg) Show() {
 
 func (tg *Tcg) updateScreen() {
 	chatMapping := tg.charMapping
-	blockW, blockH := tg.mode.Width(), tg.mode.Height()
+	blockW, blockH := tg.oldMode.Width(), tg.oldMode.Height()
 
 	for x := 0; x < tg.scrW; x++ {
 		for y := 0; y < tg.scrH; y++ {
@@ -104,13 +104,7 @@ func (tg *Tcg) updateScreen() {
 }
 
 // RenderAsStrings - render buffer as slice of strings with pixel characters
-func RenderAsStrings(buf Buffer, mode PixelsInChar, cm ...[]rune) []string {
-	charMapping := []rune{}
-	if len(cm) == 0 || !checkCM(mode, cm[0]) {
-		charMapping = pixelChars[mode]
-	} else {
-		charMapping = cm[0]
-	}
+func RenderAsStrings(buf Buffer, mode PixelMode) []string {
 	blockW, blockH := mode.Width(), mode.Height()
 
 	var result []string
@@ -129,7 +123,7 @@ func RenderAsStrings(buf Buffer, mode PixelsInChar, cm ...[]rune) []string {
 		line := ""
 		for x := 0; x < width; x++ {
 			charIndex := buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			line += string(charMapping[charIndex])
+			line += string(mode.charMapping[charIndex])
 		}
 		result = append(result, line)
 	}

@@ -8,7 +8,7 @@ import (
 
 // PixelMode - graphics mode, size and symbols for graphics
 type PixelMode struct {
-	width, height int
+	width, height int    // dimension of one character in pixels
 	charMapping   []rune // chatMap used to render the pixels on screen
 }
 
