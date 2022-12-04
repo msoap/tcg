@@ -14,7 +14,7 @@ import (
 
 /*
 create PBM files with ImageMagick:
-  convert img01.png -compress none -random-threshold 25% img01.pbm
+  convert img01.png -compress none -random-threshold 70% img01.pbm
 */
 
 func main() {
