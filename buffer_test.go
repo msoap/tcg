@@ -266,7 +266,7 @@ func Test_widthInBytes(t *testing.T) {
 }
 
 func Test_NewBufferFromImage(t *testing.T) {
-	reader, err := os.Open("testdata/z.png")
+	reader, err := os.Open("testdata/plus.png")
 	if err != nil {
 		t.Fatalf("failed to open file: %s", err)
 	}
@@ -281,16 +281,13 @@ func Test_NewBufferFromImage(t *testing.T) {
 	expected := MustNewBufferFromStrings([]string{
 		"..........",
 		"..........",
-		"..******..",
-		"......**..",
-		"......*...",
-		".....**...",
 		"....**....",
-		"...**.....",
-		"...*......",
-		"..**......",
-		".*******..",
+		"....**....",
 		"..******..",
+		"..******..",
+		"....**....",
+		"....**....",
+		"..........",
 		"..........",
 	})
 	assertEqBuffers(t, b, expected)
