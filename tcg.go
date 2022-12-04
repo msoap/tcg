@@ -89,34 +89,6 @@ func (tg *Tcg) updateScreen() {
 	}
 }
 
-// RenderAsStrings - render buffer as slice of strings with pixel characters
-func RenderAsStrings(buf Buffer, mode PixelMode) []string {
-	blockW, blockH := mode.Width(), mode.Height()
-
-	var result []string
-
-	width := buf.Width / blockW
-	if buf.Width%blockW != 0 {
-		width++
-	}
-
-	height := buf.Height / blockH
-	if buf.Height%blockH != 0 {
-		height++
-	}
-
-	for y := 0; y < height; y++ {
-		line := ""
-		for x := 0; x < width; x++ {
-			charIndex := buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			line += string(mode.charMapping[charIndex])
-		}
-		result = append(result, line)
-	}
-
-	return result
-}
-
 // Finish application
 func (tg *Tcg) Finish() {
 	tg.TCellScreen.Fini()

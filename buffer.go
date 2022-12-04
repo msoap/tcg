@@ -217,3 +217,31 @@ func (b Buffer) IsEqual(a Buffer) bool {
 
 	return true
 }
+
+// RenderAsStrings - render buffer as slice of strings with pixel characters
+func (b Buffer) RenderAsStrings(mode PixelMode) []string {
+	blockW, blockH := mode.Width(), mode.Height()
+
+	var result []string
+
+	width := b.Width / blockW
+	if b.Width%blockW != 0 {
+		width++
+	}
+
+	height := b.Height / blockH
+	if b.Height%blockH != 0 {
+		height++
+	}
+
+	for y := 0; y < height; y++ {
+		line := ""
+		for x := 0; x < width; x++ {
+			charIndex := b.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
+			line += string(mode.charMapping[charIndex])
+		}
+		result = append(result, line)
+	}
+
+	return result
+}
