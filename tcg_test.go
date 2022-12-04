@@ -77,7 +77,7 @@ func TestRenderAsStrings(t *testing.T) {
 	}
 }
 
-func TestRenderAsStringsWithChatMap(t *testing.T) {
+func TestRenderAsStringsWithNewPixelMode(t *testing.T) {
 	tests := []struct {
 		name          string
 		img           []string
