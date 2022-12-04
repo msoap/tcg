@@ -23,7 +23,7 @@ func TestRenderAsStrings(t *testing.T) {
 				".*..*.",
 				".****.",
 			},
-			mode: Mode1x1v,
+			mode: Mode1x1,
 			want: []string{
 				"  ██  ",
 				" █  █ ",
@@ -37,7 +37,7 @@ func TestRenderAsStrings(t *testing.T) {
 				".*..*.",
 				".****.",
 			},
-			mode: Mode1x2v,
+			mode: Mode1x2,
 			want: []string{
 				" ▄▀▀▄ ",
 				" ▀▀▀▀ ",
@@ -50,7 +50,7 @@ func TestRenderAsStrings(t *testing.T) {
 				".*..*.",
 				".****.",
 			},
-			mode: Mode2x2v,
+			mode: Mode2x2,
 			want: []string{
 				"▗▀▖",
 				"▝▀▘",
@@ -63,7 +63,7 @@ func TestRenderAsStrings(t *testing.T) {
 				".*..*.",
 				".****.",
 			},
-			mode: Mode2x3v,
+			mode: Mode2x3,
 			want: []string{"🬦🬰🬓"},
 		},
 	}

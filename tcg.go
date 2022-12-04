@@ -14,19 +14,17 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 
 // Tcg - tcell graphics object
 type Tcg struct {
-	oldMode       PixelsInChar
-	pixelMode     PixelMode
+	mode          PixelMode
 	config        tcgConfig
 	scrW, scrH    int          // screen or clip of screen width/height in characters
 	Width, Height int          // screen or clip of screen width/height in pixels
 	TCellScreen   tcell.Screen // tcell object for keyboard interactions, or low level interactions with terminal screen
 	Buf           Buffer       // buffer presents current screen
-	charMapping   []rune       // chatMap used to render the pixels on screen
 	style         tcell.Style
 }
 
 // New - get new object with tcell inside
-func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
+func New(mode PixelMode, opts ...Opt) (*Tcg, error) {
 	screen, err := tcell.NewScreen()
 	if err != nil {
 		return nil, err
@@ -49,14 +47,13 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 	height := scrH * mode.Height()
 
 	result := Tcg{
-		oldMode:     mode,
+		mode:        mode,
 		config:      config,
 		scrW:        scrW,
 		scrH:        scrH,
 		Width:       width,
 		Height:      height,
 		TCellScreen: screen,
-		charMapping: pixelChars[mode],
 		style:       config.style,
 	}
 	result.applyClip()
@@ -64,22 +61,12 @@ func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
 	return &result, nil
 }
 
-// NewWithMapping - get a new object with tcell inside and a custom pixel to rune mapping
-func NewWithMapping(mode PixelsInChar, cm []rune, opts ...Opt) (*Tcg, error) {
-	o, err := New(mode, opts...)
-	if err != nil {
-		return nil, err
-	}
-	o.charMapping = cm
-	return o, nil
-}
-
 func (tg *Tcg) applyClip() {
 	if tg.config.clip.width > 0 && tg.config.clip.height > 0 {
 		tg.scrW = tg.config.clip.width
 		tg.scrH = tg.config.clip.height
-		tg.Width = tg.config.clip.width * tg.oldMode.Width()
-		tg.Height = tg.config.clip.height * tg.oldMode.Height()
+		tg.Width = tg.config.clip.width * tg.mode.Width()
+		tg.Height = tg.config.clip.height * tg.mode.Height()
 	}
 
 	tg.Buf = NewBuffer(tg.Width, tg.Height)
@@ -92,13 +79,12 @@ func (tg *Tcg) Show() {
 }
 
 func (tg *Tcg) updateScreen() {
-	chatMapping := tg.charMapping
-	blockW, blockH := tg.oldMode.Width(), tg.oldMode.Height()
+	blockW, blockH := tg.mode.Width(), tg.mode.Height()
 
 	for x := 0; x < tg.scrW; x++ {
 		for y := 0; y < tg.scrH; y++ {
 			charIndex := tg.Buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			tg.TCellScreen.SetContent(tg.config.clip.x+x, tg.config.clip.y+y, chatMapping[charIndex], nil, tg.style)
+			tg.TCellScreen.SetContent(tg.config.clip.x+x, tg.config.clip.y+y, tg.mode.charMapping[charIndex], nil, tg.style)
 		}
 	}
 }

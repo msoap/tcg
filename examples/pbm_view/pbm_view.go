@@ -33,7 +33,7 @@ func main() {
 	}
 	_ = fReader.Close()
 
-	list := tcg.RenderAsStrings(buf, tcg.Mode2x3v)
+	list := tcg.RenderAsStrings(buf, tcg.Mode2x3)
 	for _, line := range list {
 		fmt.Println(line)
 	}

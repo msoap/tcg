@@ -13,10 +13,11 @@ type PixelMode struct {
 }
 
 var (
-	Mode1x1v = PixelMode{width: 1, height: 1, charMapping: pixelChars1x1}
-	Mode1x2v = PixelMode{width: 1, height: 2, charMapping: pixelChars1x2}
-	Mode2x2v = PixelMode{width: 2, height: 2, charMapping: pixelChars2x2}
-	Mode2x3v = PixelMode{width: 2, height: 3, charMapping: pixelChars2x3}
+	// predefined modes with 1x1, 1x2, 2x2 and 2x3 pixels per character
+	Mode1x1 = PixelMode{width: 1, height: 1, charMapping: pixelChars1x1}
+	Mode1x2 = PixelMode{width: 1, height: 2, charMapping: pixelChars1x2}
+	Mode2x2 = PixelMode{width: 2, height: 2, charMapping: pixelChars2x2}
+	Mode2x3 = PixelMode{width: 2, height: 3, charMapping: pixelChars2x3}
 )
 
 // Width - returns the width in pixels of one character in the text console
@@ -38,13 +39,13 @@ func (pm PixelMode) String() string {
 func (pm *PixelMode) Set(in string) error {
 	switch in {
 	case "1x1":
-		*pm = Mode1x1v
+		*pm = Mode1x1
 	case "1x2":
-		*pm = Mode1x2v
+		*pm = Mode1x2
 	case "2x2":
-		*pm = Mode2x2v
+		*pm = Mode2x2
 	case "2x3":
-		*pm = Mode2x3v
+		*pm = Mode2x3
 	default:
 		return errors.New("not valid screen mode")
 	}
@@ -71,77 +72,6 @@ func checkCharMapping(width, height int, cm []rune) error {
 
 	if 1<<(width*height) != len(cm) {
 		return fmt.Errorf("char list length: %d not equal %d (2 ^ (%d * %d))", len(cm), 1<<(width*height), width, height)
-	}
-
-	return nil
-}
-
-// PixelsInChar - a type representing the graphics mode
-type PixelsInChar int
-
-// graphics modes
-const (
-	Mode1x1 PixelsInChar = iota
-	Mode1x2
-	Mode2x2
-	Mode2x3
-)
-
-// Width - returns the width in pixels of one character in the text console
-func (pic PixelsInChar) Width() int {
-	switch pic {
-	case Mode1x1, Mode1x2:
-		return 1
-	case Mode2x2, Mode2x3:
-		return 2
-	default:
-		return 0
-	}
-}
-
-// Height - returns the height in pixels of one character in the text console
-func (pic PixelsInChar) Height() int {
-	switch pic {
-	case Mode1x1:
-		return 1
-	case Mode1x2, Mode2x2:
-		return 2
-	case Mode2x3:
-		return 3
-	default:
-		return 0
-	}
-}
-
-// String represent
-func (pic PixelsInChar) String() string {
-	switch pic {
-	case Mode1x1:
-		return "1x1"
-	case Mode1x2:
-		return "1x2"
-	case Mode2x2:
-		return "2x2"
-	case Mode2x3:
-		return "2x3"
-	default:
-		return "-"
-	}
-}
-
-// Set from string (for using with flag.Var())
-func (pic *PixelsInChar) Set(in string) error {
-	switch in {
-	case "1x1":
-		*pic = Mode1x1
-	case "1x2":
-		*pic = Mode1x2
-	case "2x2":
-		*pic = Mode2x2
-	case "2x3":
-		*pic = Mode2x3
-	default:
-		return errors.New("not valid screen mode")
 	}
 
 	return nil
