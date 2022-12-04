@@ -9,7 +9,7 @@ Go Graphics library for use in a text terminal. Only 1bit graphics can be used w
 
 ## Features
 
-  * Available 4 [graphics mode](https://pkg.go.dev/github.com/msoap/tcg#PixelsInChar), from 2x3 pixels grid for terminal symbol to 1x1, 1x2 and 2x2
+  * Available 4 [graphics mode](https://pkg.go.dev/github.com/msoap/tcg#PixelMode), from 2x3 pixels grid for terminal symbol to 1x1, 1x2 and 2x2, or you can [create](https://pkg.go.dev/github.com/msoap/tcg#NewPixelMode) own custom mode with your graphics
   * [Set](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Set)/[get](https://pkg.go.dev/github.com/msoap/tcg#Buffer.At) one pixel
   * Drawings: [lines](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Line) (vertical, horizontal, or with any angle), [boxes](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Rect), [circles](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Circle), [arcs](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Arc)
   * [Fill](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Fill) area with a different [options](https://pkg.go.dev/github.com/msoap/tcg#FillOpt), for example fill with [patterns](https://pkg.go.dev/github.com/msoap/tcg#WithPattern)

@@ -14,7 +14,7 @@ var defaultStyle = tcell.StyleDefault.Foreground(tcell.ColorDefault)
 
 // Tcg - tcell graphics object
 type Tcg struct {
-	mode          PixelsInChar
+	mode          PixelMode
 	config        tcgConfig
 	scrW, scrH    int          // screen or clip of screen width/height in characters
 	Width, Height int          // screen or clip of screen width/height in pixels
@@ -24,7 +24,7 @@ type Tcg struct {
 }
 
 // New - get new object with tcell inside
-func New(mode PixelsInChar, opts ...Opt) (*Tcg, error) {
+func New(mode PixelMode, opts ...Opt) (*Tcg, error) {
 	screen, err := tcell.NewScreen()
 	if err != nil {
 		return nil, err
@@ -79,20 +79,18 @@ func (tg *Tcg) Show() {
 }
 
 func (tg *Tcg) updateScreen() {
-	chatMapping := pixelChars[tg.mode]
 	blockW, blockH := tg.mode.Width(), tg.mode.Height()
 
 	for x := 0; x < tg.scrW; x++ {
 		for y := 0; y < tg.scrH; y++ {
 			charIndex := tg.Buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			tg.TCellScreen.SetContent(tg.config.clip.x+x, tg.config.clip.y+y, chatMapping[charIndex], nil, tg.style)
+			tg.TCellScreen.SetContent(tg.config.clip.x+x, tg.config.clip.y+y, tg.mode.charMapping[charIndex], nil, tg.style)
 		}
 	}
 }
 
 // RenderAsStrings - render buffer as slice of strings with pixel characters
-func RenderAsStrings(buf Buffer, mode PixelsInChar) []string {
-	chatMapping := pixelChars[mode]
+func RenderAsStrings(buf Buffer, mode PixelMode) []string {
 	blockW, blockH := mode.Width(), mode.Height()
 
 	var result []string
@@ -111,7 +109,7 @@ func RenderAsStrings(buf Buffer, mode PixelsInChar) []string {
 		line := ""
 		for x := 0; x < width; x++ {
 			charIndex := buf.getPixelsBlock(x*blockW, y*blockH, blockW, blockH)
-			line += string(chatMapping[charIndex])
+			line += string(mode.charMapping[charIndex])
 		}
 		result = append(result, line)
 	}
