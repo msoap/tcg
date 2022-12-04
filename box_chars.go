@@ -1,9 +1,5 @@
 package tcg
 
-import (
-	"fmt"
-)
-
 var (
 	pixelChars1x1 = []rune{
 		' ', // 0
@@ -117,13 +113,6 @@ var (
 		Mode2x3: pixelChars2x3,
 	}
 )
-
-func checkCharMapping(width, height int, cm []rune) error {
-	if 1<<(width*height-1) != len(cm) {
-		return fmt.Errorf("char list length: %d not equeal %d (2 ^ (%d * %d))", len(cm), 1<<(width*height-1), width, height)
-	}
-	return nil
-}
 
 func checkCM(mode PixelsInChar, cm []rune) bool {
 	switch mode {

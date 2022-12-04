@@ -2,6 +2,7 @@ package tcg
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -57,6 +58,22 @@ func NewPixelMode(width, height int, charMapping []rune) (*PixelMode, error) {
 	}
 
 	return &PixelMode{width: width, height: height, charMapping: charMapping}, nil
+}
+
+func checkCharMapping(width, height int, cm []rune) error {
+	if width == 0 || height == 0 {
+		return fmt.Errorf("zero width or height")
+	}
+
+	if len(cm) == 0 {
+		return fmt.Errorf("empty char mapping list")
+	}
+
+	if 1<<(width*height) != len(cm) {
+		return fmt.Errorf("char list length: %d not equal %d (2 ^ (%d * %d))", len(cm), 1<<(width*height), width, height)
+	}
+
+	return nil
 }
 
 // PixelsInChar - a type representing the graphics mode
