@@ -15,6 +15,9 @@ import (
 /*
 create PBM files with ImageMagick:
   convert img01.png -compress none -random-threshold 70% img01.pbm
+
+usage:
+  go run examples/pbm_view/pbm_view.go examples/pbm_view/img01.pbm
 */
 
 func main() {
