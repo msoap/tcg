@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"strings"
 )
 
 // Buffer - implement base screen pixel buffer
@@ -56,24 +57,6 @@ func NewBufferFromStrings(in []string) (*Buffer, error) {
 	return &buf, nil
 }
 
-// Strings - render as slice of string, ["...**...", ...]
-func (b Buffer) Strings() []string {
-	result := make([]string, 0, b.Height)
-	for y := 0; y < b.Height; y++ {
-		line := ""
-		for x := 0; x < b.Width; x++ {
-			if b.At(x, y) == Black {
-				line += "*"
-			} else {
-				line += "."
-			}
-		}
-		result = append(result, line)
-	}
-
-	return result
-}
-
 // MustNewBufferFromStrings - get new buffer object from list of strings and die on error
 func MustNewBufferFromStrings(in []string) Buffer {
 	buf, err := NewBufferFromStrings(in)
@@ -81,6 +64,16 @@ func MustNewBufferFromStrings(in []string) Buffer {
 		panic(err)
 	}
 	return *buf
+}
+
+// Strings - render as slice of string, ["...**...", ...]
+func (b Buffer) Strings() []string {
+	return b.RenderAsStrings(Mode1x1Simple)
+}
+
+// String - render as string with new-line separator: "..*..\n*....*\n..*.."
+func (b Buffer) String() string {
+	return strings.Join(b.Strings(), "\n")
 }
 
 func allocateBuffer(w, h int) [][]byte {

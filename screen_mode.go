@@ -18,6 +18,9 @@ var (
 	Mode1x2 = PixelMode{width: 1, height: 2, charMapping: pixelChars1x2}
 	Mode2x2 = PixelMode{width: 2, height: 2, charMapping: pixelChars2x2}
 	Mode2x3 = PixelMode{width: 2, height: 3, charMapping: pixelChars2x3}
+
+	// Simple mode for debug or unittests with "." and "*" chars as colors
+	Mode1x1Simple = PixelMode{width: 1, height: 1, charMapping: pixelChars1x1Simple}
 )
 
 // Width - returns the width in pixels of one character in the text console

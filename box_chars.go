@@ -6,6 +6,11 @@ var (
 		'█', // 1
 	}
 
+	pixelChars1x1Simple = []rune{
+		'.', // 0
+		'*', // 1
+	}
+
 	pixelChars1x2 = []rune{
 		' ', // 00
 		'▄', // 01
