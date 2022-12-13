@@ -2,10 +2,16 @@
 
 This is small example of "Game Of Life", see [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) for more information.
 
+## Install
+
+```
+go install github.com/msoap/tcg/examples/game_of_life@latest
+```
+
 ## Usage
 
 ```
-go run game_of_life.go [options]
+game_of_life [options]
 options:
   -color string
     	redefine color, it can be: 'yellow', 'red' or like '#ffaa11'
