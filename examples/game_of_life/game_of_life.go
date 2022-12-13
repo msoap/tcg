@@ -144,10 +144,8 @@ func nextStep(scrH int, tg *tcg.Tcg) {
 
 	// copy to screen
 	tg.Buf.BitBltAllSrc(0, 0, newGeneration)
-
-	tg.Show()
-
 	tg.PrintStr(3, scrH-1, fmt.Sprintf(" %-3d FPS ", time.Second/time.Since(startedAt)))
+	tg.Show()
 }
 
 func getNeighbors(tg *tcg.Tcg, x, y int) int {
