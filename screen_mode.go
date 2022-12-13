@@ -21,6 +21,9 @@ var (
 
 	// Simple mode for debug or unittests with "." and "*" chars as colors
 	Mode1x1Simple = PixelMode{width: 1, height: 1, charMapping: pixelChars1x1Simple}
+
+	// 2x4 mode based on Braille symbols (https://en.wikipedia.org/wiki/Braille_Patterns)
+	Mode2x4Braille = PixelMode{width: 2, height: 4, charMapping: pixelChars2x4Braille}
 )
 
 // Width - returns the width in pixels of one character in the text console
@@ -43,12 +46,16 @@ func (pm *PixelMode) Set(in string) error {
 	switch in {
 	case "1x1":
 		*pm = Mode1x1
+	case "1x1Simple":
+		*pm = Mode1x1Simple
 	case "1x2":
 		*pm = Mode1x2
 	case "2x2":
 		*pm = Mode2x2
 	case "2x3":
 		*pm = Mode2x3
+	case "2x4Braille":
+		*pm = Mode2x4Braille
 	default:
 		return errors.New("not valid screen mode")
 	}
