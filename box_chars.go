@@ -1,3 +1,5 @@
+//go:generate sh -c "go run _2x4_generator/main.go > box_chars_2x4.go; go fmt box_chars_2x4.go"
+
 package tcg
 
 var (
