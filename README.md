@@ -60,7 +60,7 @@ See more examples in [examples](https://github.com/msoap/tcg/tree/master/example
 
 ## Screenshot
 
-[Game of Life](https://github.com/msoap/tcg/blob/master/examples/game_of_life/game_of_life.go) example in iTerm2 terminal with Iosevka font:
+[Game of Life](https://github.com/msoap/tcg/tree/master/examples/game_of_life) example in iTerm2 terminal with Iosevka font:
 
 <img width="663" alt="TCG example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/153767605-76dd1552-9424-49b9-9bf3-9163132af9b2.png">
 
