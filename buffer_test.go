@@ -395,6 +395,16 @@ func TestRenderAsStrings(t *testing.T) {
 			mode: Mode2x3,
 			want: []string{"🬦🬰🬓"},
 		},
+		{
+			name: "2x4",
+			img: []string{
+				"..**..",
+				".*..*.",
+				".****.",
+			},
+			mode: Mode2x4Braille,
+			want: []string{"⠰⠭⠆"},
+		},
 	}
 
 	for _, tt := range tests {
