@@ -11,7 +11,7 @@ import (
 
 func main() {
 	mode := tcg.Mode2x3
-	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3")
+	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3, 2x4Braille")
 	flag.Parse()
 
 	tg, err := tcg.New(mode)
