@@ -86,7 +86,7 @@ func main() {
 
 	tg.Buf.Rect(0, 0, tg.Width, tg.Height, tcg.Black) // coordinates in pixels
 	tg.PrintStr(4, 1, " Game of Life ")               // coordinates in chars, not pixels
-	tg.PrintStr(23, scrH-1, `| <q> - Quit | <p> - Pause | <Right> - Next step | <s> - Screenshot `)
+	tg.PrintStr(24, scrH-1, `| <q> - Quit | <p> - Pause | <Right> - Next step | <s> - Screenshot `)
 	tg.Show()
 
 	if err := tg.SetClipCenter(width-2, height-2); err != nil {
@@ -173,8 +173,7 @@ func (g *game) nextStep() {
 
 	// copy to screen
 	g.tg.Buf.BitBltAllSrc(0, 0, newGeneration)
-	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %-3d FPS ", time.Second/time.Since(startedAt)))
-	g.tg.PrintStr(12, g.scrH-1, fmt.Sprintf("| %4d Gen ", g.generation))
+	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %4d FPS | %4d Gen ", time.Second/time.Since(startedAt), g.generation))
 	g.tg.Show()
 }
 
