@@ -14,14 +14,19 @@ import (
 	"github.com/msoap/tcg"
 )
 
+type (
+	cmds int
+	game struct {
+		tg         *tcg.Tcg
+		scrH       int
+		generation int
+	}
+)
+
 const (
 	defaultDelay          = time.Millisecond * 100
 	defaultInitFillFactor = 0.2
-)
 
-type cmds int
-
-const (
 	cmdExit cmds = iota
 	cmdPause
 	cmdNext
@@ -65,27 +70,32 @@ func main() {
 		"* ",
 	})
 	tg.Buf.Fill(0, 0, tcg.WithPattern(pattern))
+	tg.Buf.Rect(0, 0, tg.Width, tg.Height, tcg.Black) // coordinates in pixels
 	tg.Show()
 
 	if width == 0 {
 		width, height = tg.ScreenSize()
-	} else {
-		if err := tg.SetClipCenter(width, height); err != nil {
-			tg.Finish()
-			log.Fatal(err)
-		}
+		width -= 6
+		height -= 4
+	}
+
+	if err := tg.SetClipCenter(width, height); err != nil {
+		tg.Finish()
+		log.Fatal(err)
 	}
 
 	tg.Buf.Rect(0, 0, tg.Width, tg.Height, tcg.Black) // coordinates in pixels
-	tg.PrintStr(5, 1, " Game of Life ")               // coordinates in chars, not pixels
-	tg.PrintStr(15, scrH-1, ` <q> - Quit | <p> - Pause | <Right> - Next step | <s> - Screenshot `)
+	tg.PrintStr(4, 1, " Game of Life ")               // coordinates in chars, not pixels
+	tg.PrintStr(23, scrH-1, `| <q> - Quit | <p> - Pause | <Right> - Next step | <s> - Screenshot `)
 	tg.Show()
 
 	if err := tg.SetClipCenter(width-2, height-2); err != nil {
 		tg.Finish()
 		log.Fatal(err)
 	}
-	initRandom(tg, *fillFactor)
+
+	game := newGame(tg)
+	game.initRandom(*fillFactor)
 
 	ticker := time.Tick(*delay)
 	command := getCommand(tg)
@@ -96,7 +106,7 @@ LOOP:
 		select {
 		case <-ticker:
 			if !paused {
-				nextStep(scrH, tg)
+				game.nextStep()
 			}
 		case cmd := <-command:
 			switch cmd {
@@ -105,7 +115,7 @@ LOOP:
 			case cmdPause:
 				paused = !paused
 			case cmdNext:
-				nextStep(scrH, tg)
+				game.nextStep()
 			case cmdScreenshot:
 				if err := saveScreenshot(*screenshotName, tg.Buf); err != nil {
 					tg.PrintStr(0, 0, fmt.Sprintf("save: %s", err))
@@ -118,29 +128,38 @@ LOOP:
 	tg.Finish()
 }
 
-func initRandom(tg *tcg.Tcg, fillFact float64) {
+func newGame(tg *tcg.Tcg) *game {
+	_, scrH := tg.ScreenSize()
+	return &game{
+		tg:   tg,
+		scrH: scrH,
+	}
+}
+
+func (g *game) initRandom(fillFact float64) {
 	rand.Seed(time.Now().UnixNano())
-	for y := 0; y < tg.Height; y++ {
-		for x := 0; x < tg.Width; x++ {
+	for y := 0; y < g.tg.Height; y++ {
+		for x := 0; x < g.tg.Width; x++ {
 			if rand.Float64() < fillFact {
-				tg.Buf.Set(x, y, tcg.Black)
+				g.tg.Buf.Set(x, y, tcg.Black)
 			} else {
-				tg.Buf.Set(x, y, tcg.White)
+				g.tg.Buf.Set(x, y, tcg.White)
 			}
 		}
 	}
-	tg.Show()
+	g.tg.Show()
 }
 
-func nextStep(scrH int, tg *tcg.Tcg) {
+func (g *game) nextStep() {
 	startedAt := time.Now()
+	g.generation++
 
-	newGeneration := tcg.NewBuffer(tg.Width, tg.Height)
+	newGeneration := tcg.NewBuffer(g.tg.Width, g.tg.Height)
 
-	for y := 0; y < tg.Height; y++ {
-		for x := 0; x < tg.Width; x++ {
-			neighbors := getNeighbors(tg, x, y)
-			oldCell := tg.Buf.At(x, y)
+	for y := 0; y < g.tg.Height; y++ {
+		for x := 0; x < g.tg.Width; x++ {
+			neighbors := g.getNeighbors(x, y)
+			oldCell := g.tg.Buf.At(x, y)
 			switch {
 			case oldCell == tcg.White && neighbors == 3:
 				newGeneration.Set(x, y, tcg.Black)
@@ -153,20 +172,21 @@ func nextStep(scrH int, tg *tcg.Tcg) {
 	}
 
 	// copy to screen
-	tg.Buf.BitBltAllSrc(0, 0, newGeneration)
-	tg.PrintStr(3, scrH-1, fmt.Sprintf(" %-3d FPS ", time.Second/time.Since(startedAt)))
-	tg.Show()
+	g.tg.Buf.BitBltAllSrc(0, 0, newGeneration)
+	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %-3d FPS ", time.Second/time.Since(startedAt)))
+	g.tg.PrintStr(12, g.scrH-1, fmt.Sprintf("| %4d Gen ", g.generation))
+	g.tg.Show()
 }
 
-func getNeighbors(tg *tcg.Tcg, x, y int) int {
-	return tg.Buf.At(x-1, y-1) +
-		tg.Buf.At(x, y-1) +
-		tg.Buf.At(x+1, y-1) +
-		tg.Buf.At(x-1, y) +
-		tg.Buf.At(x+1, y) +
-		tg.Buf.At(x-1, y+1) +
-		tg.Buf.At(x, y+1) +
-		tg.Buf.At(x+1, y+1)
+func (g *game) getNeighbors(x, y int) int {
+	return g.tg.Buf.At(x-1, y-1) +
+		g.tg.Buf.At(x, y-1) +
+		g.tg.Buf.At(x+1, y-1) +
+		g.tg.Buf.At(x-1, y) +
+		g.tg.Buf.At(x+1, y) +
+		g.tg.Buf.At(x-1, y+1) +
+		g.tg.Buf.At(x, y+1) +
+		g.tg.Buf.At(x+1, y+1)
 }
 
 func getCommand(tg *tcg.Tcg) chan cmds {
