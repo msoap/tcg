@@ -36,6 +36,6 @@ options:
 
 ## Screenshots
 
-<img width="663" alt="TCG library example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/153767605-76dd1552-9424-49b9-9bf3-9163132af9b2.png">
+<img width="843" alt="TCG library example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/222931477-2aac0d97-051a-4261-a445-c1d4c12705de.png">
 
 <img width="906" alt="TCG library example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/207433839-7a15d70e-9258-4943-a9ef-34ea9c139ca5.png">
