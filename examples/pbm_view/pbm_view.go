@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -21,13 +22,18 @@ usage:
 */
 
 func main() {
-	if len(os.Args) != 2 {
-		log.Fatalf("file name of .pbm file needed")
+	mode := tcg.Mode2x3
+	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3, 2x4Braille")
+	flag.Parse()
+
+	args := flag.Args()
+	if len(args) != 1 {
+		log.Fatalf("file name of .pbm file needed: %+v", args)
 	}
 
-	fReader, err := os.Open(os.Args[1])
+	fReader, err := os.Open(args[0])
 	if err != nil {
-		log.Fatalf("failed to open file %s: %s", os.Args[1], err)
+		log.Fatalf("failed to open file %s: %s", args[0], err)
 	}
 
 	buf, err := reader2buffer(fReader)
@@ -36,7 +42,7 @@ func main() {
 	}
 	_ = fReader.Close()
 
-	list := buf.RenderAsStrings(tcg.Mode2x3)
+	list := buf.RenderAsStrings(mode)
 	for _, line := range list {
 		fmt.Println(line)
 	}
