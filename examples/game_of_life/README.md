@@ -37,7 +37,9 @@ options:
 ## Screenshots
 
 MacOS iTerm2 (2x3 mode):
+
 <img width="843" alt="TCG library example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/222931477-2aac0d97-051a-4261-a445-c1d4c12705de.png">
 
 Ubuntu GNOME Terminal (2x4Braille mode):
+
 <img width="666" alt="TCG library example screenshot for Game of Life on Ubuntu" src="https://user-images.githubusercontent.com/844117/222967488-3c07917e-f90f-4843-b987-fc97b3397a19.png">
