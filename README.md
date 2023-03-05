@@ -9,7 +9,7 @@ Go Graphics library for use in a text terminal. Only 1bit graphics can be used w
 
 ## Features
 
-  * Available 4 [graphics mode](https://pkg.go.dev/github.com/msoap/tcg#PixelMode), from 2x3 pixels grid for terminal symbol to 1x1, 1x2 and 2x2, or you can [create](https://pkg.go.dev/github.com/msoap/tcg#NewPixelMode) own custom mode with your graphics
+  * Available 5 [graphics modes](https://pkg.go.dev/github.com/msoap/tcg#PixelMode), from 2x3 pixels grid for terminal symbol to 1x1, 1x2 and 2x2, or you can [create](https://pkg.go.dev/github.com/msoap/tcg#NewPixelMode) own custom mode with your graphics
   * [Set](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Set)/[get](https://pkg.go.dev/github.com/msoap/tcg#Buffer.At) one pixel
   * Drawings: [lines](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Line) (vertical, horizontal, or with any angle), [boxes](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Rect), [circles](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Circle), [arcs](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Arc)
   * [Fill](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Fill) area with a different [options](https://pkg.go.dev/github.com/msoap/tcg#FillOpt), for example fill with [patterns](https://pkg.go.dev/github.com/msoap/tcg#WithPattern)
@@ -64,7 +64,7 @@ See more examples in [examples](https://github.com/msoap/tcg/tree/master/example
 
 <img width="843" alt="TCG library example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/222931477-2aac0d97-051a-4261-a445-c1d4c12705de.png">
 
-See more [screenshots.](https://github.com/msoap/tcg/wiki/Screenshots)
+See more [screenshots](https://github.com/msoap/tcg/wiki/Screenshots).
 
 ## TODO
 
