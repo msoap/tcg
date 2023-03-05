@@ -41,6 +41,7 @@ func main() {
 	screenshotName := flag.String("out", "game_of_life.png", "save screenshot to file")
 	mode := tcg.Mode2x3
 	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3, 2x4Braille")
+	wait := flag.Bool("wait", false, "wait for start")
 	flag.Parse()
 
 	var (
@@ -99,7 +100,7 @@ func main() {
 
 	ticker := time.Tick(*delay)
 	command := getCommand(tg)
-	paused := false
+	paused := *wait
 
 LOOP:
 	for {
