@@ -75,7 +75,7 @@ See more [screenshots](https://github.com/msoap/tcg/wiki/Screenshots).
 
   * Go terminal library - [github.com/gdamore/tcell](https://github.com/gdamore/tcell/)
   * [Turtle graphics](https://en.wikipedia.org/wiki/Turtle_graphics)
-  * Try it in the Go [Playground](https://go.dev/play/p/iX_-qby2SbT)
+  * Try it in the Go [Playground](https://go.dev/play/p/uwvG0vxRtHJ)
 
 Unicode symbols:
 
