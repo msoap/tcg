@@ -25,6 +25,8 @@ options:
     	save screenshot to file (default "game_of_life.png")
   -size string
     	screen size in chars, in 'width x height' format, example: '80x25'
+  -wait
+    	wait for start
 ```
 
 ## Shortcuts
