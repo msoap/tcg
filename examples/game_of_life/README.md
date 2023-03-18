@@ -19,10 +19,12 @@ options:
     	delay between steps (default 100ms)
   -fill float
     	how much to fill the area initially (default 0.2)
+  -in string
+    	load map from image file (*.png)
   -mode value
     	screen mode, one of 1x1, 1x2, 2x2, 2x3, 2x4Braille (default 2x3)
   -out string
-    	save screenshot to file (default "game_of_life.png")
+    	save map as screenshot to file (default "game_of_life.png")
   -size string
     	screen size in chars, in 'width x height' format, example: '80x25'
   -wait
@@ -32,7 +34,7 @@ options:
 ## Shortcuts
 
   * `esc` / `q` - quit
-  * `s` - save screenshot (to file, see `-out` option)
+  * `s` - save map as screenshot (to file, see `-out` option)
   * `space` / `p` - pause
   * `right` - step forward
 

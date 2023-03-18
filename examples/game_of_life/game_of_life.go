@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"image"
 	"image/png"
 	"log"
 	"math/rand"
@@ -38,7 +39,8 @@ func main() {
 	size := flag.String("size", "", "screen size in chars, in 'width x height' format, example: '80x25'")
 	colorName := flag.String("color", "", "redefine color, it can be: 'yellow', 'red' or like '#ffaa11'")
 	fillFactor := flag.Float64("fill", defaultInitFillFactor, "how much to fill the area initially")
-	screenshotName := flag.String("out", "game_of_life.png", "save screenshot to file")
+	inFileName := flag.String("in", "", "load map from image file (*.png)")
+	screenshotName := flag.String("out", "game_of_life.png", "save map as screenshot to file")
 	mode := tcg.Mode2x3
 	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3, 2x4Braille")
 	wait := flag.Bool("wait", false, "wait for start")
@@ -51,6 +53,13 @@ func main() {
 	if *size != "" {
 		width, height, err = tcg.ParseSizeString(*size)
 		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	var initImg image.Image
+	if *inFileName != "" {
+		if initImg, err = loadImage(*inFileName); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -96,7 +105,11 @@ func main() {
 	}
 
 	game := newGame(tg)
-	game.initRandom(*fillFactor)
+	if initImg != nil {
+		game.initFromImage(initImg)
+	} else {
+		game.initRandom(*fillFactor)
+	}
 
 	ticker := time.Tick(*delay)
 	command := getCommand(tg)
@@ -148,6 +161,27 @@ func (g *game) initRandom(fillFact float64) {
 			}
 		}
 	}
+	g.tg.Show()
+}
+
+func loadImage(in string) (image.Image, error) {
+	file, err := os.Open(in)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("close file: %s", err)
+		}
+	}()
+
+	img, _, err := image.Decode(file)
+	return img, err
+}
+
+func (g *game) initFromImage(img image.Image) {
+	buf := tcg.NewBufferFromImage(img)
+	g.tg.Buf.BitBltAllSrc(0, 0, buf)
 	g.tg.Show()
 }
 
