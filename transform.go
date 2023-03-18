@@ -18,8 +18,8 @@ func (b *Buffer) Invert() {
 	}
 }
 
-// BitBltAllSrc - copy whole buffer into this buffer
-func (b *Buffer) BitBltAllSrc(x, y int, from Buffer) {
+// BitBltAll - copy whole buffer into this buffer
+func (b *Buffer) BitBltAll(x, y int, from Buffer) {
 	if x == 0 && y == 0 {
 		for i := 0; i < from.Height && i < b.Height; i++ {
 			copy(b.buffer[i], from.buffer[i])

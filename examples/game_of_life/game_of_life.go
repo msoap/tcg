@@ -181,7 +181,7 @@ func loadImage(in string) (image.Image, error) {
 
 func (g *game) initFromImage(img image.Image) {
 	buf := tcg.NewBufferFromImage(img)
-	g.tg.Buf.BitBltAllSrc(0, 0, buf)
+	g.tg.Buf.BitBltAll(0, 0, buf)
 	g.tg.Show()
 }
 
@@ -207,7 +207,7 @@ func (g *game) nextStep() {
 	}
 
 	// copy to screen
-	g.tg.Buf.BitBltAllSrc(0, 0, newGeneration)
+	g.tg.Buf.BitBltAll(0, 0, newGeneration)
 	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %4d FPS | %4d Gen ", time.Second/time.Since(startedAt), g.generation))
 	g.tg.Show()
 }

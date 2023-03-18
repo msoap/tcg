@@ -286,7 +286,7 @@ func TestBuffer_BitBltAllSrc(t *testing.T) {
 			"*****",
 			"..*..",
 		})
-		b.BitBltAllSrc(0, 0, src)
+		b.BitBltAll(0, 0, src)
 
 		expected := MustNewBufferFromStrings([]string{
 			"..*..",
@@ -314,7 +314,7 @@ func TestBuffer_BitBltAllSrc(t *testing.T) {
 			"..........",
 			"..........",
 		})
-		b.BitBltAllSrc(2, 3, src)
+		b.BitBltAll(2, 3, src)
 
 		expected := MustNewBufferFromStrings([]string{
 			"..........",
