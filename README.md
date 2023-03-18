@@ -62,7 +62,7 @@ See more examples in [examples](https://github.com/msoap/tcg/tree/master/example
 
 [Game of Life](https://github.com/msoap/tcg/tree/master/examples/game_of_life) example in iTerm2 terminal:
 
-<img width="843" alt="TCG library example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/222931477-2aac0d97-051a-4261-a445-c1d4c12705de.png">
+<img width="826" alt="TCG library example screenshot for Game of Life" src="https://user-images.githubusercontent.com/844117/226143976-4db0f377-0195-4c8d-8dea-799eee29d9ce.png">
 
 See more [screenshots](https://github.com/msoap/tcg/wiki/Screenshots).
 
