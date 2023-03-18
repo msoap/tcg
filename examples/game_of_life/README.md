@@ -37,6 +37,7 @@ options:
   * `s` - save map as screenshot (to file, see `-out` option)
   * `space` / `p` - pause
   * `right` - step forward
+  * `left` - step to previous state
 
 ## Screenshots
 

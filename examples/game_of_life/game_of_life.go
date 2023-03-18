@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"container/list"
 	"flag"
 	"fmt"
 	"image"
@@ -21,16 +22,20 @@ type (
 		tg         *tcg.Tcg
 		scrH       int
 		generation int
+		history    *list.List
 	}
 )
 
 const (
 	defaultDelay          = time.Millisecond * 100
 	defaultInitFillFactor = 0.2
+	historySize           = 1000
+	maxFPS                = 9999
 
 	cmdExit cmds = iota
 	cmdPause
 	cmdNext
+	cmdPrev
 	cmdScreenshot
 )
 
@@ -96,7 +101,7 @@ func main() {
 
 	tg.Buf.Rect(0, 0, tg.Width, tg.Height, tcg.Black) // coordinates in pixels
 	tg.PrintStr(4, 1, " Game of Life ")               // coordinates in chars, not pixels
-	tg.PrintStr(24, scrH-1, `| <q> - Quit | <p> - Pause | <Right> - Next step | <s> - Screenshot `)
+	tg.PrintStr(24, scrH-1, `| <q> - Quit | <p> - Pause | <Right> - Next step | <Left> - Prev step | <s> - Screenshot `)
 	tg.Show()
 
 	if err := tg.SetClipCenter(width-2, height-2); err != nil {
@@ -129,7 +134,13 @@ LOOP:
 			case cmdPause:
 				paused = !paused
 			case cmdNext:
-				game.nextStep()
+				if paused {
+					game.nextStep()
+				}
+			case cmdPrev:
+				if paused {
+					game.prevStep()
+				}
 			case cmdScreenshot:
 				if err := saveScreenshot(*screenshotName, tg.Buf); err != nil {
 					tg.PrintStr(0, 0, fmt.Sprintf("save: %s", err))
@@ -145,8 +156,9 @@ LOOP:
 func newGame(tg *tcg.Tcg) *game {
 	_, scrH := tg.ScreenSize()
 	return &game{
-		tg:   tg,
-		scrH: scrH,
+		tg:      tg,
+		scrH:    scrH,
+		history: list.New(),
 	}
 }
 
@@ -206,9 +218,23 @@ func (g *game) nextStep() {
 		}
 	}
 
+	// save to history
+	g.history.PushFront(g.tg.Buf.Clone())
+	if g.history.Len() > historySize {
+		g.history.Remove(g.history.Back())
+	}
+
 	// copy to screen
 	g.tg.Buf.BitBltAll(0, 0, newGeneration)
-	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %4d FPS | %4d Gen ", time.Second/time.Since(startedAt), g.generation))
+	g.updateStatMap(startedAt)
+}
+
+func (g *game) updateStatMap(startedAt time.Time) {
+	fps := time.Second / time.Since(startedAt)
+	if fps > maxFPS {
+		fps = maxFPS
+	}
+	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %4d FPS | %4d Gen ", fps, g.generation))
 	g.tg.Show()
 }
 
@@ -221,6 +247,18 @@ func (g *game) getNeighbors(x, y int) int {
 		g.tg.Buf.At(x-1, y+1) +
 		g.tg.Buf.At(x, y+1) +
 		g.tg.Buf.At(x+1, y+1)
+}
+
+func (g *game) prevStep() {
+	if g.history.Len() == 0 {
+		return
+	}
+
+	startedAt := time.Now()
+	buf := g.history.Remove(g.history.Front()).(*tcg.Buffer)
+	g.tg.Buf.BitBltAll(0, 0, *buf)
+	g.generation--
+	g.updateStatMap(startedAt)
 }
 
 func getCommand(tg *tcg.Tcg) chan cmds {
@@ -238,6 +276,8 @@ func getCommand(tg *tcg.Tcg) chan cmds {
 					resultCh <- cmdPause
 				case ev.Key() == tcell.KeyRight:
 					resultCh <- cmdNext
+				case ev.Key() == tcell.KeyLeft:
+					resultCh <- cmdPrev
 				case ev.Rune() == 's':
 					resultCh <- cmdScreenshot
 				}
