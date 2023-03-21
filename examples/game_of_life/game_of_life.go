@@ -22,6 +22,7 @@ type (
 		tg         *tcg.Tcg
 		scrH       int
 		generation int
+		infMap     bool
 		history    *list.List
 	}
 )
@@ -46,6 +47,7 @@ func main() {
 	fillFactor := flag.Float64("fill", defaultInitFillFactor, "how much to fill the area initially")
 	inFileName := flag.String("in", "", "load map from image file (*.png)")
 	screenshotName := flag.String("out", "game_of_life.png", "save map as screenshot to file")
+	infMap := flag.Bool("inf", false, "infinite map (wrap around edges)")
 	mode := tcg.Mode2x3
 	flag.Var(&mode, "mode", "screen mode, one of 1x1, 1x2, 2x2, 2x3, 2x4Braille")
 	wait := flag.Bool("wait", false, "wait for start")
@@ -110,6 +112,7 @@ func main() {
 	}
 
 	game := newGame(tg)
+	game.infMap = *infMap
 	if initImg != nil {
 		game.initFromImage(initImg)
 	} else {
@@ -239,14 +242,48 @@ func (g *game) updateStatMap(startedAt time.Time) {
 }
 
 func (g *game) getNeighbors(x, y int) int {
-	return g.tg.Buf.At(x-1, y-1) +
-		g.tg.Buf.At(x, y-1) +
-		g.tg.Buf.At(x+1, y-1) +
-		g.tg.Buf.At(x-1, y) +
-		g.tg.Buf.At(x+1, y) +
-		g.tg.Buf.At(x-1, y+1) +
-		g.tg.Buf.At(x, y+1) +
-		g.tg.Buf.At(x+1, y+1)
+	/*
+		[-1, -1] [0, -1] [1, -1]
+		[-1,  0]    *    [1,  0]
+		[-1,  1] [0,  1] [1,  1]
+	*/
+	if !g.infMap {
+		return g.tg.Buf.At(x-1, y-1) +
+			g.tg.Buf.At(x, y-1) +
+			g.tg.Buf.At(x+1, y-1) +
+			g.tg.Buf.At(x-1, y) +
+			g.tg.Buf.At(x+1, y) +
+			g.tg.Buf.At(x-1, y+1) +
+			g.tg.Buf.At(x, y+1) +
+			g.tg.Buf.At(x+1, y+1)
+	}
+
+	sum := 0
+	for xd := -1; xd <= 1; xd++ {
+		for yd := -1; yd <= 1; yd++ {
+			if xd == 0 && yd == 0 {
+				continue
+			}
+
+			atX := x + xd
+			if atX < 0 {
+				atX = g.tg.Width - 1
+			} else if atX >= g.tg.Width {
+				atX = 0
+			}
+
+			atY := y + yd
+			if atY < 0 {
+				atY = g.tg.Height - 1
+			} else if atY >= g.tg.Height {
+				atY = 0
+			}
+
+			sum += g.tg.Buf.At(atX, atY)
+		}
+	}
+
+	return sum
 }
 
 func (g *game) prevStep() {
