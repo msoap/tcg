@@ -29,6 +29,8 @@ options:
     	screen size in chars, in 'width x height' format, example: '80x25'
   -wait
     	wait for start
+  -inf
+    	infinite map (wrap around edges)
 ```
 
 ## Shortcuts
