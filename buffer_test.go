@@ -3,7 +3,6 @@ package tcg
 import (
 	"fmt"
 	"image"
-	_ "image/png"
 	"os"
 	"reflect"
 	"regexp"
