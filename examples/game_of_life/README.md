@@ -33,6 +33,15 @@ options:
     	infinite map (wrap around edges)
 ```
 
+Use predefined map from image file:
+
+
+```shell
+game_of_life -in examples/game_of_life/glider.png -inf
+game_of_life -in examples/game_of_life/gospers_glider_gun.png
+game_of_life -in examples/game_of_life/penta_decathlon.png
+```
+
 ## Shortcuts
 
   * `esc` / `q` - quit
