@@ -80,6 +80,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if tg.TCellScreen.HasMouse() {
+		tg.TCellScreen.EnableMouse(tcell.MouseMotionEvents)
+	}
+
 	_, scrH := tg.ScreenSize()
 
 	pattern := tcg.MustNewBufferFromStrings([]string{
@@ -306,6 +311,7 @@ func getCommand(tg *tcg.Tcg) chan cmds {
 			ev := tg.TCellScreen.PollEvent()
 			switch ev := ev.(type) {
 			case *tcell.EventKey:
+
 				switch {
 				case ev.Rune() == 'q' || ev.Key() == tcell.KeyEscape:
 					resultCh <- cmdExit
@@ -318,6 +324,16 @@ func getCommand(tg *tcg.Tcg) chan cmds {
 				case ev.Rune() == 's':
 					resultCh <- cmdScreenshot
 				}
+
+			case *tcell.EventMouse:
+
+				switch ev.Buttons() {
+				case tcell.WheelUp:
+					resultCh <- cmdNext
+				case tcell.WheelDown:
+					resultCh <- cmdPrev
+				}
+
 			}
 		}
 	}()

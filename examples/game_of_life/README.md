@@ -47,8 +47,8 @@ game_of_life -in examples/game_of_life/penta_decathlon.png
   * `esc` / `q` - quit
   * `s` - save map as screenshot (to file, see `-out` option)
   * `space` / `p` - pause
-  * `right` - step forward
-  * `left` - step to previous state
+  * `right` - step forward, or mouse scroll up with terminal mouse support
+  * `left` - step to previous state, or mouse scroll down
 
 ## Screenshots
 
