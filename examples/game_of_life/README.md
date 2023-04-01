@@ -2,6 +2,15 @@
 
 This is small example of "Game Of Life", see [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) for more information.
 
+Features:
+  
+  - predefined maps from image files
+  - save map as screenshot to image file, later you can load it
+  - infinite map (wrap around edges)
+  - mouse support (scroll up/down to step forward/backward)
+  - different screen modes (1x1, 1x2, 2x2, 2x3, 2x4Braille)
+  - allow to configure color, delay, fill, size, etc.
+
 ## Install
 
 ```
