@@ -8,7 +8,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-// Opt - options type for New buffer
+// Opt - options type for New tcg screen
 type Opt func(*tcgConfig) error
 
 type tcgConfig struct {
