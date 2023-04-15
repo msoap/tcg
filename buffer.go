@@ -113,7 +113,7 @@ func NewBufferFromImage(img image.Image) Buffer {
 }
 
 // ToImage - convert buffer to std Image with Gray colorspace, for example for save buffer to image file like png
-func (b *Buffer) ToImage() image.Image {
+func (b Buffer) ToImage() image.Image {
 	img := image.NewGray(image.Rect(0, 0, b.Width, b.Height))
 	var c uint8
 	for y := 0; y < b.Height; y++ {
@@ -130,7 +130,7 @@ func (b *Buffer) ToImage() image.Image {
 }
 
 // Clone to new buffer
-func (b *Buffer) Clone() *Buffer {
+func (b Buffer) Clone() *Buffer {
 	newBuf := NewBuffer(b.Width, b.Height)
 	for y := 0; y < b.Height; y++ {
 		copy(newBuf.buffer[y], b.buffer[y])
@@ -139,9 +139,9 @@ func (b *Buffer) Clone() *Buffer {
 }
 
 // Cut area to the new buffer, without change current buffer
-func (b *Buffer) Cut(x, y, width, height int) Buffer {
+func (b Buffer) Cut(x, y, width, height int) Buffer {
 	newBuf := NewBuffer(width, height)
-	newBuf.BitBlt(0, 0, width, height, *b, x, y)
+	newBuf.BitBlt(0, 0, width, height, b, x, y)
 	return newBuf
 }
 
