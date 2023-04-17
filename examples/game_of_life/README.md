@@ -6,6 +6,7 @@ Features:
   
   - predefined maps from image files
   - save map as screenshot to image file, later you can load it
+  - edit map with keyboard, by one pixel or with pen mode
   - infinite map (wrap around edges)
   - mouse support (scroll up/down to step forward/backward)
   - different screen modes (1x1, 1x2, 2x2, 2x3, 2x4Braille)
@@ -55,9 +56,12 @@ game_of_life -in examples/game_of_life/penta_decathlon.png
 
   * `esc` / `q` - quit
   * `s` - save map as screenshot (to file, see `-out` option)
-  * `space` / `p` - pause
-  * `right` - step forward, or mouse scroll up with terminal mouse support
-  * `left` - step to previous state, or mouse scroll down
+  * `p` - pause
+  * `l` - step forward, or mouse scroll up with terminal mouse support
+  * `h` - step to previous state, or mouse scroll down
+  * `Space` - toggle pixel under cursor
+  * `a` - toggle pen mode, when pen mode is on, you can draw with arrows keys
+  * `←`, `↑`, `→`, `↓` - move cursor
 
 ## Screenshots
 
