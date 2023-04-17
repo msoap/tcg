@@ -18,12 +18,16 @@ import (
 
 type (
 	cmds int
+	mode int
 	game struct {
-		tg         *tcg.Tcg
-		scrH       int
-		generation int
-		infMap     bool
-		history    *list.List
+		tg               *tcg.Tcg
+		mode             mode       // play or pause/edit
+		generation       int        // current generation number
+		cursorX, cursorY int        // cursor position for edit/pen mode
+		pen              bool       // continue drawing with arrows keys
+		scrH             int        // screen height in characters
+		infMap           bool       // is map infinite?
+		history          *list.List // history of last generations
 	}
 )
 
@@ -33,10 +37,19 @@ const (
 	historySize           = 1000
 	maxFPS                = 9999
 
+	modePlay mode = iota
+	modePause
+
 	cmdExit cmds = iota
 	cmdPause
 	cmdNext
 	cmdPrev
+	cmdPixel // toggle one pixel in current position
+	cmdPen   // toggle pen mode, when pen mode is on, you can draw with arrows keys
+	cmdUp
+	cmdDown
+	cmdLeft
+	cmdRight
 	cmdScreenshot
 )
 
@@ -108,7 +121,7 @@ func main() {
 
 	tg.Buf.Rect(0, 0, tg.Width, tg.Height, tcg.Black) // coordinates in pixels
 	tg.PrintStr(4, 1, " Game of Life ")               // coordinates in chars, not pixels
-	tg.PrintStr(24, scrH-1, `| <q> - Quit | <p> - Pause | <Right> - Next step | <Left> - Prev step | <s> - Screenshot `)
+	tg.PrintStr(24, scrH-1, `| <q> - Quit | <p> - Pause | <l>/<h> - Next/Prev step | <Space>/<a> pixel/pen | <s> - Screenshot `)
 	tg.Show()
 
 	if err := tg.SetClipCenter(width-2, height-2); err != nil {
@@ -116,7 +129,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	game := newGame(tg)
+	curMode := modePlay
+	if *wait {
+		curMode = modePause
+	}
+	game := newGame(tg, curMode)
 	game.infMap = *infMap
 	if initImg != nil {
 		game.initFromImage(initImg)
@@ -126,13 +143,12 @@ func main() {
 
 	ticker := time.Tick(*delay)
 	command := getCommand(tg)
-	paused := *wait
 
 LOOP:
 	for {
 		select {
 		case <-ticker:
-			if !paused {
+			if game.mode == modePlay {
 				game.nextStep()
 			}
 		case cmd := <-command:
@@ -140,14 +156,38 @@ LOOP:
 			case cmdExit:
 				break LOOP
 			case cmdPause:
-				paused = !paused
+				game.doPause()
 			case cmdNext:
-				if paused {
+				if game.mode != modePlay {
 					game.nextStep()
 				}
 			case cmdPrev:
-				if paused {
+				if game.mode != modePlay {
 					game.prevStep()
+				}
+			case cmdPixel:
+				if game.mode != modePlay {
+					game.togglePixel()
+				}
+			case cmdLeft:
+				if game.mode != modePlay {
+					game.moveCursor(-1, 0)
+				}
+			case cmdRight:
+				if game.mode != modePlay {
+					game.moveCursor(1, 0)
+				}
+			case cmdUp:
+				if game.mode != modePlay {
+					game.moveCursor(0, -1)
+				}
+			case cmdDown:
+				if game.mode != modePlay {
+					game.moveCursor(0, 1)
+				}
+			case cmdPen:
+				if game.mode != modePlay {
+					game.pen = !game.pen
 				}
 			case cmdScreenshot:
 				if err := saveScreenshot(*screenshotName, tg.Buf); err != nil {
@@ -161,9 +201,10 @@ LOOP:
 	tg.Finish()
 }
 
-func newGame(tg *tcg.Tcg) *game {
+func newGame(tg *tcg.Tcg, mode mode) *game {
 	_, scrH := tg.ScreenSize()
 	return &game{
+		mode:    mode,
 		tg:      tg,
 		scrH:    scrH,
 		history: list.New(),
@@ -202,6 +243,47 @@ func loadImage(in string) (image.Image, error) {
 func (g *game) initFromImage(img image.Image) {
 	buf := tcg.NewBufferFromImage(img)
 	g.tg.Buf.BitBltAll(0, 0, buf)
+	g.tg.Show()
+}
+
+func (g *game) doPause() {
+	if g.mode == modePlay {
+		g.mode = modePause
+	} else {
+		g.mode = modePlay
+	}
+}
+
+func (g *game) togglePixel() {
+	color := g.tg.Buf.At(g.cursorX, g.cursorY)
+	color = color ^ 1
+	g.tg.Buf.Set(g.cursorX, g.cursorY, color)
+	g.tg.Show()
+}
+
+func (g *game) moveCursor(dx, dy int) {
+	oldX, oldY := g.cursorX, g.cursorY
+
+	g.cursorX += dx
+	g.cursorY += dy
+
+	if g.cursorX < 0 {
+		g.cursorX = 0
+	}
+	if g.cursorX >= g.tg.Width {
+		g.cursorX = g.tg.Width - 1
+	}
+	if g.cursorY < 0 {
+		g.cursorY = 0
+	}
+	if g.cursorY >= g.tg.Height {
+		g.cursorY = g.tg.Height - 1
+	}
+
+	if (oldX != g.cursorX || oldY != g.cursorY) && g.pen {
+		g.tg.Buf.Set(g.cursorX, g.cursorY, tcg.Black)
+	}
+
 	g.tg.Show()
 }
 
@@ -315,12 +397,24 @@ func getCommand(tg *tcg.Tcg) chan cmds {
 				switch {
 				case ev.Rune() == 'q' || ev.Key() == tcell.KeyEscape:
 					resultCh <- cmdExit
-				case ev.Rune() == 'p' || ev.Rune() == ' ':
+				case ev.Rune() == 'p':
 					resultCh <- cmdPause
-				case ev.Key() == tcell.KeyRight:
+				case ev.Rune() == 'l':
 					resultCh <- cmdNext
-				case ev.Key() == tcell.KeyLeft:
+				case ev.Rune() == 'h':
 					resultCh <- cmdPrev
+				case ev.Rune() == ' ':
+					resultCh <- cmdPixel
+				case ev.Rune() == 'a':
+					resultCh <- cmdPen
+				case ev.Key() == tcell.KeyRight:
+					resultCh <- cmdRight
+				case ev.Key() == tcell.KeyLeft:
+					resultCh <- cmdLeft
+				case ev.Key() == tcell.KeyUp:
+					resultCh <- cmdUp
+				case ev.Key() == tcell.KeyDown:
+					resultCh <- cmdDown
 				case ev.Rune() == 's':
 					resultCh <- cmdScreenshot
 				}
