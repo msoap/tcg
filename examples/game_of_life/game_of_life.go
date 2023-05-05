@@ -233,8 +233,7 @@ LOOP:
 func newGame(tg *tcg.Tcg, mode mode) *game {
 	_, scrH := tg.ScreenSize()
 
-	cursorSprite := sprite.NewWithBuffer(cursorImage)
-	cursorSprite.Mask = &cursorMask
+	cursorSprite := sprite.New(cursorImage).WithMask(cursorMask)
 
 	return &game{
 		mode:    mode,

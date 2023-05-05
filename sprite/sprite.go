@@ -4,61 +4,57 @@ import "github.com/msoap/tcg"
 
 // Sprite - sprite object
 type Sprite struct {
-	X, Y    int
-	Width   int
-	Height  int
-	Buf     tcg.Buffer  // sprite image
-	Mask    *tcg.Buffer // mask for sprite
+	Buf     tcg.Buffer // sprite image
+	x, y    int        // position on buffer, can be negative
+	width   int
+	height  int
+	mask    *tcg.Buffer // mask for sprite
 	bg      tcg.Buffer  // saved
 	isDrawn bool        // is sprite drawn on buffer
 }
 
-// New - get new sprite object
-func New(width, height int) *Sprite {
+// New - get new sprite object from tcg.Buffer
+func New(buf tcg.Buffer) *Sprite {
 	return &Sprite{
-		Width:  width,
-		Height: height,
-		Buf:    tcg.NewBuffer(width, height),
-		bg:     tcg.NewBuffer(width, height),
-	}
-}
-
-// NewWithBuffer - get new sprite object from tcg.Buffer
-func NewWithBuffer(buf tcg.Buffer) *Sprite {
-	return &Sprite{
-		Width:  buf.Width,
-		Height: buf.Height,
+		width:  buf.Width,
+		height: buf.Height,
 		Buf:    buf,
 		bg:     tcg.NewBuffer(buf.Width, buf.Height),
 	}
 }
 
-// Put - put sprite on buffer
+// WithMask - add mask to sprite
+func (s *Sprite) WithMask(mask tcg.Buffer) *Sprite {
+	s.mask = &mask
+	return s
+}
+
+// Put - put sprite on buffer, save background under sprite, coordinates can be negative
 func (s *Sprite) Put(buf tcg.Buffer, x, y int) {
 	// restore previous background
 	if s.isDrawn {
-		buf.BitBlt(s.X, s.Y, s.Width, s.Height, s.bg, 0, 0)
+		buf.BitBlt(s.x, s.y, s.width, s.height, s.bg, 0, 0)
 	}
 
 	// copy background
-	s.bg.BitBlt(0, 0, s.Width, s.Height, buf, x, y)
+	s.bg.BitBlt(0, 0, s.width, s.height, buf, x, y)
 
 	// draw sprite
 	var opts []tcg.BitBltOpt
-	if s.Mask != nil {
-		opts = append(opts, tcg.BBMask(s.Mask))
+	if s.mask != nil {
+		opts = append(opts, tcg.BBMask(s.mask))
 	}
-	buf.BitBlt(x, y, s.Width, s.Height, s.Buf, 0, 0, opts...)
+	buf.BitBlt(x, y, s.width, s.height, s.Buf, 0, 0, opts...)
 
 	s.isDrawn = true
-	s.X = x
-	s.Y = y
+	s.x = x
+	s.y = y
 }
 
 // Withdraw - withdraw sprite from buffer
 func (s *Sprite) Withdraw(buf tcg.Buffer) {
 	if s.isDrawn {
-		buf.BitBlt(s.X, s.Y, s.Width, s.Height, s.bg, 0, 0)
+		buf.BitBlt(s.x, s.y, s.width, s.height, s.bg, 0, 0)
 		s.isDrawn = false
 	}
 }
@@ -71,5 +67,5 @@ func (s *Sprite) MoveAbs(buf tcg.Buffer, x, y int) {
 
 // Move - move sprite on buffer to relative position
 func (s *Sprite) Move(buf tcg.Buffer, x, y int) {
-	s.MoveAbs(buf, s.X+x, s.Y+y)
+	s.MoveAbs(buf, s.x+x, s.y+y)
 }
