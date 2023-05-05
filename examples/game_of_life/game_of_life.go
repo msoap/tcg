@@ -39,6 +39,7 @@ const (
 	defaultInitFillFactor = 0.2
 	historySize           = 1000
 	maxFPS                = 9999
+	curHalf               = 3
 
 	modePlay mode = iota
 	modePause
@@ -283,7 +284,7 @@ func (g *game) doPause() {
 	if g.mode == modePlay {
 		g.mode = modePause
 		if g.showCursor {
-			g.curs.Put(g.tg.Buf, g.cursorX-3, g.cursorY-3)
+			g.curs.MoveAbs(g.tg.Buf, g.cursorX-curHalf, g.cursorY-curHalf).Put(g.tg.Buf)
 		}
 	} else {
 		g.mode = modePlay
@@ -344,7 +345,7 @@ func (g *game) handleCursor() func() {
 
 	return func() {
 		if g.showCursor {
-			g.curs.Put(g.tg.Buf, g.cursorX-3, g.cursorY-3)
+			g.curs.MoveAbs(g.tg.Buf, g.cursorX-curHalf, g.cursorY-curHalf).Put(g.tg.Buf)
 			changed = true
 		}
 		if changed {

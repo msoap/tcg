@@ -22,7 +22,7 @@ func TestSprite(t *testing.T) {
 		"**",
 	}))
 
-	spr.Put(bg, 1, 1)
+	spr.Move(bg, 1, 1).Put(bg)
 	assertEqBuffers(t, bg, tcg.MustNewBufferFromStrings([]string{
 		"*.*.*",
 		".***.",
@@ -40,8 +40,7 @@ func TestSprite(t *testing.T) {
 		"*.*.*",
 	}))
 
-	spr.Put(bg, 1, 1)
-
+	spr.Put(bg)
 	spr.Move(bg, 1, 1)
 	assertEqBuffers(t, bg, tcg.MustNewBufferFromStrings([]string{
 		"*.*.*",
