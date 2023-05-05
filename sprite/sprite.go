@@ -1,3 +1,6 @@
+/*
+Package sprite - sprite object for drawing/moving on tcg.Buffer
+*/
 package sprite
 
 import (
