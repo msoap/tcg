@@ -69,7 +69,8 @@ See more [screenshots](https://github.com/msoap/tcg/wiki/Screenshots).
 ## TODO
 
   * [ ] fonts support
-  * [ ] sprites, maybe with animation
+  * [x] sprites
+  * [ ] animation in sprite
 
 ## See also
 
