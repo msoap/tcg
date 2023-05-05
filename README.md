@@ -15,7 +15,8 @@ Go Graphics library for use in a text terminal. Only 1bit graphics can be used w
   * [Fill](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Fill) area with a different [options](https://pkg.go.dev/github.com/msoap/tcg#FillOpt), for example fill with [patterns](https://pkg.go.dev/github.com/msoap/tcg#WithPattern)
   * Buffer manipulating: [cut](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Cut), [clone](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Clone), convert to/from stdlib [Image](https://pkg.go.dev/github.com/msoap/tcg#Buffer.ToImage) or text
   * Buffer transform: [BitBlt](https://pkg.go.dev/github.com/msoap/tcg#Buffer.BitBlt) with [options](https://pkg.go.dev/github.com/msoap/tcg#BitBltOpt), [clear](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Clear), [flip](https://pkg.go.dev/github.com/msoap/tcg#Buffer.HFlip), [invert](https://pkg.go.dev/github.com/msoap/tcg#Buffer.Invert), scroll ([vertical](https://pkg.go.dev/github.com/msoap/tcg#Buffer.VScroll), [horizontal](https://pkg.go.dev/github.com/msoap/tcg#Buffer.HScroll))
-  * Sub-package for [turtle graphics](https://pkg.go.dev/github.com/msoap/tcg/turtle), also available [drawing](https://pkg.go.dev/github.com/msoap/tcg@v0.0.1/turtle#Turtle.DrawScript) by text script
+  * Sub-package for [turtle graphics](https://pkg.go.dev/github.com/msoap/tcg/turtle), also available [drawing](https://pkg.go.dev/github.com/msoap/tcg/turtle#Turtle.DrawScript) by text script
+  * [Sprite](https://pkg.go.dev/github.com/msoap/tcg/sprite) support with [Put](https://pkg.go.dev/github.com/msoap/tcg/sprite#Sprite.Put), [Withdraw](https://pkg.go.dev/github.com/msoap/tcg/sprite#Sprite.Withdraw), [Move](https://pkg.go.dev/github.com/msoap/tcg/sprite#Sprite.Move), etc methods
 
 ## Install
 
