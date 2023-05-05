@@ -13,6 +13,8 @@ func (b *Buffer) BitBltAll(x, y int, from Buffer, opts ...BitBltOpt) {
 }
 
 // BitBlt - copy part of buffer into this buffer
+// xd, yd - destination coordinates
+// xs, ys - source coordinates
 func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int, opts ...BitBltOpt) {
 	if len(opts) == 0 {
 		for i := 0; i+ys < from.Height && i < height && i+yd < b.Height; i++ {
