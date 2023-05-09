@@ -61,6 +61,7 @@ game_of_life -in examples/game_of_life/penta_decathlon.png
   * `h` - step to previous state, or mouse scroll down
   * `Space` - toggle pixel under cursor
   * `a` - toggle pen mode, when pen mode is on, you can draw with arrows keys
+  * `w` - wipe map
   * `c` - toggle cursor visibility
   * `←`, `↑`, `→`, `↓` - move cursor
 

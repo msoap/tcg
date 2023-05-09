@@ -44,18 +44,19 @@ const (
 	modePlay mode = iota
 	modePause
 
-	cmdExit cmds = iota
-	cmdPause
-	cmdNext
-	cmdPrev
-	cmdPixel        // toggle one pixel in current position
-	cmdPen          // toggle pen mode, when pen mode is on, you can draw with arrows keys
-	cmdToggleCursor // toggle showing cursor in edit mode
-	cmdUp
-	cmdDown
-	cmdLeft
-	cmdRight
-	cmdScreenshot
+	cmdExit         cmds = iota // exit
+	cmdPause                    // pause/play
+	cmdNext                     // next step
+	cmdPrev                     // prev step
+	cmdPixel                    // toggle one pixel in current position
+	cmdPen                      // toggle pen mode, when pen mode is on, you can draw with arrows keys
+	cmdToggleCursor             // toggle showing cursor in edit mode
+	cmdWipe                     // clear screen
+	cmdUp                       // move cursor up
+	cmdDown                     // -/-
+	cmdLeft                     // -/-
+	cmdRight                    // -/-
+	cmdScreenshot               // save screenshot
 )
 
 var (
@@ -218,6 +219,11 @@ LOOP:
 			case cmdToggleCursor:
 				if game.mode != modePlay {
 					game.toggleCursor()
+				}
+			case cmdWipe:
+				if game.mode != modePlay {
+					game.tg.Buf.Clear()
+					game.tg.Show()
 				}
 			case cmdScreenshot:
 				if err := saveScreenshot(*screenshotName, tg.Buf); err != nil {
@@ -492,6 +498,8 @@ func getCommand(tg *tcg.Tcg) chan cmds {
 					resultCh <- cmdDown
 				case ev.Rune() == 's':
 					resultCh <- cmdScreenshot
+				case ev.Rune() == 'w':
+					resultCh <- cmdWipe
 				}
 
 			case *tcell.EventMouse:
