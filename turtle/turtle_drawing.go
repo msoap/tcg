@@ -197,7 +197,7 @@ func (t *Turtle) Fill() *Turtle {
 }
 
 // Circle - draw circle (script: "CI5")
-func (t *Turtle) Circle(r float64) *Turtle {
+func (t *Turtle) Circle(r int) *Turtle {
 	t.buf.Circle(t.x, t.y, r, t.color)
 	return t
 }

@@ -72,7 +72,7 @@ func (t *Turtle) DrawScript(script string) *Turtle {
 			case "F":
 				t.Fill()
 			case "CI":
-				t.Circle(float64(p1))
+				t.Circle(p1)
 			}
 		}
 	}

@@ -163,81 +163,6 @@ func TestBuffer_Line(t *testing.T) {
 	}
 }
 
-func TestBuffer_LineFast(t *testing.T) {
-	{
-		b := NewBuffer(10, 10)
-		b.LineFast(0, 0, 9, 9, Black)
-		expected := MustNewBufferFromStrings([]string{
-			"*.........",
-			".*........",
-			"..*.......",
-			"...*......",
-			"....*.....",
-			".....*....",
-			"......*...",
-			".......*..",
-			"........*.",
-			".........*",
-		})
-		assertEqBuffers(t, b, expected)
-
-		b.Clear()
-		b.LineFast(9, 9, 0, 0, Black)
-		assertEqBuffers(t, b, expected)
-	}
-	{
-		b := NewBuffer(10, 10)
-		b.LineFast(0, 0, 9, 4, Black)
-		expected := MustNewBufferFromStrings([]string{
-			"**........",
-			"..**......",
-			"....**....",
-			"......**..",
-			"........**",
-			"..........",
-			"..........",
-			"..........",
-			"..........",
-			"..........",
-		})
-		assertEqBuffers(t, b, expected)
-	}
-	{
-		b := NewBuffer(10, 10)
-		b.LineFast(1, 9, 0, 0, Black)
-		expected := MustNewBufferFromStrings([]string{
-			"*.........",
-			"*.........",
-			"*.........",
-			"*.........",
-			"*.........",
-			".*........",
-			".*........",
-			".*........",
-			".*........",
-			".*........",
-		})
-		assertEqBuffers(t, b, expected)
-	}
-	{
-		b := NewBuffer(10, 10)
-		b.LineFast(0, 1, 9, 2, Black)
-		expected := MustNewBufferFromStrings([]string{
-			"..........",
-			"*****.....",
-			".....*****",
-			"..........",
-			"..........",
-			"..........",
-			"..........",
-			"..........",
-			"..........",
-			"..........",
-		})
-		assertEqBuffers(t, b, expected)
-	}
-}
-
 func BenchmarkBuffer_Line(b *testing.B) {
 	buf := NewBuffer(10, 10)
 	for n := 0; n < b.N; n++ {
@@ -245,38 +170,10 @@ func BenchmarkBuffer_Line(b *testing.B) {
 	}
 }
 
-func BenchmarkBuffer_LineFast(b *testing.B) {
-	buf := NewBuffer(10, 10)
-	for n := 0; n < b.N; n++ {
-		buf.LineFast(0, 0, 9, 4, Black)
-	}
-}
-
 func TestBuffer_Circle(t *testing.T) {
 	{
 		b := NewBuffer(10, 10)
 		b.Circle(5, 5, 4, Black)
-
-		expected := MustNewBufferFromStrings([]string{
-			"..........",
-			"...*****..",
-			"..**...**.",
-			".**.....**",
-			".*.......*",
-			".*.......*",
-			".*.......*",
-			".**.....**",
-			"..**...**.",
-			"...*****..",
-		})
-		assertEqBuffers(t, b, expected)
-	}
-}
-
-func TestBuffer_CircleFast(t *testing.T) {
-	{
-		b := NewBuffer(10, 10)
-		b.CircleFast(5, 5, 4, Black)
 
 		expected := MustNewBufferFromStrings([]string{
 			"..........",
@@ -301,10 +198,10 @@ func BenchmarkBuffer_Circle(b *testing.B) {
 	}
 }
 
-func BenchmarkBuffer_CircleFast(b *testing.B) {
+func BenchmarkBuffer_CircleOld(b *testing.B) {
 	buf := NewBuffer(10, 10)
 	for n := 0; n < b.N; n++ {
-		buf.CircleFast(5, 5, 4, Black)
+		buf.circleUsingArc(5, 5, 4, Black)
 	}
 }
 

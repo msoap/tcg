@@ -20,13 +20,6 @@ func (b *Buffer) Fill(x, y int, opts ...FillOpt) {
 	}
 }
 
-// func abs(in int) int {
-// 	if in < 0 {
-// 		return -in
-// 	}
-// 	return in
-// }
-
 // getFillColor - get color for fill, returns color and flag whether to put a pixel
 func (b *Buffer) getFillColor(x, y, xs, ys int, fo fillOptions) (int, bool) {
 	var color int
