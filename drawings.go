@@ -55,9 +55,75 @@ func (b *Buffer) Line(x1, y1, x2, y2 int, color int) {
 	}
 }
 
+// Line - draw line using the Bresenham's algorithm
+func (b *Buffer) LineFast(x1, y1, x2, y2 int, color int) {
+
+	dx := abs(x2 - x1)
+	dy := -abs(y2 - y1)
+
+	sx := sgn(x2 - x1)
+	sy := sgn(y2 - y1)
+
+	e := dx + dy
+	x0, y0 := x1, y1
+
+	for {
+		b.Set(x0, y0, color)
+
+		if x0 == x2 && y0 == y2 {
+			break
+		}
+		e2 := 2 * e
+
+		if e2 >= dy {
+			if x0 == x2 {
+				break
+			}
+			e = e + dy
+			x0 = x0 + sx
+		}
+
+		if e2 <= dx {
+			if y0 == y2 {
+				break
+			}
+			e = e + dx
+			y0 = y0 + sy
+		}
+	}
+
+}
+
 // Circle - draw circle
 func (b *Buffer) Circle(x, y int, r float64, color int) {
 	b.Arc(x, y, r, 0, 360, color)
+}
+
+// CircleFast - draw a circle using the Midpoint Circle Algorithm
+func (b *Buffer) CircleFast(x, y, r int, color int) {
+	if r < 0 {
+		return
+	}
+
+	x1, y1, err := -r, 0, 2-2*r
+	for {
+		b.Set(x-x1, y+y1, color)
+		b.Set(x-y1, y-x1, color)
+		b.Set(x+x1, y-y1, color)
+		b.Set(x+y1, y+x1, color)
+		rr := err
+		if rr > x1 {
+			x1++
+			err += x1*2 + 1
+		}
+		if rr <= y1 {
+			y1++
+			err += y1*2 + 1
+		}
+		if x1 >= 0 {
+			break
+		}
+	}
 }
 
 // Arc - draw circle arc, from and to: 0 .. 360
