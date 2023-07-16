@@ -70,17 +70,17 @@ func WithBackgroundColor(colorName string) Opt {
 
 // ParseSizeString - parse size in "80x25" format
 func ParseSizeString(in string) (int, int, error) {
-	parts := strings.SplitN(in, "x", 2)
-	if len(parts) != 2 {
-		return 0, 0, fmt.Errorf("size not in 'd x d' format: %s, %v", in, parts)
+	wStr, hStr, ok := strings.Cut(in, "x")
+	if !ok {
+		return 0, 0, fmt.Errorf("size not in 'd x d' format")
 	}
 
-	w, err := strconv.Atoi(strings.TrimSpace(parts[0]))
+	w, err := strconv.Atoi(strings.TrimSpace(wStr))
 	if err != nil {
 		return 0, 0, err
 	}
 
-	h, err := strconv.Atoi(strings.TrimSpace(parts[1]))
+	h, err := strconv.Atoi(strings.TrimSpace(hStr))
 	if err != nil {
 		return 0, 0, err
 	}
