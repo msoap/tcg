@@ -161,7 +161,7 @@ func (b *Buffer) Set(x, y int, color int) {
 	}
 }
 
-// IsSet - is pixel set?
+// IsSet - is pixel set to black?
 func (b Buffer) IsSet(x, y int) bool {
 	return b.At(x, y) == Black
 }
