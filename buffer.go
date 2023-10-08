@@ -58,7 +58,7 @@ func NewBufferFromStrings(in []string) (*Buffer, error) {
 	return &buf, nil
 }
 
-// MustNewBufferFromStrings - get new buffer object from list of strings and die on error
+// MustNewBufferFromStrings - get new buffer object from list of strings or die on error
 func MustNewBufferFromStrings(in []string) Buffer {
 	buf, err := NewBufferFromStrings(in)
 	if err != nil {
@@ -112,15 +112,15 @@ func NewBufferFromImage(img image.Image) Buffer {
 	return buf
 }
 
-// ToImage - convert buffer to std Image with Gray colorspace, for example for save buffer to image file like png
+// ToImage - convert buffer to stdlib Image with Gray colorspace, for example for save buffer to the image file like png
 func (b Buffer) ToImage() image.Image {
 	img := image.NewGray(image.Rect(0, 0, b.Width, b.Height))
 	var c uint8
 	for y := 0; y < b.Height; y++ {
 		for x := 0; x < b.Width; x++ {
-			c = 0
-			if b.At(x, y) == White {
-				c = 255
+			c = 255
+			if b.IsSet(x, y) {
+				c = 0
 			}
 			img.SetGray(x, y, color.Gray{Y: c})
 		}
@@ -159,6 +159,11 @@ func (b *Buffer) Set(x, y int, color int) {
 	case White:
 		b.buffer[y][i] &^= mask
 	}
+}
+
+// IsSet - is pixel set?
+func (b Buffer) IsSet(x, y int) bool {
+	return b.At(x, y) == Black
 }
 
 // At - get pixel color from buffer

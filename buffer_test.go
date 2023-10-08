@@ -497,3 +497,12 @@ func TestRenderAsStringsWithNewPixelMode(t *testing.T) {
 		})
 	}
 }
+
+func TestBuffer_IsSet(t *testing.T) {
+	b := MustNewBufferFromStrings([]string{
+		"*.",
+		".*",
+	})
+	assert.True(t, b.IsSet(0, 0))
+	assert.False(t, b.IsSet(0, 1))
+}

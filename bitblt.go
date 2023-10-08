@@ -37,7 +37,7 @@ func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int, opts
 			if cfg.transparent && newColor == White {
 				continue
 			}
-			if cfg.mask != nil && cfg.mask.At(j+xs, i+ys) == White {
+			if cfg.mask != nil && !cfg.mask.IsSet(j+xs, i+ys) {
 				continue
 			}
 
