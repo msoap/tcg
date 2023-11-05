@@ -42,10 +42,7 @@ func main() {
 	}
 	_ = fReader.Close()
 
-	list := buf.RenderAsStrings(mode)
-	for _, line := range list {
-		fmt.Println(line)
-	}
+	fmt.Println(strings.Join(buf.RenderAsStrings(mode), "\n"))
 }
 
 func reader2buffer(in io.Reader) (tcg.Buffer, error) {
