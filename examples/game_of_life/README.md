@@ -1,6 +1,6 @@
 # Game Of Life
 
-This is small example of "Game Of Life", see [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) for more information.
+This is an example of "Game Of Life", see [Wikipedia](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) for more information.
 
 Features:
   
