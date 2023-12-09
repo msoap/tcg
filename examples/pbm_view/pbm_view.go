@@ -28,7 +28,7 @@ func main() {
 
 	args := flag.Args()
 	if len(args) != 1 {
-		log.Fatalf("file name of .pbm file needed: %+v", args)
+		log.Fatalf("one argument expected: pbm file")
 	}
 
 	fReader, err := os.Open(args[0])
