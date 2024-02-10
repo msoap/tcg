@@ -10,6 +10,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
@@ -401,7 +402,7 @@ func (g *game) updateStatMap(startedAt time.Time) {
 	if fps > maxFPS {
 		fps = maxFPS
 	}
-	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %4d FPS | %4d Gen ", fps, g.generation))
+	g.tg.PrintStr(3, g.scrH-1, fmt.Sprintf(" %4s FPS | %4s Gen ", toOldComputingDigits(int(fps)), toOldComputingDigits(g.generation)))
 	g.tg.Show()
 }
 
@@ -525,4 +526,18 @@ func saveScreenshot(fileName string, buf tcg.Buffer) error {
 	}
 
 	return os.WriteFile(fileName, bufBytes.Bytes(), 0644)
+}
+
+func toOldComputingDigits(from int) string {
+	// https://en.wikipedia.org/wiki/Symbols_for_Legacy_Computing
+	// 0-9 : U+1FBF0 - U+1FBF9 : 🯰,🯱,🯲,🯳,🯴,🯵,🯶,🯷,🯸,🯹
+	result := ""
+	for _, c := range []rune(strconv.Itoa(from)) {
+		if c < '0' || c > '9' {
+			continue
+		}
+		result += string(c - '0' + 0x1FBF0)
+	}
+
+	return result
 }
