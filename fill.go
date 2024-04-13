@@ -14,7 +14,7 @@ func (b *Buffer) Fill(x, y int, opts ...FillOpt) {
 	}
 
 	if fo.allAreas {
-		b.fillAllPixel(x, y, x, y, fo)
+		b.fillAllPixel(x, y, fo)
 	} else {
 		b.fillNBPixel(x, y, x, y, 0, fo)
 	}
@@ -72,7 +72,7 @@ func (b *Buffer) fillNBPixel(x, y, xs, ys int, whatPrev int, fo fillOptions) {
 }
 
 // fillAllPixel - fill all white pixels
-func (b *Buffer) fillAllPixel(x, y, xs, ys int, fo fillOptions) {
+func (b *Buffer) fillAllPixel(xs, ys int, fo fillOptions) {
 	for y := 0; y < b.Height; y++ {
 		for x := 0; x < b.Width; x++ {
 			if color, ok := b.getFillColor(x, y, xs, ys, fo); ok {
