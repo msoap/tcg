@@ -21,8 +21,8 @@ type geom struct {
 	x, y, width, height int
 }
 
-// WithClip - set clip of screen,
-// x, y, w, h - is in screen character coordinates, not pixels
+// WithClip - set clip of screen, this allows to limit the area of the screen that will be used for drawing.
+// x, y, width, height - is in screen character coordinates, not pixels
 func WithClip(x, y, width, height int) Opt {
 	return func(cfg *tcgConfig) error {
 		if width < 1 || height < 1 {
@@ -43,7 +43,7 @@ func WithClip(x, y, width, height int) Opt {
 }
 
 // WithClipCenter - set clip of screen, placed in the center of screen
-// w, h - is in screen character coordinates, not pixels
+// width, height - is in screen character coordinates, not pixels
 func WithClipCenter(width, height int) Opt {
 	return func(cfg *tcgConfig) error {
 		return WithClip((cfg.width-width)/2, (cfg.height-height)/2, width, height)(cfg)

@@ -9,7 +9,7 @@ type bitBltOptions struct {
 	// mask - if not nil, then BitBlt will copy only pixels with color != 0 in mask
 	mask *Buffer
 	// list of operations for each pixel
-	operations []func(orig, src int) int
+	operations []func(orig, new int) int
 }
 
 // BBTransparent - if true, then BitBlt will not copy pixels with color 0 (transparent)
@@ -27,7 +27,7 @@ func BBMask(mask *Buffer) BitBltOpt {
 }
 
 // BBOpFn - add function for each pixel of source and destination
-func BBOpFn(fn func(orig, src int) int) BitBltOpt {
+func BBOpFn(fn func(orig, new int) int) BitBltOpt {
 	return func(o *bitBltOptions) {
 		o.operations = append(o.operations, fn)
 	}
@@ -45,8 +45,8 @@ func BBAnd() BitBltOpt {
 // BBOr - OR operation for each pixel of source and destination
 func BBOr() BitBltOpt {
 	return func(o *bitBltOptions) {
-		o.operations = append(o.operations, func(orig, src int) int {
-			return orig | src
+		o.operations = append(o.operations, func(orig, new int) int {
+			return orig | new
 		})
 	}
 }
@@ -54,8 +54,8 @@ func BBOr() BitBltOpt {
 // BBXor - XOR operation for each pixel of source and destination
 func BBXor() BitBltOpt {
 	return func(o *bitBltOptions) {
-		o.operations = append(o.operations, func(orig, src int) int {
-			return orig ^ src
+		o.operations = append(o.operations, func(orig, new int) int {
+			return orig ^ new
 		})
 	}
 }

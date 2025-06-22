@@ -73,8 +73,13 @@ func (tg *Tcg) applyClip() {
 }
 
 // Show - update screen
-func (tg *Tcg) Show() {
+// it updates the screen with the current buffer content and can erase any text printed before by PrintStr or PrintStrStyle.
+// finalisers - should be used to apply additional changes to the screen after pixels are updated, for example, to print some text on the screen.
+func (tg *Tcg) Show(finalisers ...func(tg *Tcg)) {
 	tg.updateScreen()
+	for _, finaliser := range finalisers {
+		finaliser(tg)
+	}
 	tg.TCellScreen.Show()
 }
 
@@ -94,7 +99,10 @@ func (tg *Tcg) Finish() {
 	tg.TCellScreen.Fini()
 }
 
-// SetClip - set new clip of screen
+// SetClip - set new clip of screen, this allows to limit the area of the screen that will be used for drawing.
+// x, y - is in screen character coordinates, not pixels.
+// width, height - is in screen character coordinates, not pixels.
+// It can be run any time, but clearing internal buffer screen.
 func (tg *Tcg) SetClip(x, y, width, height int) error {
 	if err := WithClip(x, y, width, height)(&tg.config); err != nil {
 		return err

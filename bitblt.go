@@ -14,7 +14,16 @@ func (b *Buffer) BitBltAll(x, y int, from Buffer, opts ...BitBltOpt) {
 
 // BitBlt - copy part of buffer into this buffer
 // xd, yd - destination coordinates
+// width, height - size of the area to copy
 // xs, ys - source coordinates
+// opts - optional operations to apply during copy
+//   - BBTransparent - skip transparent pixels (White color)
+//   - BBMask(mask) - copy only pixels where mask is set
+//   - BBOpFn(fn) - apply func to each pixel during copy
+//     fn(orig, src int) int - where orig is the pixel in this buffer and src is the pixel in the "from" buffer
+//   - BBAnd() - AND operation for each pixel of source and destination
+//   - BBOr() - OR operation for each pixel of source and destination
+//   - BBXor() - XOR operation for each pixel of source and destination
 func (b *Buffer) BitBlt(xd, yd, width, height int, from Buffer, xs, ys int, opts ...BitBltOpt) {
 	if len(opts) == 0 {
 		for i := 0; i+ys < from.Height && i < height && i+yd < b.Height; i++ {
