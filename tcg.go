@@ -1,7 +1,7 @@
 package tcg
 
 import (
-	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell/v3"
 )
 
 // pixel colors
@@ -125,15 +125,13 @@ func (tg *Tcg) SetClipCenter(width, height int) error {
 // x, y - is in screen character coordinates, not pixels.
 // Also x/y coordinates is not use Clip of the screen, it's always absolute.
 func (tg *Tcg) PrintStr(x, y int, str string) {
-	tg.PrintStrStyle(x, y, str, tg.style)
+	tg.PrintStrStyled(x, y, str, tg.style)
 }
 
-// PrintStrStyle - print string on screen
+// PrintStrStyled - print string on screen
 // see the PrintStr about restrictions
-func (tg *Tcg) PrintStrStyle(x, y int, str string, style tcell.Style) {
-	for i, ch := range []rune(str) {
-		tg.TCellScreen.SetContent(x+i, y, ch, nil, style)
-	}
+func (tg *Tcg) PrintStrStyled(x, y int, str string, style tcell.Style) {
+	tg.TCellScreen.PutStrStyled(x, y, str, style)
 }
 
 // ScreenSize - returns terminal screen size in chars (width, height)

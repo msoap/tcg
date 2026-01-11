@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell/v3"
 	"github.com/msoap/tcg"
 )
 
@@ -32,28 +32,27 @@ func main() {
 		log.Fatalf("SetClip: %s", err)
 	}
 
-	if tg.TCellScreen.HasMouse() {
-		tg.TCellScreen.EnableMouse(tcell.MouseMotionEvents)
-	}
+	tg.TCellScreen.EnableMouse(tcell.MouseMotionEvents)
 
 	var (
 		mx, my int
 	)
 
-	tg.PrintStrStyle(18, height-1, " <q> ", tcell.StyleDefault.Background(tcell.ColorGray))
+	tg.PrintStrStyled(18, height-1, " <q> ", tcell.StyleDefault.Background(tcell.ColorGrey))
 	tg.PrintStr(23, height-1, " Quit ")
-	tg.PrintStrStyle(29, height-1, " <c> ", tcell.StyleDefault.Background(tcell.ColorGray))
+	tg.PrintStrStyled(29, height-1, " <c> ", tcell.StyleDefault.Background(tcell.ColorGrey))
 	tg.PrintStr(34, height-1, " Clear ")
 
+	drawNext()
 LOOP:
 	for {
-		ev := tg.TCellScreen.PollEvent()
+		ev := <-tg.TCellScreen.EventQ()
 		switch ev := ev.(type) {
 		case *tcell.EventKey:
-			if ev.Rune() == 'q' {
+			if ev.Str() == "q" {
 				break LOOP
 			}
-			if ev.Rune() == 'c' {
+			if ev.Str() == "c" {
 				tg.Buf.Clear()
 				tg.Show()
 				continue LOOP
@@ -91,7 +90,7 @@ LOOP:
 			mx, my = cx, cy
 			drawNext()
 		}
-		tg.PrintStrStyle(0, height-1, " Coord: ", tcell.StyleDefault.Background(tcell.ColorGray))
+		tg.PrintStrStyled(0, height-1, " Coord: ", tcell.StyleDefault.Background(tcell.ColorGrey))
 		tg.PrintStr(9, height-1, fmt.Sprintf("%3d x%3d", x, y))
 	}
 

@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell/v3"
 	"github.com/msoap/tcg"
 )
 
@@ -148,8 +148,8 @@ func main() {
 	isRunning := true
 
 	for {
-		if tg.TCellScreen.HasPendingEvent() {
-			ev := tg.TCellScreen.PollEvent()
+		select {
+		case ev := <-tg.TCellScreen.EventQ():
 			switch ev := ev.(type) {
 			case *tcell.EventKey:
 				switch ev.Key() {
@@ -167,20 +167,21 @@ func main() {
 					offsetY += offsetStepScale
 
 				case tcell.KeyRune:
-					switch ev.Rune() {
-					case 'q':
+					switch ev.Str() {
+					case "q":
 						return
-					case 'p': // Pause/resume animation
+					case "p": // Pause/resume animation
 						isRunning = !isRunning
-					case ' ': // Space to switch fractal type
+					case " ": // Space to switch fractal type
 						fractalType = (fractalType + 1) % 2
-					case '+', '=': // Zoom in
+					case "+", "=": // Zoom in
 						zoom *= 1.1
-					case '-': // Zoom out
+					case "-": // Zoom out
 						zoom /= 1.1
 					}
 				}
 			}
+		default:
 		}
 
 		animOffsetX := offsetX + 0.1*math.Sin(float64(animationStep)*0.01)

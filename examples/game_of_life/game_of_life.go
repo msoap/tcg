@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gdamore/tcell/v2"
+	"github.com/gdamore/tcell/v3"
 	"github.com/msoap/tcg"
 	"github.com/msoap/tcg/sprite"
 )
@@ -122,9 +122,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if tg.TCellScreen.HasMouse() {
-		tg.TCellScreen.EnableMouse(tcell.MouseMotionEvents)
-	}
+	tg.TCellScreen.EnableMouse(tcell.MouseMotionEvents)
 
 	_, scrH := tg.ScreenSize()
 
@@ -470,24 +468,24 @@ func getCommand(tg *tcg.Tcg) chan cmds {
 
 	go func() {
 		for {
-			ev := tg.TCellScreen.PollEvent()
+			ev := <-tg.TCellScreen.EventQ()
 			switch ev := ev.(type) {
 			case *tcell.EventKey:
 
 				switch {
-				case ev.Rune() == 'q' || ev.Key() == tcell.KeyEscape:
+				case ev.Str() == "q" || ev.Key() == tcell.KeyEscape:
 					resultCh <- cmdExit
-				case ev.Rune() == 'p':
+				case ev.Str() == "p":
 					resultCh <- cmdPause
-				case ev.Rune() == 'l':
+				case ev.Str() == "l":
 					resultCh <- cmdNext
-				case ev.Rune() == 'h':
+				case ev.Str() == "h":
 					resultCh <- cmdPrev
-				case ev.Rune() == ' ':
+				case ev.Str() == " ":
 					resultCh <- cmdPixel
-				case ev.Rune() == 'a':
+				case ev.Str() == "a":
 					resultCh <- cmdPen
-				case ev.Rune() == 'c':
+				case ev.Str() == "c":
 					resultCh <- cmdToggleCursor
 				case ev.Key() == tcell.KeyRight:
 					resultCh <- cmdRight
@@ -497,9 +495,9 @@ func getCommand(tg *tcg.Tcg) chan cmds {
 					resultCh <- cmdUp
 				case ev.Key() == tcell.KeyDown:
 					resultCh <- cmdDown
-				case ev.Rune() == 's':
+				case ev.Str() == "s":
 					resultCh <- cmdScreenshot
-				case ev.Rune() == 'w':
+				case ev.Str() == "w":
 					resultCh <- cmdWipe
 				}
 
