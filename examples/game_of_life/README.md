@@ -14,8 +14,16 @@ Features:
 
 ## Install
 
+Install the latest version to your `$GOPATH/bin` (usually in `$HOME/go/bin`):
+
 ```
 go install github.com/msoap/tcg/examples/game_of_life@latest
+```
+
+Or just run immediately without installing:
+
+```
+go run github.com/msoap/tcg/examples/game_of_life@latest
 ```
 
 ## Usage
@@ -28,7 +36,7 @@ options:
   -delay duration
     	delay between steps (default 100ms)
   -fill float
-    	how much to fill the area initially (default 0.2)
+    	how much to fill life with initially (from 0 to 1, default 0.2)
   -in string
     	load map from image file (*.png)
   -mode value

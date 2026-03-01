@@ -11,6 +11,7 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gdamore/tcell/v3"
@@ -85,7 +86,7 @@ func main() {
 	delay := flag.Duration("delay", defaultDelay, "delay between steps")
 	size := flag.String("size", "", "screen size in chars, in 'width x height' format, example: '80x25'")
 	colorName := flag.String("color", "", "redefine color, it can be: 'yellow', 'red' or like '#ffaa11'")
-	fillFactor := flag.Float64("fill", defaultInitFillFactor, "how much to fill the area initially")
+	fillFactor := flag.Float64("fill", defaultInitFillFactor, "how much to fill life with initially (from 0 to 1, default 0.2)")
 	inFileName := flag.String("in", "", "load map from image file (*.png)")
 	screenshotName := flag.String("out", "game_of_life.png", "save map as screenshot to file")
 	infMap := flag.Bool("inf", false, "infinite map (wrap around edges)")
@@ -251,7 +252,6 @@ func newGame(tg *tcg.Tcg, mode mode) *game {
 }
 
 func (g *game) initRandom(fillFact float64) {
-	rand.Seed(time.Now().UnixNano())
 	for y := 0; y < g.tg.Height; y++ {
 		for x := 0; x < g.tg.Width; x++ {
 			if rand.Float64() < fillFact {
@@ -529,13 +529,13 @@ func saveScreenshot(fileName string, buf tcg.Buffer) error {
 func toOldComputingDigits(from int) string {
 	// https://en.wikipedia.org/wiki/Symbols_for_Legacy_Computing
 	// 0-9 : U+1FBF0 - U+1FBF9 : 🯰,🯱,🯲,🯳,🯴,🯵,🯶,🯷,🯸,🯹
-	result := ""
+	var result strings.Builder
 	for _, c := range []rune(strconv.Itoa(from)) {
-		if c < '0' || c > '9' {
+		if c >= '0' && c <= '9' {
+			result.WriteRune(c - '0' + 0x1FBF0)
 			continue
 		}
-		result += string(c - '0' + 0x1FBF0)
+		result.WriteRune(c)
 	}
-
-	return result
+	return result.String()
 }
