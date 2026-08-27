@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ['1.25.x', '1.26.x']
+        go: ['1.26.x', '1.27.x']
     steps:
     - uses: actions/checkout@v6
 
     - name: Set up Go
-      uses: actions/setup-go@v6
+      uses: actions/setup-go@v7
       with:
         go-version: ${{ matrix.go }}
 
@@ -36,7 +36,7 @@ jobs:
       run: go test -race -v ./...
 
     - name: Coveralls
-      if: ${{ startsWith(matrix.go, '1.26') && github.event_name == 'push' }}
+      if: ${{ startsWith(matrix.go, '1.27') && github.event_name == 'push' }}
       env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
