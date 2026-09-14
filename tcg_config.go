@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gdamore/tcell/v3"
+	tcell "github.com/gdamore/tcell/v3"
 )
 
 // Opt - options type for New tcg screen

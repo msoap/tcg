@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gdamore/tcell/v3"
+	tcell "github.com/gdamore/tcell/v3"
 	"github.com/msoap/tcg"
 )
 

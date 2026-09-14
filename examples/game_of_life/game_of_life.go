@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gdamore/tcell/v3"
+	tcell "github.com/gdamore/tcell/v3"
 	"github.com/msoap/tcg"
 	"github.com/msoap/tcg/sprite"
 )
