@@ -382,6 +382,106 @@ func Test_spawn_blocked_by_removing_line(t *testing.T) {
 	assert.Empty(t, g.clearing)
 }
 
+func Test_settle_floating_square(t *testing.T) {
+	g := newTestGame(1)
+	g.field[10][9] = 5 // nothing under it
+	g.field[fieldRows-1][0] = 3
+	g.field[fieldRows-2][0] = 3
+
+	g.settle()
+
+	assert.Zero(t, g.field[10][9])
+	assert.Equal(t, uint8(5), g.field[fieldRows-1][9], "the square fell to the floor")
+	assert.Equal(t, uint8(3), g.field[fieldRows-2][0], "the stack didn't move")
+}
+
+func Test_settle_keeps_connected(t *testing.T) {
+	g := newTestGame(1)
+	g.field[fieldRows-1][0] = 3
+	g.field[fieldRows-2][0] = 3
+	g.field[fieldRows-2][1] = 3 // overhang, connected by the side
+	g.field[fieldRows-3][1] = 4 // on the overhang
+	want := g.field
+
+	g.settle()
+
+	assert.Equal(t, want, g.field)
+}
+
+func Test_settle_group_falls_as_whole(t *testing.T) {
+	g := newTestGame(1)
+	g.field[fieldRows-1][3] = 3
+	g.field[fieldRows-2][3] = 3 // the stack is under the left square of the group only
+	g.field[10][3], g.field[10][4] = 5, 6
+
+	g.settle()
+
+	assert.Equal(t, uint8(5), g.field[fieldRows-3][3], "the group stopped on the stack")
+	assert.Equal(t, uint8(6), g.field[fieldRows-3][4], "the right square is in the air, but it's connected")
+	assert.Zero(t, g.field[fieldRows-1][4])
+	assert.Zero(t, g.field[10][3])
+}
+
+func Test_settle_several_groups(t *testing.T) {
+	g := newTestGame(1)
+	g.field[5][0] = 4  // the upper group
+	g.field[10][0] = 5 // the lower group, the upper one lands on it
+
+	g.settle()
+
+	assert.Equal(t, uint8(5), g.field[fieldRows-1][0])
+	assert.Equal(t, uint8(4), g.field[fieldRows-2][0])
+	assert.Zero(t, g.field[5][0])
+	assert.Zero(t, g.field[10][0])
+}
+
+// setupHangingSquare - the bottom row is full except the column 9, above it is the row that the I block completes,
+// and there is a square above that row in the column 9, so after removing of the line the square hangs over the hole
+func setupHangingSquare(g *game) {
+	for col := range fieldCols {
+		if col != 9 {
+			g.field[fieldRows-1][col] = 3
+		}
+		if col < 4 || col >= 8 {
+			g.field[fieldRows-2][col] = 3
+		}
+	}
+	g.field[fieldRows-3][9] = 5
+}
+
+func Test_clear_line_drops_hanging_square(t *testing.T) {
+	g := newTestGame(0) // I
+	g.next = 1
+	setupHangingSquare(g)
+	g.hardDrop()
+	require.Equal(t, []int{fieldRows - 2}, g.clearing)
+
+	g.finishClearing()
+
+	assert.Equal(t, uint8(5), g.field[fieldRows-1][9], "the square fell into the hole")
+	assert.Zero(t, g.field[fieldRows-2][9])
+	assert.Zero(t, g.field[fieldRows-3][9])
+}
+
+func Test_fallen_square_completes_line(t *testing.T) {
+	g := newTestGame(0) // I
+	g.next = 1
+	setupHangingSquare(g)
+	g.hardDrop()
+	require.Equal(t, lineScore, g.score)
+
+	// the animation of the first line is over, the square falls and completes the bottom line
+	for range squareH {
+		g.animate(clearStepTime)
+		require.Equal(t, []int{fieldRows - 2}, g.clearing)
+	}
+	assert.True(t, g.animate(clearStepTime))
+
+	assert.Equal(t, []int{fieldRows - 1}, g.clearing, "the new line is being removed")
+	assert.Equal(t, 2*lineScore, g.score)
+	assert.Equal(t, 2, g.lines)
+}
+
 func Test_modeFlag(t *testing.T) {
 	mode := modeFlag{tcg.Mode2x3}
 	assert.Equal(t, "2x3", mode.String())

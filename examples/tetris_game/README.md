@@ -7,6 +7,7 @@ Features:
   - 7 classic blocks, each with its own color, chosen randomly; the next block is shown
   - blocks fall smoothly pixel by pixel, not by characters
   - full lines are erased pixel row by pixel row, then everything above falls down in one step; the animation is quick (about 0.12s) and the game doesn't wait for it
+  - squares don't hang in the air: a group of touching squares that isn't connected to the floor falls down after a line is removed, and it can complete new lines
   - score: +10 for each line, +5 more for each level above the first; each 10 lines give a new level and +20% to the falling speed
   - the screen is redrawn without flickering, keys are handled immediately
 

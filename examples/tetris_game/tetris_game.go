@@ -231,6 +231,7 @@ func (g *game) spawn() {
 	g.fall = 0
 	if g.collides(g.cur) {
 		g.finishClearing() // the lines that are being removed can be the only obstacle
+		g.startClearing()
 		g.over = g.collides(g.cur)
 	}
 }
@@ -349,15 +350,22 @@ func (g *game) lock() {
 
 	// the block can land while the previous lines are still being removed, it's above them, so it falls with the rest
 	g.finishClearing()
-
-	if rows := g.fullRows(); len(rows) > 0 {
-		g.clearing = rows
-		g.score += len(rows) * (lineScore + (g.level-1)*levelLineBonus)
-		g.lines += len(rows)
-		g.level = 1 + g.lines/linesPerLevel
-	}
+	g.startClearing()
 
 	g.spawn()
+}
+
+// startClearing - start removing of the full lines and score them
+func (g *game) startClearing() {
+	rows := g.fullRows()
+	if len(rows) == 0 {
+		return
+	}
+
+	g.clearing = rows
+	g.score += len(rows) * (lineScore + (g.level-1)*levelLineBonus)
+	g.lines += len(rows)
+	g.level = 1 + g.lines/linesPerLevel
 }
 
 // fullRows - get rows without empty squares, from top to bottom
@@ -388,18 +396,108 @@ func (g *game) animate(dt time.Duration) bool {
 	g.clearStep += steps
 	if g.clearStep > squareH { // all pixel rows are erased
 		g.finishClearing()
+		g.startClearing() // fallen squares can complete new lines
 	}
 
 	return true
 }
 
-// finishClearing - remove the lines, everything above falls down in one step
+// finishClearing - remove the lines, everything above falls down in one step,
+// squares left without support fall down too
 func (g *game) finishClearing() {
 	for _, row := range g.clearing { // from top to bottom, so numbers of the rest of the lines are not changed
 		copy(g.field[1:row+1], g.field[:row])
 		g.field[0] = [fieldCols]uint8{}
 	}
 	g.clearing, g.clearStep, g.clearTime = nil, 0, 0
+
+	g.settle()
+}
+
+// neighbors - squares that are connected to the square, diagonal ones are not
+var neighbors = [...]point{{0, -1}, {0, 1}, {-1, 0}, {1, 0}}
+
+// settle - let the squares that hang in the air fall down.
+// Squares that touch each other by sides are one group, the group stands if it's connected to the floor,
+// otherwise it falls as a whole until it lands on something.
+func (g *game) settle() {
+	for g.dropFloating() {
+	}
+}
+
+// dropFloating - drop every group that isn't connected to the floor, returns true if something was moved.
+// A group can land on another floating group and then they fall together, so one pass may be not enough.
+func (g *game) dropFloating() bool {
+	var seen [fieldRows][fieldCols]bool
+	for col := range fieldCols {
+		g.collectGroup(&seen, point{col, fieldRows - 1}) // the squares that stand
+	}
+
+	// from bottom to top, so the lower groups fall first and the upper ones can land on them
+	var floating [][]point
+	for row := fieldRows - 1; row >= 0; row-- {
+		for col := range fieldCols {
+			if group := g.collectGroup(&seen, point{col, row}); group != nil {
+				floating = append(floating, group)
+			}
+		}
+	}
+
+	moved := false
+	for _, group := range floating {
+		if g.dropGroup(group) {
+			moved = true
+		}
+	}
+
+	return moved
+}
+
+// collectGroup - get the group of squares that contains the square, squares that were seen before are skipped,
+// returns nil if there is no new square
+func (g *game) collectGroup(seen *[fieldRows][fieldCols]bool, start point) []point {
+	if g.field[start.y][start.x] == 0 || seen[start.y][start.x] {
+		return nil
+	}
+
+	seen[start.y][start.x] = true
+	group := []point{start}
+	for i := 0; i < len(group); i++ { // the group grows in the loop
+		for _, d := range neighbors {
+			n := point{group[i].x + d.x, group[i].y + d.y}
+			if n.x < 0 || n.x >= fieldCols || n.y < 0 || n.y >= fieldRows || g.field[n.y][n.x] == 0 || seen[n.y][n.x] {
+				continue
+			}
+			seen[n.y][n.x] = true
+			group = append(group, n)
+		}
+	}
+
+	return group
+}
+
+// dropGroup - move the group of squares down until it lands on something, returns true if it was moved
+func (g *game) dropGroup(group []point) bool {
+	squares := make([]uint8, len(group))
+	for i, p := range group {
+		squares[i] = g.field[p.y][p.x]
+		g.field[p.y][p.x] = 0 // the group doesn't block itself
+	}
+
+	dist := fieldRows
+	for _, p := range group {
+		free := 0
+		for p.y+free+1 < fieldRows && g.field[p.y+free+1][p.x] == 0 {
+			free++
+		}
+		dist = min(dist, free)
+	}
+
+	for i, p := range group {
+		g.field[p.y+dist][p.x] = squares[i]
+	}
+
+	return dist > 0
 }
 
 // erasedPixels - number of erased pixel rows (from the top) of the squares in the row of the field
