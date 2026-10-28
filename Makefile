@@ -16,3 +16,6 @@ example-game-of-life:
 
 example-fractal-demo:
 	go run examples/fractal-demo/fractal-demo.go -mode 2x3
+
+example-tetris-game:
+	go run examples/tetris_game/tetris_game.go -mode 2x3
