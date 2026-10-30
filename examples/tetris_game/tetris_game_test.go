@@ -252,6 +252,79 @@ func Test_game_over(t *testing.T) {
 	assert.False(t, g.update(time.Second), "nothing changes after the end")
 }
 
+func Test_win_on_empty_field(t *testing.T) {
+	g := newTestGame(0) // I
+	g.next = 1
+	assert.False(t, g.won, "the field is empty at the start, but it's not a win")
+
+	// the only line of the field is completed by the block
+	fillRowExceptSlot(g, fieldRows-1)
+	g.hardDrop()
+	require.Equal(t, []int{fieldRows - 1}, g.clearing)
+	assert.False(t, g.won, "the line is still being removed")
+
+	for range squareH {
+		g.update(clearStepTime)
+		assert.False(t, g.won)
+	}
+	assert.True(t, g.update(clearStepTime))
+	assert.True(t, g.won)
+	assert.False(t, g.over)
+	assert.True(t, g.finished())
+	assert.Equal(t, lineScore, g.score)
+
+	// nothing changes after the win
+	y := g.cur.y
+	assert.False(t, g.update(time.Second))
+	assert.Equal(t, y, g.cur.y)
+	assert.Zero(t, g.cellShape(g.cur.col*squareCharsW, 0), "the block is hidden")
+}
+
+func Test_win_stops_the_block(t *testing.T) {
+	g := newTestGame(0) // I
+	g.next = 1
+	fillRowExceptSlot(g, fieldRows-1)
+	g.hardDrop()
+	require.NotEmpty(t, g.clearing)
+
+	// the animation ends and the block would fall in the same update
+	y := g.cur.y
+	assert.True(t, g.update(time.Second))
+	assert.True(t, g.won)
+	assert.Equal(t, y, g.cur.y, "the block didn't fall after the win")
+	assert.Equal(t, g.field, [fieldRows][fieldCols]uint8{})
+}
+
+func Test_no_win_with_squares_left(t *testing.T) {
+	g := newTestGame(0) // I
+	g.next = 1
+	fillRowExceptSlot(g, fieldRows-1)
+	g.field[fieldRows-2][0] = 5 // it falls to the bottom after the line is removed
+	g.hardDrop()
+	require.NotEmpty(t, g.clearing)
+
+	g.finishClearing()
+
+	assert.Equal(t, uint8(5), g.field[fieldRows-1][0])
+	assert.False(t, g.won)
+	assert.False(t, g.finished())
+	assert.True(t, g.update(time.Second), "the game goes on")
+}
+
+func Test_app_frozen_at_the_end(t *testing.T) {
+	a := &app{g: newTestGame(0)}
+	assert.False(t, a.frozen())
+
+	a.g.won = true
+	assert.True(t, a.frozen())
+
+	a.g.won, a.g.over = false, true
+	assert.True(t, a.frozen())
+
+	a.g.over = false
+	assert.False(t, a.frozen())
+}
+
 func Test_cellShape(t *testing.T) {
 	g := newTestGame(1) // O
 	g.field[fieldRows-1][0] = 4

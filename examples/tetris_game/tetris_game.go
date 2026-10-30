@@ -212,7 +212,8 @@ type game struct {
 	next                int     // kind of the next block
 	fall                float64 // part of the pixel the block has already fallen
 	score, lines, level int
-	over                bool
+	over                bool // the stack reached the top
+	won                 bool // all squares were removed, the field is empty
 
 	clearing  []int         // full rows that are being removed, they are solid until the end of the animation
 	clearStep int           // steps of the animation, equals to the number of erased pixel rows of the lines
@@ -234,6 +235,11 @@ func (g *game) spawn() {
 		g.startClearing()
 		g.over = g.collides(g.cur)
 	}
+}
+
+// finished - the game is over, the player lost or won
+func (g *game) finished() bool {
+	return g.over || g.won
 }
 
 func floorDiv(a, b int) int {
@@ -319,11 +325,14 @@ func (g *game) speed() float64 {
 
 // update - move the block down according to the elapsed time, returns true if something was changed
 func (g *game) update(dt time.Duration) bool {
-	if g.over {
+	if g.finished() {
 		return false
 	}
 
 	changed := g.animate(dt)
+	if g.won { // the last squares were removed, the block doesn't fall anymore
+		return true
+	}
 
 	g.fall += g.speed() * dt.Seconds()
 	pixels := int(g.fall)
@@ -403,8 +412,9 @@ func (g *game) animate(dt time.Duration) bool {
 }
 
 // finishClearing - remove the lines, everything above falls down in one step,
-// squares left without support fall down too
+// squares left without support fall down too. The player wins if no squares are left.
 func (g *game) finishClearing() {
+	cleared := len(g.clearing) > 0
 	for _, row := range g.clearing { // from top to bottom, so numbers of the rest of the lines are not changed
 		copy(g.field[1:row+1], g.field[:row])
 		g.field[0] = [fieldCols]uint8{}
@@ -412,6 +422,11 @@ func (g *game) finishClearing() {
 	g.clearing, g.clearStep, g.clearTime = nil, 0, 0
 
 	g.settle()
+
+	// the field is empty at the start of the game too, but it can become empty only by removing lines
+	if cleared && g.field == [fieldRows][fieldCols]uint8{} {
+		g.won = true
+	}
 }
 
 // neighbors - squares that are connected to the square, diagonal ones are not
@@ -514,7 +529,7 @@ func (g *game) cellShape(cx, cy int) uint8 {
 	if s := g.field[cy/squareCharsH][cx/squareCharsW]; s != 0 {
 		return s
 	}
-	if g.over {
+	if g.finished() {
 		return 0
 	}
 
@@ -586,7 +601,7 @@ func (a *app) layout() error {
 }
 
 func (a *app) frozen() bool {
-	return a.paused || a.help || a.tooSmall || a.g.over
+	return a.paused || a.help || a.tooSmall || a.g.finished()
 }
 
 func (a *app) restart() {
@@ -655,7 +670,7 @@ func (a *app) handleKey(ev *tcell.EventKey) bool {
 	case key == tcell.KeyEscape && a.help:
 		a.help = false
 	case str == "p":
-		a.paused = !a.paused && !a.g.over
+		a.paused = !a.paused && !a.g.finished()
 	case a.frozen():
 		a.dirty = false
 	case key == tcell.KeyLeft:
@@ -692,7 +707,7 @@ func (a *app) draw() {
 			}
 		}
 	}
-	if !a.g.over {
+	if !a.g.finished() {
 		for _, c := range a.g.cur.cells {
 			a.tg.Buf.FillRect((a.g.cur.col+c.x)*squareW, a.g.cur.y+c.y*squareH, squareW, squareH, tcg.Black)
 		}
@@ -720,10 +735,17 @@ func (a *app) drawDecorations(tg *tcg.Tcg) {
 	case a.help:
 		a.drawBanner(tg, "CONTROLS", helpLines)
 	case a.g.over:
-		a.drawBanner(tg, "GAME OVER", []string{"Score: " + strconv.Itoa(a.g.score), "", "r - restart", "q - quit"})
+		a.drawBanner(tg, "GAME OVER", a.finalLines())
+	case a.g.won:
+		a.drawBanner(tg, "YOU WIN", a.finalLines())
 	case a.paused:
 		a.drawBanner(tg, "PAUSED", []string{"p - continue"})
 	}
+}
+
+// finalLines - text of the banner at the end of the game
+func (a *app) finalLines() []string {
+	return []string{"Score: " + strconv.Itoa(a.g.score), "", "r - restart", "q - quit"}
 }
 
 func (a *app) drawPanel(tg *tcg.Tcg) {
