@@ -3,8 +3,8 @@ module github.com/msoap/tcg
 go 1.26.0
 
 require (
-	github.com/gdamore/tcell/v3 v3.5.0
-	github.com/msoap/byline v1.1.1
+	github.com/gdamore/tcell/v3 v3.6.0
+	github.com/msoap/byline v1.1.2
 	github.com/stretchr/testify v1.12.1
 )
 
@@ -14,7 +14,7 @@ require (
 	github.com/gdamore/encoding v1.0.1 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/sys v0.48.0 // indirect
-	golang.org/x/term v0.46.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/term v0.47.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 )
